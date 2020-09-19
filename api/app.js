@@ -3,6 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+// mySQL and TDS (Tedious)
+var Connection = require("tedious").Connection;
+var Request = require("tedious").Request;
+
 var cors = require("cors");
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -23,6 +27,32 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+// mySQL
+// example: https://docs.microsoft.com/en-us/sql/connect/node-js/step-3-proof-of-concept-connecting-to-sql-using-node-js?view=sql-server-ver15
+var Connection = require('tedious').Connection;  
+var config = {  
+  server: 'localhost',  //update me
+  authentication: {
+    type: 'default',
+    options: {
+      userName: 'admin', //update me
+      password: 'admin5',  //update me
+      validateBulkLoadParameters: 'false'
+    }
+  },
+  options: {
+  // If you are on Microsoft Azure, you need encryption:
+      encrypt: true,
+      database: 'Database1'  //update me
+  }
+};
+var connection = new Connection(config);  
+connection.on('connect', function(err) {  
+  // If no error, then good to proceed.
+  console.log("Connected");  
+});
+
 app.use("/testAPI", testAPIRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
