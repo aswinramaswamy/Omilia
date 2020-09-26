@@ -1,0 +1,75 @@
+.tab { text-indent:40px }
+
+h1 {
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+  color: white;
+}
+
+h2 {
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+  color: white;
+}
+
+body {
+  font-family: 'Times New Roman', Times, serif;
+  background-color: black;
+}
+
+@keyframes spin{
+	from{transform:rotate(0deg)}
+	to{transform:rotate(360deg)}	
+}
+
+intro {
+  background:url(introbackground.png) no-repeat 0 0;
+	background-size:cover;
+	animation:spin 150s linear infinite;
+}
+
+form {
+  border: 3px solid #f1f1f1;
+  width: 100%;
+  background-color: dimgray;
+}
+
+input[type=text], input[type=password], input[type=email] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.column {
+  float: left;
+  width: 30%;
+  padding: 5px;
+  text-align: center;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.button {
+  font-color: white;
+  background-color: #3C797C; 
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  
+}
+
+.right {float: right;}
+.left {float: left;}
