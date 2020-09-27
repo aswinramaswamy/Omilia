@@ -22,7 +22,7 @@ body {
 	to{transform:rotate(360deg)}	
 }
 
-intro {
+.intro {
   background:url(introbackground.png) no-repeat 0 0;
 	background-size:cover;
 	animation:spin 150s linear infinite;
@@ -56,11 +56,10 @@ input[type=text], input[type=password], input[type=email] {
   display: table;
 }
 
-.button {
-  font-color: white;
+button {
+  color: white;
   background-color: #3C797C; 
   border: none;
-  color: black;
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -68,7 +67,25 @@ input[type=text], input[type=password], input[type=email] {
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
-  
+}
+
+.button {
+  color: white;
+  background-color: #3C797C; 
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .right {float: right;}
