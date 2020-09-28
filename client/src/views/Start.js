@@ -5,15 +5,16 @@ import Logo from '../components/Logo'
 
 import '../css/app.css';
 
-export default class Layout extends React.Component {  
+export default class Start extends React.Component {  
     render() {
         return (
-            <div>
-                <body>
-                    
+            <div class='start'>
+                <p class='middle'>
                     <Logo />
+                    <h1>Omilía</h1>
+                    <h1>[ (Greek) ~ <i>To Speak</i> ]</h1>
                     <h1><Link to="login"><button>Log In</button></Link></h1>
-                </body>
+                </p>
             </div>
         )
     }

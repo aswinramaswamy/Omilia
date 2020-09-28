@@ -6,7 +6,7 @@ import '../css/app.css';
 export default class Logo extends React.Component {
     render() {
         return (
-            <img src={logo} alt="Logo" class="center"></img>
+            <img src={logo} alt="Logo" class="image"></img>
         );
     }
 }

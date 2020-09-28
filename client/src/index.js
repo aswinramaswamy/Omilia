@@ -6,10 +6,10 @@ import {
 
 import Create from './views/Create';
 import Feed from './views/Feed';
-import Layout from './views/Layout'
 import Login from './views/Login';
 import NotFound from './views/NotFound';
 import Settings from './views/Settings';
+import Start from './views/Start';
 import Timeline from './views/Timeline';
 
 import './css/app.css'
@@ -18,7 +18,7 @@ document.body.style.backgroundImage = "url('introbackground.png')"
 ReactDOM.render(
     <Router>
         <Switch>
-            <Route exact path="/" component={Layout} />
+            <Route exact path="/" component={Start} />
             <Route path="/create" component={Create} />
             <Route path="/login" component={Login} />
             <Route path="/feed" component={Feed} />

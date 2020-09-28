@@ -22,12 +22,6 @@ body {
 	to{transform:rotate(360deg)}	
 }
 
-.intro {
-  background:url(introbackground.png) no-repeat 0 0;
-	background-size:cover;
-	animation:spin 150s linear infinite;
-}
-
 form {
   border: 3px solid #f1f1f1;
   width: 100%;
@@ -82,10 +76,43 @@ button {
   cursor: pointer;
 }
 
+.image {
+  border-collapse: collapse;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  bottom: 0;
+  border: 0px;
+}
+
+.middle {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.start::after {
+  overflow: hidden;
+  background-image: url("introbackground.png");
+  border-radius: 35%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -540px; /* Negative half of height. */
+  margin-left: -540px; /* Negative half of width. */
+  height: 1080px;
+  width: 1080px;
+  content: '';
+  animation: spin 200s linear infinite;
+  z-index: -1;
+}
+
 .center {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  width: 50%;
 }
 
 .right {float: right;}
