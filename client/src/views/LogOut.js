@@ -8,7 +8,7 @@ export default class Feed extends React.Component {
         return (
             <div>
                 <Header />
-                <h2><Link to="LogOut" class="button">Log Out</Link></h2>
+                <h2><Link to="Feed" class="button">Confirm Log Out</Link></h2>
                 <Footer />
             </div>
         )
