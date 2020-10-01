@@ -18,8 +18,8 @@ export default class Login extends React.Component {
                 </div>
 
                 <h2><Link to="feed" class="button">Log In</Link></h2>
-                <h4>Not a member?</h4>
-                <h2><Link to="create" class="button">Create Account</Link></h2>
+                <h4>Don't have an account?<br></br>
+                <Link to="create">Register</Link></h4>
             </div>
         )
     }

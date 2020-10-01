@@ -121,6 +121,10 @@ button {
   width: 50%;
 }
 
+.hyperlink {
+  color: white;
+}
+
 .right {float: right;}
 .left {float: left;}
 
