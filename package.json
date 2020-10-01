@@ -1,0 +1,13 @@
+{
+  "name": "Omilia",
+  "version": "1.0.0",
+  "scripts": {
+    "dev:api": "npm start",
+    "dev:client": "npm start",
+    "dev": "npm run dev:api && npm run dev:client"
+  },
+  "dependencies": {
+    "express-session": "^1.17.1",
+    "mysql": "^2.18.1"
+  }
+}
