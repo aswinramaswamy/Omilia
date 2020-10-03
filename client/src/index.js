@@ -38,7 +38,8 @@ ReactDOM.render(
                 <Route path="/login" component={Login} />
                 <Route path="/settings" component={Settings} />
                 <Route path="/profile" component={Profile} />
-                <Route path="/post" component={FullPagePost} />
+                <Route path="/post" component={FullPagePost} /> 
+                <Route path="/post/:postid" component={FullPagePost} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />
             </Switch>
