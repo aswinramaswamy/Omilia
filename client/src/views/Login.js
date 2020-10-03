@@ -1,65 +1,147 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
+import withStyles from '@material-ui/core/styles/withStyles'
 import Logo from '../components/Logo'
 import '../css/app.css';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-export default class Login extends React.Component {  
-    constructor(props, context) {
-        super(props, context);
+//MUI Stuff
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-        this.state = { description: '' };
+const styles = {
+    form: {
+        textAlign: 'center'
+    },
+    image: {
+        margin: '20px auto 20px auto'
+    },
+    pageTitle: {
+        margin: '10px auto 10px auto'
+    },
+    textField: {
+        margin: '10px auto 10px auto'
+    },
+    button: {
+        marginTop: 20,
+        position: 'relative'
+    },
+    customError: {
+        color: 'red',
+        fontSize: '0.8rem',
+        marginTop: 10
+    },
+    progress: {
+        position: 'absolute'
+    }
+}
+
+class Login extends React.Component {  
+    constructor(){
+        super();
+        this.state = {
+            email: '',
+            password: '',
+            loading: false,
+            errors: {}
+        }
     }
     
-    onChange = (e) => {
-        this.setState({ [e.target.name]: e.target.value });
+    handleChange = (event) => {
+        this.setState({
+            [event.target.name]: event.target.value
+        })
     }
-
-    onSubmit = (e) => {
-        e.preventDefault();
-        // get form data out of state
-        fetch(this.props.formAction, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({description: this.state.description})
+    
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.setState({
+            loading: true
         });
-
-        this.setState({description: ''});
+        const userData = {
+            email: this.state.email,
+            password: this.state.password
+        }
+        axios
+            .post('/login', userData)
+            .then(res => {
+                console.log(res.data)
+                this.setState({
+                    loading: false
+                });
+                this.props.history.push('/home');
+            })
+            .catch(err => {
+                this.setState({
+                    errors: err.response.data,
+                    loading: false
+                })
+            })
     }
 
     render() {
-        return (
-            <div class='middle'>
-                <Logo/>
-                <div class="login-form">
-                    <form action="auth" method="POST">
-                        <input 
-                            type="text" 
-                            name="username" 
-                            value={this.state.value} 
-                            onChange={this.onChange} 
-                            placeholder="Username"
-                            required
-                        />
-                        <input 
-                            type="password" 
-                            name="password" 
-                            value={this.state.value}
-                            onChange={this.onChange}
-                            placeholder="Password" 
-                            required
-                        />
-                        <input type="submit" placeholer="Log In"/>
-                    </form>
-                </div>
-
-                <h2><Link to="home" class="button">Log In</Link></h2>
-                <h4>Don't have an account?<br></br>
-                <Link to="create">Register</Link></h4>
-                <h2>{this.state.data}</h2>
+        const { classes } = this.props;
+        const { errors, loading } = this.state;
+        return ( 
+            <div className='start'>
+                <Grid container className={classes.form} direction='column'>
+                    <Grid item sm />
+                    <Grid item sm>
+                        <div className='middle'>
+                        <Logo />
+                        <form noValidate onSubmit={this.handleSubmit}>
+                            <TextField 
+                                id="email" 
+                                name="email" 
+                                type="email" 
+                                label="Email" 
+                                className={classes.textField}
+                                helperText={errors.email} 
+                                error={errors.email ? true : false} 
+                                value={this.state.email} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
+                                id="password" 
+                                name="password" 
+                                type="password" 
+                                label="Password" 
+                                className={classes.textField}
+                                helperText={errors.password} 
+                                error={errors.password ? true : false} 
+                                value={this.state.password} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            { errors.general && (
+                                <Typography variant='body1' className={classes.customError}>
+                                    {errors.general}
+                                </Typography>
+                            )}
+                            <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
+                                Log in
+                                {loading && (
+                                    <CircularProgress size={20} className={classes.progress}/>
+                                )}
+                            </Button>
+                            <br />
+                            <small>Don't have an account? Sign up <Link to ="/create">here</Link>.</small>
+                        </form>
+                        </div>
+                    </Grid>
+                    <Grid item sm />
+                </Grid>
             </div>
-        )
-    }
+    )}
 }
+
+Login.propTypes = {
+    classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(Login);
