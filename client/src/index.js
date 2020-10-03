@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as  Router, Route, Switch } from 'react-router-dom';
-
-//Import Components
-import Navbar from './components/Navbar';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 //Import Views
 import Create from './views/Create';
@@ -12,24 +11,37 @@ import Login from './views/Login';
 import NotFound from './views/NotFound';
 import Settings from './views/Settings';
 import Start from './views/Start';
-import Timeline from './views/Timeline';
+import Profile from './views/Profile';
 
 import './css/app.css'
 
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            light: 'white',
+            main: '#3C797C',
+            dark: 'black',
+            contrastText: '#fff'
+        }
+    }
+})
 
 ReactDOM.render(
-    <Router>
-        <Navbar />
-        <Switch>
-            <Route exact path="/" component={Start} />
-            <Route path="/home" component={Home} />
-            <Route path="/create" component={Create} />
-            <Route path="/login" component={Login} />
-            <Route path="/timeline" component={Timeline} />
-            <Route path="/settings" component={Settings} />
-            {/* Only useful in development mode */}
-            <Route component={NotFound} status={404} />
-        </Switch>
-    </Router>,
+    <MuiThemeProvider theme={theme}>
+        <Router>
+            <div>
+            <Switch>
+                <Route exact path="/" component={Start} />
+                <Route path="/home" component={Home} />
+                <Route path="/create" component={Create} />
+                <Route path="/login" component={Login} />
+                <Route path="/settings" component={Settings} />
+                <Route path="/profile" component={Profile} />
+                {/* Only useful in development mode */}
+                <Route component={NotFound} status={404} />
+            </Switch>
+            </div>
+        </Router>
+    </MuiThemeProvider>,
 document.getElementById('root'),
 );

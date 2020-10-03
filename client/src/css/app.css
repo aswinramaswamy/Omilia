@@ -157,3 +157,8 @@ button {
   font-family: 'Times New Roman', Times, serif;
   color: white;
 }
+
+.container {
+  margin: 80px auto 0 auto;
+  max-width: 1200px;
+}
