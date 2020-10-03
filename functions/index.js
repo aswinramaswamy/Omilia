@@ -67,9 +67,26 @@ app.post('/post', (req, res) => {
 })
 
 app.delete('/delete', (req, res) => {
-  db
-    .collection('posts')
-    .delete()
+  const post = db.doc(`/posts/${req.params.postID}`);
+  post.get()
+      .then((doc) => {
+        if (!doc.exists) {
+          return res.status(404).json({ error: 'Post not found' });
+        }
+        if (doc.data().userID !== req.userID) {
+          return res.status(403).json({error: 'Not authorized user' });
+        }
+        else {
+          return post.delete();
+        }
+      })
+      .then(() => {
+        res.json({ message: 'Post succesfully deleted' });
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+      })
 })
 
 const { getAllPosts, createPost } = require('./handlers/posts');
