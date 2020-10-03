@@ -105,10 +105,10 @@ button {
   position: fixed;
   top: 50%;
   left: 50%;
-  margin-top: -540px; /* Negative half of height. */
-  margin-left: -540px; /* Negative half of width. */
-  height: 1080px;
-  width: 1080px;
+  margin-top: -2000px; /* Negative half of height. */
+  margin-left: -2000px; /* Negative half of width. */
+  height: 4000px;
+  width: 4000px;
   content: '';
   animation: spin 200s linear infinite;
   z-index: -1;
