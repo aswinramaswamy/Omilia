@@ -14,7 +14,7 @@ import Timeline from './views/Timeline';
 
 import './css/app.css'
 
-document.body.style.backgroundImage = "url('introbackground.png')"
+
 ReactDOM.render(
     <Router>
         <Switch>

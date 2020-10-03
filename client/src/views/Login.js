@@ -5,27 +5,29 @@ import Logo from '../components/Logo'
 import '../css/app.css';
 
 export default class Login extends React.Component {  
-    state = {
-        data: null
-    };
-    
-    componentDidMount() {
-        // Call our fetch function below once the component mounts
-        this.callBackendAPI()
-        .then(res => this.setState({ data: res.express }))
-        .catch(err => console.log(err));
+    constructor(props, context) {
+        super(props, context);
+
+        this.state = { description: '' };
     }
-      
-      // Fetches our GET route from the Express server. (Note the route we are fetching matches the GET route from server.js
-    callBackendAPI = async () => {
-        const response = await fetch('/express_backend');
-        const body = await response.json();
     
-        if (response.status !== 200) {
-          throw Error(body.message) 
-        }
-        return body;
-    };
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+    }
+
+    onSubmit = (e) => {
+        e.preventDefault();
+        // get form data out of state
+        fetch(this.props.formAction, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({description: this.state.description})
+        });
+
+        this.setState({description: ''});
+    }
 
     render() {
         return (
@@ -33,8 +35,22 @@ export default class Login extends React.Component {
                 <Logo/>
                 <div class="login-form">
                     <form action="auth" method="POST">
-                        <input type="text" name="username" placeholder="Username" required/>
-                        <input type="password" name="password" placeholder="Password" required/>
+                        <input 
+                            type="text" 
+                            name="username" 
+                            value={this.state.value} 
+                            onChange={this.onChange} 
+                            placeholder="Username"
+                            required
+                        />
+                        <input 
+                            type="password" 
+                            name="password" 
+                            value={this.state.value}
+                            onChange={this.onChange}
+                            placeholder="Password" 
+                            required
+                        />
                         <input type="submit" placeholer="Log In"/>
                     </form>
                 </div>
