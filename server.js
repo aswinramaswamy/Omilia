@@ -7,7 +7,7 @@ firebase.initializeApp(firebaseConfig);
 admin.initializeApp();
 //if you are using Realtime Database
 
-  admin.firestore()
+admin.firestore()
     .collection('posts')
     .add(newPost)
     .then(doc => {
@@ -16,8 +16,7 @@ admin.initializeApp();
     .catch(err => {
       res.status(500).json({ error: 'something went wrong'});
       console.error(err);
-    });
-});
+    })
 
 firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
   // Handle Errors here.
