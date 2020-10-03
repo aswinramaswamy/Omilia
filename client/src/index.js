@@ -14,6 +14,7 @@ import Start from './views/Start';
 import Profile from './views/Profile';
 
 import './css/app.css'
+import FullPagePost from './views/FullPagePost';
 
 const theme = createMuiTheme({
     palette: {
@@ -37,6 +38,7 @@ ReactDOM.render(
                 <Route path="/login" component={Login} />
                 <Route path="/settings" component={Settings} />
                 <Route path="/profile" component={Profile} />
+                <Route path="/post" component={FullPagePost} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />
             </Switch>
