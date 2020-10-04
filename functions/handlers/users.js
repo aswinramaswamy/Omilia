@@ -81,6 +81,6 @@ exports.login = (req, res) => {
       console.error(err);
       // auth/wrong-password
       // auth/user-not-found
-      return res.status(403).json({generate: 'Wrong credentials, please try again'});
+      return res.status(403).json({ general: 'Wrong credentials, please try again' });
     })
 }

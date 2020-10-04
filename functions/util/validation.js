@@ -9,6 +9,11 @@ const isEmpty = (string) =>  {
     else return false;
   }
 
+const isShort = (string) => {
+  if(string.trim().length < 8) return true;
+  else return false;
+}
+
 exports.validateSignupData = (data) => {
     let errors = {};
   
@@ -19,6 +24,7 @@ exports.validateSignupData = (data) => {
     }
   
     if(isEmpty(data.password)) errors.password = 'Must not be empty'
+    if(isShort(data.password)) errors.password = 'Must be 8 or more characters'
     if(data.password !== data.confirmPassword) errors.confirmPassword = 'Passwords must match'
     if(isEmpty(data.username)) errors.username = 'Must not be empty'
 
@@ -31,7 +37,11 @@ exports.validateSignupData = (data) => {
 exports.validateLoginData = (data) => {{
     let errors = {};
 
-    if(isEmpty(data.email)) errors.email = 'Must not be empty'; 
+    if(isEmpty(data.email)) {
+      errors.email = 'Email must not be empty'
+    } else if(!isEmail(data.email)){
+      errors.email = 'Must be a valid email address'
+    }
     if(isEmpty(data.password)) errors.password = 'Must not be empty'; 
 
     return {

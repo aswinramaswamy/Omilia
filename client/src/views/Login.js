@@ -13,32 +13,9 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const styles = {
-    form: {
-        textAlign: 'center'
-    },
-    image: {
-        margin: '20px auto 20px auto'
-    },
-    pageTitle: {
-        margin: '10px auto 10px auto'
-    },
-    textField: {
-        margin: '10px auto 10px auto'
-    },
-    button: {
-        marginTop: 20,
-        position: 'relative'
-    },
-    customError: {
-        color: 'red',
-        fontSize: '0.8rem',
-        marginTop: 10
-    },
-    progress: {
-        position: 'absolute'
-    }
-}
+const styles = (theme) => ({
+    ...theme.spreadIt
+})
 
 class Login extends React.Component {  
     constructor(){
@@ -70,6 +47,7 @@ class Login extends React.Component {
             .post('/login', userData)
             .then(res => {
                 console.log(res.data)
+                localStorage.setItem('FBIdToken', `Bearer  ${res.data.token}`);
                 this.setState({
                     loading: false
                 });
@@ -86,6 +64,7 @@ class Login extends React.Component {
     render() {
         const { classes } = this.props;
         const { errors, loading } = this.state;
+
         return ( 
             <div className='start'>
                 <Grid container className={classes.form} direction='column'>
@@ -93,6 +72,9 @@ class Login extends React.Component {
                     <Grid item sm>
                         <div className='middle'>
                         <Logo />
+                        <Typography variant='h2' className={classes.pageTitle} >
+                            Account Log In
+                        </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
                             <TextField 
                                 id="email" 
@@ -119,7 +101,7 @@ class Login extends React.Component {
                                 fullwidth />
                             <br />
                             { errors.general && (
-                                <Typography variant='body1' className={classes.customError}>
+                                <Typography variant='h2' className={classes.customError}>
                                     {errors.general}
                                 </Typography>
                             )}

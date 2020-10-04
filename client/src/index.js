@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as  Router, Route, Switch } from 'react-router-dom';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import themeFile from './css/theme';
+import jwtDecode from 'jwt-decode';
+
+//Import Component
+import AuthRoute from './components/AuthRoute'
 
 //Import Views
 import Create from './views/Create';
@@ -16,22 +21,20 @@ import Profile from './views/Profile';
 import './css/app.css'
 import FullPagePost from './views/FullPagePost';
 
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            light: 'white',
-            main: '#3C797C',
-            dark: 'black',
-            contrastText: '#fff'
-        },
-        secondary: {
-            light: 'white',
-            main: '#3C797C',
-            dark: 'black',
-            contrastText: '#fff'
-        }
+const theme = createMuiTheme(themeFile);
+
+const token = localStorage.FBIdToken;
+
+let authenticated;
+if(token){
+    const decodedToken = jwtDecode(token);
+    if (decodedToken.exp * 1000 < Date.now()) {
+        window.location.href='/login'
+        authenticated=false;
+    } else {
+        authenticated=false;
     }
-})
+}
 
 ReactDOM.render(
     <MuiThemeProvider theme={theme}>
@@ -40,8 +43,8 @@ ReactDOM.render(
             <Switch>
                 <Route exact path="/" component={Start} />
                 <Route path="/home" component={Home} />
-                <Route path="/create" component={Create} />
-                <Route path="/login" component={Login} />
+                <AuthRoute path="/create" component={Create} authenticated={authenticated}/>
+                <AuthRoute path="/login" component={Login} authenticated={authenticated}/>
                 <Route path="/settings" component={Settings} />
                 <Route path="/profile" component={Profile} />
                 <Route path="/post" component={FullPagePost} /> 

@@ -20,9 +20,9 @@ export default class Home extends React.Component {
             .catch(err => console.log(err));
     };*/
     render() {
-        let recentPostsMarkup = this.state.posts ? (
+        /*let recentPostsMarkup = this.state.posts ? (
         this.state.posts.map(post => <p>{post.body}</p>)
-        ) : <p>Loading...</p>
+        ) : <p>Loading...</p>*/
         return (
             <div>
                 <Navbar />

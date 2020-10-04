@@ -9,12 +9,12 @@ export default class Start extends React.Component {
     render() {
         return (
             <div class='start'>
-                <p class='middle'>
+                <div class='middle'>
                     <Logo />
                     <h1>Omilía</h1>
                     <h1>[ (Greek) ~ <i>To Speak</i> ]</h1>
                     <h1><Link to="login"><button>Log In</button></Link></h1>
-                </p>
+                </div>
             </div>
         )
     }
