@@ -55,27 +55,51 @@ export default class Settings extends React.Component {
       }*/
 
     render() {
-
         return (
             <div>
                 <Navbar />
-                <Header />
                 <h2><Link to="delete" class="button">Delete Account</Link></h2>
-                <form>
-                <label>
-                Current Password:
-                <input type="text" value={this.state.currentPassword} onChange={this.handleChange} onChangeText={(text) => { this.setState({currentPassword: text}) }} />
-                New Password
-                <input type="text" value={this.state.newEmail} onChangeText={(text) => { this.setState({newEmail: text}) }} />
-                </label>
-                <input type="submit" value="Submit" />
-                </form>
+                <form noValidate onSubmit={this.onChangeEmailPress}>
+                  <TextField 
+                      id="email" 
+                      name="email" 
+                      type="email" 
+                      label="New Email" 
+                      className={classes.textField}
+                      helperText={errors.email} 
+                      error={errors.email ? true : false} 
+                      value={this.state.email} 
+                      onChange={this.handleChange} 
+                      fullwidth />
+                  <br />
+                  <TextField 
+                      id="password" 
+                      name="password" 
+                      type="password" 
+                      label="Password" 
+                      className={classes.textField}
+                      helperText={errors.password} 
+                      error={errors.password ? true : false} 
+                      value={this.state.password} 
+                      onChange={this.handleChange} 
+                      fullwidth />
+                  <br />
+                  { errors.general && (
+                      <Typography variant='h2' className={classes.customError}>
+                          {errors.general}
+                      </Typography>
+                  )}
+                  <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
+                      Log in
+                      {loading && (
+                          <CircularProgress size={20} className={classes.progress}/>
+                      )}
+                  </Button>
+                  <br />
                 <Button title="Change Email" />
-                <Footer />
+                </form>
             </div>
-
-        )
-    }
+        )}
 }
 
 
