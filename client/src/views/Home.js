@@ -25,9 +25,10 @@ export default class Home extends React.Component {
         ) : <p>Loading...</p>*/
         return (
             <div>
-            <Header />
-            <h1><Link to="logout"><button>Log Out</button></Link></h1>
-            <Footer />
+                <Navbar />
+                <Header />
+                <h1><Link to="LogOut"><button>Log Out</button></Link></h1>
+                <Footer />
             </div>
         )
     }
