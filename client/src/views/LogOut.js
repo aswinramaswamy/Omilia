@@ -51,7 +51,7 @@ class LogOut extends React.Component {
                 this.setState({
                     loading: false
                 });
-                this.props.history.push('/home');
+                this.props.history.push('/');
             })
             .catch(err => {
                 this.setState({
