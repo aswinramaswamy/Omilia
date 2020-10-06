@@ -33,7 +33,7 @@ if(token){
         window.location.href='/login'
         authenticated=false;
     } else {
-        authenticated=false;
+        authenticated=true;
     }
 }
 
@@ -46,7 +46,7 @@ ReactDOM.render(
                 <Route path="/home" component={Home} />
                 <AuthRoute path="/create" component={Create} authenticated={authenticated}/>
                 <AuthRoute path="/login" component={Login} authenticated={authenticated}/>
-                <Route path="/logout" component={Settings} />
+                <Route path="/logout" component={LogOut} />
                 <Route path="/settings" component={Settings} />
                 <Route path="/profile" component={Profile} />
                 <Route path="/post" component={FullPagePost} /> 

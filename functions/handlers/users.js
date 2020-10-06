@@ -130,3 +130,7 @@ exports.login = (req, res) => {
       return res.status(403).json({ general: 'Wrong credentials, please try again' });
     })
 }
+
+exports.logout = (req, res) => {
+  firebase.auth().signOut();
+}

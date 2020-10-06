@@ -4,7 +4,6 @@ import Logo from '../components/Logo'
 import '../css/app.css';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 //MUI Stuff
 import TextField from '@material-ui/core/TextField';
@@ -12,6 +11,8 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
+//import IconButton from '@material-ui/core/IconButton'
+//import { logoutUser } from '../redux/actions/userActions'
 
 const styles = (theme) => ({
     ...theme.spreadIt
@@ -34,20 +35,16 @@ class LogOut extends React.Component {
         })
     }
     
-    handleSubmit = (event) => {
+    handleLogOut = (event) => {
         event.preventDefault();
         this.setState({
             loading: true
         });
-        const userData = {
-            email: this.state.email,
-            password: this.state.password
-        }
         axios
-            .post('/logout', userData)
+            .post('/logout')
             .then(res => {
                 console.log(res.data)
-                localStorage.setItem('FBIdToken', `Bearer  ${res.data.token}`);
+                localStorage.removeItem('FBIdToken');
                 this.setState({
                     loading: false
                 });
@@ -75,38 +72,9 @@ class LogOut extends React.Component {
                         <Typography variant='h2' className={classes.pageTitle} >
                             Account Log Out
                         </Typography>
-                        <form noValidate onSubmit={this.handleSubmit}>
-                            <TextField 
-                                id="email" 
-                                name="email" 
-                                type="email" 
-                                label="Email" 
-                                className={classes.textField}
-                                helperText={errors.email} 
-                                error={errors.email ? true : false} 
-                                value={this.state.email} 
-                                onChange={this.handleChange} 
-                                fullwidth />
-                            <br />
-                            <TextField 
-                                id="password" 
-                                name="password" 
-                                type="password" 
-                                label="Password" 
-                                className={classes.textField}
-                                helperText={errors.password} 
-                                error={errors.password ? true : false} 
-                                value={this.state.password} 
-                                onChange={this.handleChange} 
-                                fullwidth />
-                            <br />
-                            { errors.general && (
-                                <Typography variant='h2' className={classes.customError}>
-                                    {errors.general}
-                                </Typography>
-                            )}
+                         <form noValidate onSubmit={this.handleLogOut}>
                             <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
-                                Log in
+                                Are you sure you want to log out?
                                 {loading && (
                                     <CircularProgress size={20} className={classes.progress}/>
                                 )}
