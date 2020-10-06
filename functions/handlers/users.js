@@ -5,7 +5,53 @@ const config = require('../util/config');
 const firebase = require('firebase');
 firebase.initializeApp(config)
 
-const { validateSignupData, validateLoginData } = require('../util/validation');
+const { validateSignupData, validateLoginData, validateChangeEmail } = require('../util/validation');
+
+//Change Email
+exports.changeEmail = (req, res) => {
+  const user = {
+    username: req.body.username,
+    currentEmail: req.body.currentEmail,
+    newEmail: req.body.newEmail,
+    currentPassword: req.body.currentPassword
+  };
+
+  const { valid, errors } = validateChangeEmail(user);
+
+  if(!valid) return res.status(400).json(errors);
+  
+  db.doc(`/users/${user.username}`).get()
+      .then(doc => {
+        if (doc.exists) {
+          firebase
+          .auth()
+          .signInWithEmailAndPassword(user.currentEmail, user.currentPassword)
+          .then(function (userCredential) {
+               var curUser = userCredential.user;
+               return curUser.updateEmail(data.Email);
+          })
+          .then(function () {
+               return db.doc(`/users/${user.username}`).update({ email: user.newEmail});
+          })
+          .catch(function (error) {
+               console.log("Login Failed!", error);
+          });
+        } else {
+          return res.status(1).json({ general: 'Something went wrong, please try again' });
+        }
+      })
+      .then(data => {
+        userId = data.user.uid;
+        return data.user.getIdToken();
+      })
+      .then(() => {
+        return res.status(201).json({ token });
+      })
+      .catch(err => {
+        console.error(err);
+        return res.status(500).json({ general: 'Something went wrong, please try again' });
+      })
+}
 
 //Create User
 exports.signup = (req, res) => {

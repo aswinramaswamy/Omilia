@@ -14,6 +14,23 @@ const isShort = (string) => {
   else return false;
 }
 
+exports.validateChangeEmail = (data) => {
+  let errors = {};
+    if(isEmpty(data.newEmail)) {
+      errors.newEmail = 'Email must not be empty'
+    } else if(!isEmail(data.newEmail)){
+      errors.newEmail = 'Must be a valid email address'
+    }
+
+    if(isEmpty(data.currentPassword)) errors.currentPassword = 'Must not be empty'
+    if(isShort(data.currentPassword)) errors.currentPassword = 'Must be 8 or more characters'
+
+    return {
+      errors,
+      valid: Object.keys(errors).length === 0 ? true : false
+  }
+}
+
 exports.validateSignupData = (data) => {
     let errors = {};
   
