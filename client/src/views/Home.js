@@ -24,11 +24,13 @@ export default class Home extends React.Component {
         this.state.posts.map(post => <p>{post.body}</p>)
         ) : <p>Loading...</p>*/
         return (
-            <div>
-                <Navbar />
-                <Header />
-                <h1><Link to="LogOut"><button>Log Out</button></Link></h1>
-                <Footer />
+            <div class='home'>
+                <div class='middle'>
+                    <Logo />
+                    <h1>Omilía</h1>
+                    <h1>[ (Greek) ~ <i>To Speak</i> ]</h1>
+                    <h1><Link to="logout"><button>Log Out</button></Link></h1>
+                </div>
             </div>
         )
     }
