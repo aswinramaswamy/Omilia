@@ -2,7 +2,19 @@ import React from 'react';
 import Logo from '../components/Logo'
 import '../css/app.css';
 
+import Typography from '@material-ui/core/Typography';
+import Switch from '@material-ui/core/Switch';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 export default class FullPagePost extends React.Component {  
+    constructor() {
+        super();
+        this.state = {
+            
+        }
+    }
     render() {
         return (
             <div class='fullpagepost'>

@@ -20,6 +20,7 @@ import Profile from './views/Profile';
 
 import './css/app.css'
 import FullPagePost from './views/FullPagePost';
+import NewPost from './views/NewPost';
 
 const theme = createMuiTheme(themeFile);
 
@@ -49,6 +50,7 @@ ReactDOM.render(
                 <Route path="/profile" component={Profile} />
                 <Route path="/post" component={FullPagePost} /> 
                 <Route path="/post/:postid" component={FullPagePost} />
+                <Route path="/newpost" component={NewPost} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />
             </Switch>

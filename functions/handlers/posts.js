@@ -1,4 +1,8 @@
-const { db } = require('../util/admin')
+const { db } = require('../util/admin');
+
+const config = require('../util/config');
+
+const firebase = require('firebase');
 
 exports.getAllPosts = (req, res) => {
     db
@@ -19,16 +23,16 @@ exports.getAllPosts = (req, res) => {
 }
 
 exports.createPost = (req, res) => {
-    if(req.body.body.trim() === '') {
+    if(req.body === '') {
       return res.status(400).json({body: 'Body must not be empty'});
     }
   
     const newPost = {
-      body: req.body.body,
-      userHandle: req.user.username,
+      body: req.body,
+      userHandle: req.userHandle,
       createdAt: new Date().toISOString()
     }
-  
+    db.settings({ ignoreUndefinedProperties: true })
     db
       .collection('posts')
       .add(newPost)

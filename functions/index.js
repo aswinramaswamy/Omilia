@@ -20,7 +20,8 @@ const {
 
 // Post routes
 app.get('/posts', getAllPosts);
-app.post('/post', FBAuth, createPost);
+//app.post('/post', FBAuth, createPost);
+app.post('/post', createPost);
 
 // users routes
 app.post('/signup', signup);
