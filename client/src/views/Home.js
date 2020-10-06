@@ -26,9 +26,6 @@ export default class Home extends React.Component {
         return (
             <div class='home'>
                 <div class='middle'>
-                    <Logo />
-                    <h1>Omilía</h1>
-                    <h1>[ (Greek) ~ <i>To Speak</i> ]</h1>
                     <h1><Link to="logout"><button>Log Out</button></Link></h1>
                 </div>
             </div>
