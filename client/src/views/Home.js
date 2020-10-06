@@ -27,7 +27,7 @@ export default class Home extends React.Component {
             <div>
                 <Navbar />
                 <Header />
-                <h1><Link to="LogOut"><button>Log Out</button></Link></h1>
+                <h1><Link to="logout"><button>Log Out</button></Link></h1>
                 <Footer />
             </div>
         )

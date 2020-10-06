@@ -13,6 +13,7 @@ import AuthRoute from './components/AuthRoute'
 import Create from './views/Create';
 import Home from './views/Home';
 import Login from './views/Login';
+import LogOut from './views/LogOut';
 import NotFound from './views/NotFound';
 import Settings from './views/Settings';
 import Start from './views/Start';
@@ -45,6 +46,7 @@ ReactDOM.render(
                 <Route path="/home" component={Home} />
                 <AuthRoute path="/create" component={Create} authenticated={authenticated}/>
                 <AuthRoute path="/login" component={Login} authenticated={authenticated}/>
+                <Route path="/logout" component={Settings} />
                 <Route path="/settings" component={Settings} />
                 <Route path="/profile" component={Profile} />
                 <Route path="/post" component={FullPagePost} /> 
