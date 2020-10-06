@@ -24,10 +24,10 @@ export default class Home extends React.Component {
         this.state.posts.map(post => <p>{post.body}</p>)
         ) : <p>Loading...</p>*/
         return (
-            <div class='home'>
-                <div class='middle'>
-                    <h1><Link to="logout"><button>Log Out</button></Link></h1>
-                </div>
+            <div>
+            <header></header>
+            <h1><Link to="logout"><button>Log Out</button></Link></h1>
+            <footer></footer>
             </div>
         )
     }
