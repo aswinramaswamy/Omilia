@@ -38,6 +38,6 @@ app.get('/express_backend', (req, res) => {
   res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
 });
 
-app.get('/create_user', (req, res)) => {
+app.get('/create_user', (req, res) => {
   res.get()
-}
+});
