@@ -17,6 +17,7 @@ const {
   login,
   changeEmail,
   logout,
+  deleteAccount,
 } = require('./handlers/users');
 
 // Post routes
@@ -28,5 +29,6 @@ app.post('/signup', signup);
 app.post('/login', login);
 app.post('/changeEmail', changeEmail);
 app.post('/logout', logout);
+app.post('/delete', deleteAccount);
 
 exports.api = functions.https.onRequest(app);
