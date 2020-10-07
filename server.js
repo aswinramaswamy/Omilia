@@ -1,4 +1,4 @@
-const express = require('express');
+/*const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 const firebase = require('firebase');
@@ -40,4 +40,4 @@ app.get('/express_backend', (req, res) => {
 
 app.get('/create_user', (req, res) => {
   res.get();
-});
+});*/
