@@ -28,7 +28,7 @@ firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(e
 //Read data from Firebase
 firebase.database().ref('/Users').once('value').then(function(snapshot) { 
   console.log(snapshot.val());
-})
+});
 
 // console.log that your server is up and running
 app.listen(port, () => console.log(`Listening on port ${port}`));
@@ -39,5 +39,5 @@ app.get('/express_backend', (req, res) => {
 });
 
 app.get('/create_user', (req, res) => {
-  res.get()
+  res.get();
 });

@@ -1,12 +1,24 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import '../css/app.css';
 //Import Components
 import Navbar from '../components/Navbar';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import PropTypes from 'prop-types';
+import withStyles from '@material-ui/core/styles/withStyles'
+import axios from 'axios';
 
-/*class Settings extends React.Component {  
+
+
+//MUI Stuff
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+const styles = (theme) => ({
+    ...theme.spreadIt
+})
+
+class ChangeEmail extends React.Component {  
     constructor(){
       super();
       this.state = {
@@ -38,7 +50,7 @@ import Footer from '../components/Footer';
     }
     
     axios
-        .post('/home', userData)
+        .post('/changeEmail', userData)
         .then(res => {
             console.log(res.data)
             localStorage.setItem('FBIdToken', `Bearer  ${res.data.token}`);
@@ -56,12 +68,6 @@ import Footer from '../components/Footer';
 }
 
 
-onChangeEmailPress = () => {
-      var user = firebase.auth().currentUser;
-      user.updateEmail(this.state.newEmail).then(() => {
-      }).catch((error) => { console.log(error.message); });
-  }
-
     render() {
       const { classes } = this.props;
       const { errors, loading } = this.state;
@@ -69,8 +75,7 @@ onChangeEmailPress = () => {
       return (
           <div>
               <Navbar />
-              <h2><Link to="delete" class="button">Delete Account</Link></h2>
-             <form noValidate onSubmit={this.onChangeEmailPress}>
+              <form noValidate onSubmit={this.onChangeEmailPress}>
               <TextField 
                       id="currentEmail" 
                       name="currentEmail" 
@@ -135,24 +140,11 @@ onChangeEmailPress = () => {
           </div>
       )}
 }
-*/
 
-
-
-
-export default class Settings extends React.Component {  
-    render() {
-        return (
-            <div>
-                <Navbar />
-                <Header />
-                <h2><Link to="delete" class="button">Delete Account</Link></h2>
-                <h2><Link to="ChangeEmail" class="button">Change Email</Link></h2>
-                <h2><Link to="ChangePassword" class="button">Change Password</Link></h2>
-                <Footer />
-            </div>
-        )
-    }
+ChangeEmail.propTypes = {
+    classes: PropTypes.object.isRequired
 }
+
+export default withStyles(styles)(ChangeEmail);
 
 

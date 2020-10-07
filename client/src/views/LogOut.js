@@ -1,6 +1,4 @@
 import React from 'react';
-import withStyles from '@material-ui/core/styles/withStyles'
-import Logo from '../components/Logo'
 import '../css/app.css';
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -86,11 +84,6 @@ class LogOut extends React.Component {
                     <Grid item sm />
                 </Grid>
             </div>
-    )}
+        )
+    }
 }
-
-LogOut.propTypes = {
-    classes: PropTypes.object.isRequired
-}
-
-export default withStyles(styles)(LogOut);

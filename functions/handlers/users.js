@@ -19,25 +19,32 @@ exports.changeEmail = (req, res) => {
   const { valid, errors } = validateChangeEmail(user);
 
   if(!valid) return res.status(400).json(errors);
+  const userCredentials = {
+    username: user.username,
+    email: user.email,
+    createdAt: new Date().toISOString(),
+    userId
+  };
   
   db.doc(`/users/${user.username}`).get()
       .then(doc => {
         if (doc.exists) {
-          firebase
-          .auth()
-          .signInWithEmailAndPassword(user.currentEmail, user.currentPassword)
-          .then(function (userCredential) {
-               var curUser = userCredential.user;
-               return curUser.updateEmail(data.Email);
+            user.reauthenticateWithCredential(userCredentials).then(function() {
+            firebase.auth().signInWithEmailAndPassword(user.currentEmail, user.currentPassword)
+            var curUser = firebase.auth().currentUser;
+            return curUser.updateEmail(user.newEmail)
           })
           .then(function () {
-               return db.doc(`/users/${user.username}`).update({ email: user.newEmail});
+               db.doc(`/users/${user.username}`).update({ email: user.newEmail});
+               if (curUser == NULL) {
+                return res.status(1).json({ general: 'NULL' });
+               }
           })
           .catch(function (error) {
-               console.log("Login Failed!", error);
+               console.log("Error changing Email", error);
           });
         } else {
-          return res.status(1).json({ general: 'Something went wrong, please try again' });
+          return res.status(1).json({ general: 'oops' });
         }
       })
       .then(data => {
