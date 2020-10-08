@@ -10,13 +10,15 @@ class Post extends Component {
     render() {
         const { classes, post : { body, userHandle, createdAt } } = this.props
         return (
-            <Card>
-                <CardContent>
-                    <Typography variant = "h6">{userHandle}</Typography>
-                    <Typography variant = "body2">{createdAt}</Typography>
-                    <Typography variant = "body1">{body}</Typography>
-                    </CardContent>
-            </Card>
+            <div className="center">
+                <Card>
+                    <CardContent>
+                        <Typography variant = "h6">{userHandle}</Typography>
+                        <Typography variant = "body2">{createdAt}</Typography>
+                        <Typography variant = "body1">{body}</Typography>
+                        </CardContent>
+                </Card>
+            </div>
         )
     }
 }
