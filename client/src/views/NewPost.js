@@ -32,12 +32,13 @@ class NewPost extends React.Component {
             editedTime: null,
             isAnonymous: false,
             likes: 0,
-            postID: Math.random(1000),
+            postID: -1,
             userHandle: "",
-            userID: Math.random(1000),
+            userID: -1,
             loading: false, 
             errors: {},
-            message: ""
+            message: "",
+            link: ""
         }
     }
 
@@ -55,7 +56,6 @@ class NewPost extends React.Component {
     }
     
     handleSubmit = (event) => {
-        console.log("SUBMITTED\n\n")
         event.preventDefault();
         /*headers: {
             'Authorization': `${localStorage.FBIdToken}`,
@@ -75,7 +75,8 @@ class NewPost extends React.Component {
             createdAt: new Date().toISOString(),
             isAnonymous: this.state.isAnonymous,
             postID: this.state.postID,
-            userID: this.state.userID
+            userID: this.state.userID,
+            link: this.state.link
           }
         console.log(newPost)
         this.setState({
@@ -103,7 +104,6 @@ class NewPost extends React.Component {
     render() {
         const { classes } = this.props;
         const { errors, loading } = this.state;
-
         return (
             <div className='newpost'>
                 <Navbar />
@@ -126,6 +126,18 @@ class NewPost extends React.Component {
                                 helperText={errors.body} 
                                 error={errors.body ? true : false} 
                                 value={this.state.body} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
+                                id="link" 
+                                name="link" 
+                                type="link" 
+                                label="Link" 
+                                className={classes.textField2}
+                                helperText={errors.link} 
+                                error={errors.link ? true : false} 
+                                value={this.state.link} 
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />

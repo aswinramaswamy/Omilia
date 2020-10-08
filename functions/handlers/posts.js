@@ -32,7 +32,8 @@ exports.createPost = (req, res) => {
       isAnonymous: req.body.data.isAnonymous,
       edited: false,
       editedTime: new Date().toISOString(),
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      link: req.body.data.link
     }
     var newID = "unitialized"
     db
