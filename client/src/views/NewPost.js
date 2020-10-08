@@ -4,6 +4,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles'
 
+import Navbar from '../components/Navbar';
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
@@ -82,6 +83,7 @@ class NewPost extends React.Component {
 
         return (
             <div className='newpost'>
+                <Navbar />
                 <Grid container className={classes.form} direction='column'>
                     <Grid item sm />
                     <Grid item sm>
