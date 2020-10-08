@@ -1,14 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../css/app.css';
-//Import Components
+import axios from 'axios';
+
+//Components
 import Navbar from '../components/Navbar';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Post from '../components/Post';
 
 export default class Home extends React.Component {  
-    /*state = {
-        posts = null
+    state = {
+        posts: null
     }
     componentDidMount(){
         axios.get('/posts')
@@ -18,17 +19,18 @@ export default class Home extends React.Component {
                 })
             })
             .catch(err => console.log(err));
-    };*/
+    };
     render() {
-        /*let recentPostsMarkup = this.state.posts ? (
-        this.state.posts.map(post => <p>{post.body}</p>)
-        ) : <p>Loading...</p>*/
+        let recentPostsMarkup = this.state.posts ? (
+        this.state.posts.map((post) => <Post post={post.body} />)
+        ) : (
+            <p>Loading...</p>
+        );    
         return (
             <div>
                 <Navbar />
-                <Header />
                 <h1><Link to="logout"><button>Log Out</button></Link></h1>
-                <Footer />
+                {recentPostsMarkup}
             </div>
         )
     }
