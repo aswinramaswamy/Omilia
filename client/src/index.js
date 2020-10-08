@@ -24,7 +24,6 @@ import ChangeEmail from './views/ChangeEmail';
 import './css/app.css'
 import FullPagePost from './views/FullPagePost';
 import NewPost from './views/NewPost';
-import Delete from './views/Delete';
 
 const theme = createMuiTheme(themeFile);
 

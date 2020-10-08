@@ -35,7 +35,6 @@ exports.createPost = (req, res) => {
       isAnonymous: req.isAnonymous,
       edited: false
     }
-  
     db
       .collection('posts')
       .add(newPost)
@@ -45,4 +44,22 @@ exports.createPost = (req, res) => {
       .catch((err) => {
         res.status(500).json({ error: 'something went wrong' });
     });
+}
+
+exports.deletePost = (req, res) => {
+  const postData = {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    postID: req.postID
+  }
+  db.doc(`/posts/${postData.postID}`).get()
+    .then(doc => {
+      if (doc.exists) {
+          db.doc(`/posts/${postData.postID}`).delete();
+      }
+      else {
+        res.status(404).json({ error: "post does not exist" })
+      }
+    })
 }

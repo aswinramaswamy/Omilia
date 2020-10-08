@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
 import withStyles from '@material-ui/core/styles/withStyles'
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
@@ -38,6 +40,11 @@ class NewPost extends React.Component {
         }
     }
 
+    handleToggle = (event) => {
+        console.log(this.state)
+        this.setState({ isAnonymous: !this.state.isAnonymous });
+    };
+
     handleChange = (event) => {
         this.setState({
             [event.target.name]: event.target.value
@@ -68,6 +75,10 @@ class NewPost extends React.Component {
             loading: true
         });
         createPost({ data: newPost })
+        this.setState({
+            loading: false
+        });
+        window.location.replace('../profile');
     }
 
     render() {
@@ -86,6 +97,8 @@ class NewPost extends React.Component {
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
                             <TextField 
+                                multiline
+                                rows={4}
                                 id="body" 
                                 name="body" 
                                 type="body" 
@@ -97,20 +110,27 @@ class NewPost extends React.Component {
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />
-                            <Switch
-                                id="isAnonymous"
-                                checked="true"
-                                name="isAnonymous" 
-                                type="isAnonymous" 
-                                label="Post Anonymously?" 
-                                size='medium'
-                                disabled="false"
-                                className={classes.switch}
-                                helperText={errors.isAnonymous} 
-                                error={errors.isAnonymous ? true : false} 
-                                value={this.state.isAnonymous} 
-                                onChange={this.handleChange} 
-                            fullwidth />
+                            <FormControl component="fieldset">
+                            <FormControlLabel
+                                value="end"
+                                control={<Switch 
+                                    id="isAnonymous"
+                                    checked={this.state.isAnonymous}
+                                    name="isAnonymous" 
+                                    type="isAnonymous" 
+                                    label="Post Anonymously?" 
+                                    size='medium'
+                                    //disabled="false"
+                                    className={classes.switch}
+                                    helperText={errors.isAnonymous} 
+                                    error={errors.isAnonymous ? true : false} 
+                                    value={this.state.isAnonymous}
+                                    onClick={() => this.handleToggle('active')}
+                                    fullwidth />}
+                                label="Anonymous"
+                                labelPlacement="end"
+                             />
+                            </FormControl>
                             <br />
                             { errors.general && (
                                 <Typography variant='h2' className={classes.customError}>

@@ -43,11 +43,11 @@ class Delete extends React.Component {
         const postData = {
             postID: this.state.postID
         }
+        console.log(postData)
         axios
-            .delete('/deletePost', postData)
+            .delete('/deletePost', { data: postData })
             .then(res => {
                 console.log(res.data)
-                localStorage.setItem('FBIdToken', `Bearer  ${res.data.token}`);
                 this.setState({
                     loading: false
                 });
@@ -94,7 +94,7 @@ class Delete extends React.Component {
                                 </Typography>
                             )}
                             <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
-                                Post content
+                                Delete content
                                 {loading && (
                                     <CircularProgress size={20} className={classes.progress}/>
                                 )}
