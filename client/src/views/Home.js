@@ -30,6 +30,7 @@ export default class Home extends React.Component {
             <div>
                 <Navbar />
                 <h1><Link to="logout"><button>Log Out</button></Link></h1>
+                <h2>TIMELINE</h2>
                 {recentPostsMarkup}
             </div>
         )

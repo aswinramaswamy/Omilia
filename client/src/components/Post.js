@@ -13,8 +13,8 @@ class Post extends Component {
             <div className="center">
                 <Card>
                     <CardContent>
-                        <Typography variant = "h6">{userHandle}</Typography>
-                        <Typography variant = "body2">{createdAt}</Typography>
+                        <Typography variant = "h6">UserID: {userHandle}</Typography>
+                        <Typography variant = "body2">Date:{createdAt}</Typography>
                         <Typography variant = "body1">{body}</Typography>
                         </CardContent>
                 </Card>
