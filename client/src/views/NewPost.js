@@ -4,12 +4,18 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles'
 
+import Navbar from '../components/Navbar';
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 
 const styles = (theme) => ({
     ...theme.spreadIt
@@ -30,50 +36,68 @@ class NewPost extends React.Component {
             userHandle: "",
             userID: Math.random(1000),
             loading: false, 
-            errors: {}
+            errors: {},
+            message: ""
         }
     }
 
     handleChange = (event) => {
         this.setState({
-            [event.target.name]: event.target.value
+            [event.target.name]: event.target.value,
+            message: ""
+        })
+    }
+
+    handleCheck = (event) => {
+        this.setState({
+            isAnonymous: !this.state.isAnonymous
         })
     }
     
     handleSubmit = (event) => {
         console.log("SUBMITTED\n\n")
         event.preventDefault();
+        /*headers: {
+            'Authorization': `${localStorage.FBIdToken}`,
+            'authorization': `${localStorage.FBIdToken}`,
+            'Content-Type': 'application/json'
+          },*/
+        const newPost = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: this.state.body,
+            userHandle: this.state.userHandle,
+            dislikes: this.state.dislikes,
+            likes: this.state.likes,
+            edited: false,
+            editedTime: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+            isAnonymous: this.state.isAnonymous,
+            postID: this.state.postID,
+            userID: this.state.userID
+          }
+        console.log(newPost)
         this.setState({
             loading: true
         });
-        const postData = {
-            body: this.state.body,
-            isAnonymous: this.state.isAnonymous,
-            createdAt: new Date().toISOString(),
-            dislikes: 0,
-            edited: false,
-            editedTime: null,
-            likes: 0,
-            postID: Math.random(1000),
-            userHandle: "",
-            userID: Math.random(1000),
-        }
+        //createPost({ data: newPost })
         axios
-            .post('/post', postData)
-            .then(res => {
-                console.log(res.data)
-                localStorage.setItem('FBIdToken', `Bearer  ${res.data.token}`);
+            .post('/post', { data: newPost })
+            .then((res) => {
                 this.setState({
-                    loading: false
+                    body: "",
+                    message: "Post was successful"
                 });
-                this.props.history.push('/post');
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({
-                    errors: err.response.data,
-                    loading: false
-                })
+                    message: "Post failed to send"
+                });
             })
+        this.setState({
+            loading: false,    
+        });
     }
 
     render() {
@@ -82,6 +106,7 @@ class NewPost extends React.Component {
 
         return (
             <div className='newpost'>
+                <Navbar />
                 <Grid container className={classes.form} direction='column'>
                     <Grid item sm />
                     <Grid item sm>
@@ -91,6 +116,8 @@ class NewPost extends React.Component {
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
                             <TextField 
+                                multiline
+                                rows={4}
                                 id="body" 
                                 name="body" 
                                 type="body" 
@@ -102,20 +129,26 @@ class NewPost extends React.Component {
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />
-                            <Switch
+                            <FormControl component="fieldset">
+                            <FormGroup>
+                            <FormControlLabel
+                              control={<Switch 
                                 id="isAnonymous"
-                                checked="true"
+                                checked={this.state.isAnonymous}
                                 name="isAnonymous" 
                                 type="isAnonymous" 
                                 label="Post Anonymously?" 
                                 size='medium'
-                                disabled="false"
                                 className={classes.switch}
                                 helperText={errors.isAnonymous} 
                                 error={errors.isAnonymous ? true : false} 
                                 value={this.state.isAnonymous} 
-                                onChange={this.handleChange} 
-                            fullwidth />
+                                onClick={this.handleCheck} 
+                            fullwidth />}
+                              label="Anonymous"
+                            />
+                            </FormGroup>
+                            </FormControl>
                             <br />
                             { errors.general && (
                                 <Typography variant='h2' className={classes.customError}>
@@ -130,6 +163,9 @@ class NewPost extends React.Component {
                             </Button>
                             <br />
                         </form>
+                        <Typography color="primary" variant='caption' className={classes.pageMessage} value={this.state.message} >
+                            {this.state.message}
+                        </Typography>
                         </div>
                     </Grid>
                     <Grid item sm />

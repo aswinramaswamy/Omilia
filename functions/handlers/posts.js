@@ -19,26 +19,27 @@ exports.getAllPosts = (req, res) => {
 }
 
 exports.createPost = (req, res) => {
-    if(req.body.body.trim() === '') {
-      return res.status(400).json({body: 'Body must not be empty'});
-    }
     const newPost = {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: req.body,
+      body: req.body.data.body,
       likes: 0,
       dislikes: 0,
-      userID: req.userID,
-      userHandle: req.userHandle,
-      postID: req.postID,
-      isAnonymous: req.isAnonymous,
-      edited: false
+      userID: req.body.data.userID,
+      userHandle: req.body.data.userHandle,
+      postID: req.body.data.postID,
+      isAnonymous: req.body.data.isAnonymous,
+      edited: false,
+      editedTime: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     }
+    var newID = "unitialized"
     db
       .collection('posts')
       .add(newPost)
       .then((doc) => {
+        doc.update({ postID: `${doc.id}` })
         res.json({ message: `document ${doc.id} created successfully` });
       })
       .catch((err) => {

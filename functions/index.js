@@ -7,6 +7,7 @@ const cors = require('cors');
 app.use(cors());
 
 const { db } = require('./util/admin');
+db.settings({ ignoreUndefinedProperties: true })
 
 const {
   getAllPosts,
