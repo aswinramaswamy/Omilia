@@ -12,7 +12,7 @@ export default class Profile extends React.Component {
             <div>
                 <Navbar />
                 <Header />
-                <h2><Link to="delete" class="button">Delete Account</Link></h2>
+                <h2><Link to="deleteAccount" class="button">Delete Account</Link></h2>
                 <Footer />
             </div>
         )

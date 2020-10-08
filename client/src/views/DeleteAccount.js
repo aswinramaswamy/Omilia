@@ -17,12 +17,14 @@ const styles = (theme) => ({
     ...theme.spreadIt
 })
 
-class Login extends React.Component {  
+class DeleteAccount extends React.Component {  
     constructor(){
         super();
         this.state = {
             email: '',
             password: '',
+            confirmPassword: '',
+            username: '',
             loading: false,
             errors: {}
         }
@@ -39,19 +41,21 @@ class Login extends React.Component {
         this.setState({
             loading: true
         });
-        const userData = {
+        const newUserData = {
             email: this.state.email,
-            password: this.state.password
+            password: this.state.password,
+            confirmPassword: this.state.confirmPassword,
+            username: this.state.username
         }
         axios
-            .post('/login', userData)
+            .post('/delete', newUserData)
             .then(res => {
                 console.log(res.data)
-                localStorage.setItem('FBIdToken', `Bearer ${res.data.token}`);
+                localStorage.removeItem('FBIdToken', `Bearer  ${res.data.token}`);
                 this.setState({
                     loading: false
                 });
-                this.props.history.push('/home');
+                this.props.history.push('/');
             })
             .catch(err => {
                 this.setState({
@@ -73,7 +77,7 @@ class Login extends React.Component {
                         <div className='middle'>
                         <Logo />
                         <Typography variant='h2' className={classes.pageTitle} >
-                            Account Log In
+                            Delete Account
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
                             <TextField 
@@ -100,19 +104,43 @@ class Login extends React.Component {
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />
+                            <TextField 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                type="password" 
+                                label="Confirm Password" 
+                                className={classes.textField}
+                                helperText={errors.confirmPassword} 
+                                error={errors.confirmPassword ? true : false} 
+                                value={this.state.confirmPassword} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
+                                id="username" 
+                                name="username" 
+                                type="text" 
+                                label="Username" 
+                                className={classes.textField}
+                                helperText={errors.username} 
+                                error={errors.username ? true : false} 
+                                value={this.state.username} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
                             { errors.general && (
                                 <Typography variant='h2' className={classes.customError}>
                                     {errors.general}
                                 </Typography>
                             )}
                             <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
-                                Log in
+                                Delete Account
                                 {loading && (
                                     <CircularProgress size={20} className={classes.progress}/>
                                 )}
                             </Button>
                             <br />
-                            <small>Don't have an account? Sign up <Link to ="/create">here</Link>.</small>
+                            <small>Are you sure you want to delete your account? If not, cancel <Link to ="/home">here</Link>.</small>
                         </form>
                         </div>
                     </Grid>
@@ -122,8 +150,8 @@ class Login extends React.Component {
     )}
 }
 
-Login.propTypes = {
+DeleteAccount.propTypes = {
     classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(Login);
+export default withStyles(styles)(DeleteAccount);
