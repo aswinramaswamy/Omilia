@@ -47,19 +47,15 @@ exports.createPost = (req, res) => {
 }
 
 exports.deletePost = (req, res) => {
-  const postData = {
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    postID: req.postID
-  }
-  db.doc(`/posts/${postData.postID}`).get()
-    .then(doc => {
-      if (doc.exists) {
-          db.doc(`/posts/${postData.postID}`).delete();
+  const document = db.doc(`/posts/${req.params.postID}`)
+  document.get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Post not found" });
       }
       else {
-        res.status(404).json({ error: "post does not exist" })
+        res.json({ message: `document ${doc.id} deleted successfully` });
+        return document.delete();
       }
     })
 }

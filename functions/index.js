@@ -24,7 +24,7 @@ const {
 app.get('/posts', getAllPosts);
 //app.post('/post', FBAuth, createPost);
 app.post('/post', createPost);
-app.delete('/deletePost', deletePost);
+app.delete('/deletePost/:postID', deletePost);
 
 // users routes
 app.post('/signup', signup);
