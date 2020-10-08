@@ -22,11 +22,24 @@ exports.createPost = (req, res) => {
     if(req.body.body.trim() === '') {
       return res.status(400).json({body: 'Body must not be empty'});
     }
-  
     const newPost = {
+<<<<<<< Updated upstream
       body: req.body.body,
       userHandle: req.user.username,
       createdAt: new Date().toISOString()
+=======
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: req.body,
+      likes: 0,
+      dislikes: 0,
+      userID: req.userID,
+      userHandle: req.userHandle,
+      postID: req.postID,
+      isAnonymous: req.isAnonymous,
+      edited: false
+>>>>>>> Stashed changes
     }
   
     db
