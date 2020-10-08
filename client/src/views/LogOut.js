@@ -107,12 +107,12 @@ class LogOut extends React.Component {
                                     {errors.general}
                                 </Typography>
                             )}
-                            <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
+                            <Link to ="/"><Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
                                 Log Out
                                 {loading && (
                                     <CircularProgress size={20} className={classes.progress}/>
                                 )}
-                            </Button>
+                            </Button></Link>
                             <br />
                             <small>Don't want to log out? Cancel <Link to ="/home">here</Link>.</small>
                         </form>

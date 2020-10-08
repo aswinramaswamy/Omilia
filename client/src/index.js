@@ -47,7 +47,7 @@ ReactDOM.render(
         <Router>
             <div>
             <Switch>
-                <Route exact path="/" component={Start} />
+                <AuthRoute exact path="/" component={Start} authenticated={authenticated}/>
                 <Route path="/home" component={Home} />
                 <AuthRoute path="/create" component={Create} authenticated={authenticated}/>
                 <AuthRoute path="/login" component={Login} authenticated={authenticated}/>
