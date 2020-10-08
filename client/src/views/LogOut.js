@@ -41,11 +41,15 @@ class LogOut extends React.Component {
         this.setState({
             loading: true
         });
+        const userData = {
+            email: this.state.email,
+            password: this.state.password
+        }
         axios
-            .post('/logout')
+            .post('/logout', userData)
             .then(res => {
                 console.log(res.data)
-                localStorage.removeItem('FBIdToken');
+                localStorage.removeItem('FBIdToken', `Bearer ${res.data.token}`);
                 this.setState({
                     loading: false
                 });
@@ -73,14 +77,44 @@ class LogOut extends React.Component {
                         <Typography variant='h2' className={classes.pageTitle} >
                             Account Log Out
                         </Typography>
-                         <form noValidate onSubmit={this.handleLogOut}>
+                        <form noValidate onSubmit={this.handleSubmit}>
+                            <TextField 
+                                id="email" 
+                                name="email" 
+                                type="email" 
+                                label="Email" 
+                                className={classes.textField}
+                                helperText={errors.email} 
+                                error={errors.email ? true : false} 
+                                value={this.state.email} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
+                                id="password" 
+                                name="password" 
+                                type="password" 
+                                label="Password" 
+                                className={classes.textField}
+                                helperText={errors.password} 
+                                error={errors.password ? true : false} 
+                                value={this.state.password} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            { errors.general && (
+                                <Typography variant='h2' className={classes.customError}>
+                                    {errors.general}
+                                </Typography>
+                            )}
                             <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
-                                Are you sure you want to log out?
+                                Log Out
                                 {loading && (
                                     <CircularProgress size={20} className={classes.progress}/>
                                 )}
                             </Button>
                             <br />
+                            <small>Don't want to log out? Cancel <Link to ="/home">here</Link>.</small>
                         </form>
                         </div>
                     </Grid>

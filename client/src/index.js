@@ -25,6 +25,7 @@ import ChangePassword from './views/ChangePassword';
 import './css/app.css'
 import FullPagePost from './views/FullPagePost';
 import NewPost from './views/NewPost';
+import DeleteAccount from './views/DeleteAccount';
 
 const theme = createMuiTheme(themeFile);
 
@@ -52,7 +53,7 @@ ReactDOM.render(
                 <AuthRoute path="/login" component={Login} authenticated={authenticated}/>
                 <Route path="/logout" component={LogOut} />
                 <Route path="/settings" component={Settings} />
-                <Route path="/delete" component={Delete} />
+                <Route path="/deleteAccount" component={DeleteAccount} />
                 <Route path="/profile" component={Profile} />
                 <Route path="/post" component={FullPagePost} /> 
                 <Route path="/post/:postid" component={FullPagePost} />
