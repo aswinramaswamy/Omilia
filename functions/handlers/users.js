@@ -225,6 +225,7 @@ exports.logout = (req, res) => {
       // auth/user-not-found
       return res.status(403).json({ general: 'Wrong credentials, please try again' });
     })
+    firebase.auth().signOut()
 }
 
 //Delete Account
@@ -251,4 +252,5 @@ exports.deleteAccount = (req, res) => {
       // auth/user-not-found
       return res.status(403).json({ general: 'Wrong credentials, please try again' });
     })
+    firebase.auth().signOut()
 }
