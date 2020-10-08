@@ -14,16 +14,23 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const styles = (theme) => ({
     ...theme.spreadIt
 })
 
-class Delete extends React.Component {  
+class Delete extends React.Component {
     constructor() {
         super();
         this.state = {
-            postID: -1,
+            postID: "Enter Post ID",
+            dialogOpen: false,
+            message: "",
             loading: false, 
             errors: {}
         }
@@ -38,6 +45,8 @@ class Delete extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
         this.setState({
+            postID: "Enter Post ID",
+            dialogOpen: false,
             loading: true
         });
         const postData = {
@@ -45,20 +54,34 @@ class Delete extends React.Component {
         }
         console.log(postData)
         axios
-            .delete('/deletePost', { data: postData })
+            .delete(`/deletePost/${this.state.postID}`)
             .then(res => {
                 console.log(res.data)
                 this.setState({
+                    message: "Post deleted successfully",
                     loading: false
                 });
-                this.props.history.push('/home');
             })
             .catch(err => {
                 this.setState({
+                    message: "Post could not be found",
                     errors: err.response.data,
                     loading: false
                 })
             })
+    }
+
+    handleClose = (event) => {
+        this.setState({
+            dialogOpen: false
+        })
+    }
+
+    handleClickOpen = (event) => {
+        this.setState({
+            message: "",
+            dialogOpen: true
+        })
     }
 
     render() {
@@ -93,14 +116,39 @@ class Delete extends React.Component {
                                     {errors.general}
                                 </Typography>
                             )}
-                            <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
+                            <Button onClick={this.handleClickOpen} variant="contained" color="primary" className={classes.Button} disable={loading}>
                                 Delete content
                                 {loading && (
                                     <CircularProgress size={20} className={classes.progress}/>
                                 )}
                             </Button>
+                            <Dialog
+                                open={this.state.dialogOpen}
+                                onClose={this.handleClose}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
+                                    
+                                    <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        You are about to delete a post, are you sure you want to do this?
+                                    </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                    <Button onClick={this.handleClose} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" onClick={this.handleSubmit} color="primary" className={classes.ButtonYes} autoFocus>
+                                        Yes
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
                             <br />
                         </form>
+                        <Typography color="primary" variant='caption' className={classes.pageMessage} value={this.state.message} >
+                            {this.state.message}
+                        </Typography>
                         </div>
                     </Grid>
                     <Grid item sm />
