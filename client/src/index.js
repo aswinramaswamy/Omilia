@@ -18,6 +18,7 @@ import Settings from './views/Settings';
 import Start from './views/Start';
 import Profile from './views/Profile';
 import ChangeEmail from './views/ChangeEmail';
+import ChangePassword from './views/ChangePassword';
 
 import './css/app.css'
 import FullPagePost from './views/FullPagePost';
@@ -52,6 +53,8 @@ ReactDOM.render(
                 <Route path="/post" component={FullPagePost} /> 
                 <Route path="/post/:postid" component={FullPagePost} />
                 <Route path="/ChangeEmail" component={ChangeEmail} />
+                <Route path="/ChangePassword" component={ChangePassword} />
+                <Route path="/NewPost" component={NewPost} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />
             </Switch>

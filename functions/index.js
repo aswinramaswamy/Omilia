@@ -16,6 +16,7 @@ const {
   signup,
   login,
   changeEmail,
+  changePassword,
 } = require('./handlers/users');
 
 // Post routes
@@ -26,5 +27,7 @@ app.post('/post', FBAuth, createPost);
 app.post('/signup', signup);
 app.post('/login', login);
 app.post('/changeEmail', changeEmail);
+app.post('/changePassword', changePassword);
+
 
 exports.api = functions.https.onRequest(app);
