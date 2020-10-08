@@ -17,21 +17,20 @@ const {
   signup,
   login,
   changeEmail,
-  logout,
-  deleteAccount,
+  changePassword,
 } = require('./handlers/users');
 
 // Post routes
 app.get('/posts', getAllPosts);
 //app.post('/post', FBAuth, createPost);
 app.post('/post', createPost);
-//app.delete('/deletePost', deletePost);
+app.delete('/deletePost/:postID', deletePost);
 
 // users routes
 app.post('/signup', signup);
 app.post('/login', login);
 app.post('/changeEmail', changeEmail);
-app.post('/logout', logout);
-app.post('/deleteAccount', deleteAccount);
+app.post('/changePassword', changePassword);
+
 
 exports.api = functions.https.onRequest(app);

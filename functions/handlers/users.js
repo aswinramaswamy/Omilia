@@ -26,15 +26,20 @@ exports.changeEmail = (req, res) => {
     userId
   };
   
-  db.doc(`/users/${user.username}`).get()
+  db.doc(`/users/${user.username}`).get() 
       .then(doc => {
         if (doc.exists) {
-            user.reauthenticateWithCredential(userCredentials).then(function() {
-            firebase.auth().signInWithEmailAndPassword(user.currentEmail, user.currentPassword)
+            var user1 = firebase.auth().currentUser;
+            user1.reauthenticateWithCredential(userCredentials).then(function() {
             var curUser = firebase.auth().currentUser;
             return curUser.updateEmail(user.newEmail)
           })
           .then(function () {
+            firebase.auth().sendPasswordResetEmail(user.newEmail).then(function() {
+              // Email sent.
+            }).catch(function(error) {
+              console.log("Error changing Email", error);
+            });
                db.doc(`/users/${user.username}`).update({ email: user.newEmail});
                if (curUser == NULL) {
                 return res.status(1).json({ general: 'NULL' });
@@ -42,6 +47,64 @@ exports.changeEmail = (req, res) => {
           })
           .catch(function (error) {
                console.log("Error changing Email", error);
+          });
+        } else {
+          return res.status(1).json({ general: 'oops' });
+        }
+      })
+      .then(data => {
+        userId = data.user.uid;
+        return data.user.getIdToken();
+      })
+      .then(() => {
+        return res.status(201).json({ token });
+      })
+      .catch(err => {
+        console.error(err);
+        return res.status(500).json({ general: 'Something went wrong, please try again' });
+      })
+}
+
+// Change Password
+exports.changePassword = (req, res) => {
+  const user = {
+    username: req.body.username,
+    currentEmail: req.body.currentEmail,
+    newPassword: req.body.newPassword,
+    currentPassword: req.body.currentPassword
+  };
+
+  const { valid, errors } = validateChangeEmail(user);
+
+  if(!valid) return res.status(400).json(errors);
+  const userCredentials = {
+    username: user.username,
+    email: user.email,
+    createdAt: new Date().toISOString(),
+    userId
+  };
+  
+  db.doc(`/users/${user.username}`).get() 
+      .then(doc => {
+        if (doc.exists) {
+            var user1 = firebase.auth().currentUser;
+            user1.reauthenticateWithCredential(userCredentials).then(function() {
+            var curUser = firebase.auth().currentUser;
+            return curUser.updatePassword(user.newPassword).then(function() {
+              // Updated.
+            }).catch(function(error) {
+              console.log("Error changing Password", error);
+            });               
+          })
+          .then(function () {
+            firebase.auth().sendPasswordResetEmail(user.newEmail).then(function() {
+              // Email sent.
+            }).catch(function(error) {
+              console.log("Error changing Password", error);
+            });
+          })
+          .catch(function (error) {
+               console.log("Error changing Password", error);
           });
         } else {
           return res.status(1).json({ general: 'oops' });

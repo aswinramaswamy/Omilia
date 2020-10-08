@@ -2,18 +2,14 @@ import React from 'react';
 import '../css/app.css';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-
 import withStyles from '@material-ui/core/styles/withStyles'
+
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-import { createPost } from '../redux/actions/postActions'
-
 
 const styles = (theme) => ({
     ...theme.spreadIt
@@ -30,9 +26,9 @@ class NewPost extends React.Component {
             editedTime: null,
             isAnonymous: false,
             likes: 0,
-            postID: -1,
+            postID: Math.random(1000),
             userHandle: "",
-            userID: -1,
+            userID: Math.random(1000),
             loading: false, 
             errors: {}
         }
@@ -45,29 +41,39 @@ class NewPost extends React.Component {
     }
     
     handleSubmit = (event) => {
+        console.log("SUBMITTED\n\n")
         event.preventDefault();
-        /*headers: {
-            'Authorization': `${localStorage.FBIdToken}`,
-            'authorization': `${localStorage.FBIdToken}`,
-            'Content-Type': 'application/json'
-          },*/
-        const newPost = {
-            body: this.state.body,
-            userHandle: this.state.userHandle,
-            dislikes: this.state.dislikes,
-            likes: this.state.likes,
-            edited: false,
-            editedTime: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
-            isAnonymous: false,
-            postID: this.state.postID,
-            userID: this.state.userID
-          }
-        console.log(newPost)
         this.setState({
             loading: true
         });
-        createPost({ data: newPost })
+        const postData = {
+            body: this.state.body,
+            isAnonymous: this.state.isAnonymous,
+            createdAt: new Date().toISOString(),
+            dislikes: 0,
+            edited: false,
+            editedTime: null,
+            likes: 0,
+            postID: Math.random(1000),
+            userHandle: "",
+            userID: Math.random(1000),
+        }
+        axios
+            .post('/post', postData)
+            .then(res => {
+                console.log(res.data)
+                localStorage.setItem('FBIdToken', `Bearer  ${res.data.token}`);
+                this.setState({
+                    loading: false
+                });
+                this.props.history.push('/post');
+            })
+            .catch(err => {
+                this.setState({
+                    errors: err.response.data,
+                    loading: false
+                })
+            })
     }
 
     render() {
@@ -76,7 +82,6 @@ class NewPost extends React.Component {
 
         return (
             <div className='newpost'>
-                <Navbar />
                 <Grid container className={classes.form} direction='column'>
                     <Grid item sm />
                     <Grid item sm>
@@ -135,8 +140,7 @@ class NewPost extends React.Component {
 }
 
 NewPost.propTypes = {
-    classes: PropTypes.object.isRequired,
-    createPost: PropTypes.func.isRequired
+    classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(NewPost);
