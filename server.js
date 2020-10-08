@@ -1,4 +1,4 @@
-const express = require('express');
+/*const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 const firebase = require('firebase');
@@ -28,7 +28,7 @@ firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(e
 //Read data from Firebase
 firebase.database().ref('/Users').once('value').then(function(snapshot) { 
   console.log(snapshot.val());
-})
+});
 
 // console.log that your server is up and running
 app.listen(port, () => console.log(`Listening on port ${port}`));
@@ -38,6 +38,6 @@ app.get('/express_backend', (req, res) => {
   res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
 });
 
-app.get('/create_user', (req, res)) => {
-  res.get()
-}
+app.get('/create_user', (req, res) => {
+  res.get();
+});*/
