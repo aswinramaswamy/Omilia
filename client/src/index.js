@@ -53,6 +53,7 @@ ReactDOM.render(
                 <AuthRoute path="/login" component={Login} authenticated={authenticated}/>
                 <Route path="/logout" component={LogOut} />
                 <Route path="/settings" component={Settings} />
+                <Route path="/delete" component={Delete} />
                 <Route path="/deleteAccount" component={DeleteAccount} />
                 <Route path="/profile" component={Profile} />
                 <Route path="/post" component={FullPagePost} /> 
