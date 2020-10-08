@@ -16,6 +16,8 @@ const {
 const {
   signup,
   login,
+  logout,
+  deleteAccount,
   changeEmail,
   changePassword,
 } = require('./handlers/users');
@@ -29,6 +31,8 @@ app.delete('/deletePost/:postID', deletePost);
 // users routes
 app.post('/signup', signup);
 app.post('/login', login);
+app.post('/logout', logout);
+app.post('/deleteAccount', deleteAccount);
 app.post('/changeEmail', changeEmail);
 app.post('/changePassword', changePassword);
 

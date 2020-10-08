@@ -23,8 +23,6 @@ class DeleteAccount extends React.Component {
         this.state = {
             email: '',
             password: '',
-            confirmPassword: '',
-            username: '',
             loading: false,
             errors: {}
         }
@@ -41,17 +39,15 @@ class DeleteAccount extends React.Component {
         this.setState({
             loading: true
         });
-        const newUserData = {
+        const userData = {
             email: this.state.email,
-            password: this.state.password,
-            confirmPassword: this.state.confirmPassword,
-            username: this.state.username
+            password: this.state.password
         }
         axios
-            .post('/delete', newUserData)
+            .post('/deleteAccount', userData)
             .then(res => {
                 console.log(res.data)
-                localStorage.removeItem('FBIdToken', `Bearer  ${res.data.token}`);
+                localStorage.removeItem('FBIdToken', `Bearer ${res.data.token}`);
                 this.setState({
                     loading: false
                 });
@@ -64,7 +60,6 @@ class DeleteAccount extends React.Component {
                 })
             })
     }
-
     render() {
         const { classes } = this.props;
         const { errors, loading } = this.state;
@@ -101,30 +96,6 @@ class DeleteAccount extends React.Component {
                                 helperText={errors.password} 
                                 error={errors.password ? true : false} 
                                 value={this.state.password} 
-                                onChange={this.handleChange} 
-                                fullwidth />
-                            <br />
-                            <TextField 
-                                id="confirmPassword" 
-                                name="confirmPassword" 
-                                type="password" 
-                                label="Confirm Password" 
-                                className={classes.textField}
-                                helperText={errors.confirmPassword} 
-                                error={errors.confirmPassword ? true : false} 
-                                value={this.state.confirmPassword} 
-                                onChange={this.handleChange} 
-                                fullwidth />
-                            <br />
-                            <TextField 
-                                id="username" 
-                                name="username" 
-                                type="text" 
-                                label="Username" 
-                                className={classes.textField}
-                                helperText={errors.username} 
-                                error={errors.username ? true : false} 
-                                value={this.state.username} 
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />
