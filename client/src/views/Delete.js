@@ -150,8 +150,8 @@ class Delete extends React.Component {
     )}
 }
 
-Create.propTypes = {
+Delete.propTypes = {
     classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(Create);
+export default withStyles(styles)(Delete);

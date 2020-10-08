@@ -1,7 +1,10 @@
 import React from 'react';
+import withStyles from '@material-ui/core/styles/withStyles'
+import Logo from '../components/Logo'
 import '../css/app.css';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 //MUI Stuff
 import TextField from '@material-ui/core/TextField';
@@ -87,3 +90,9 @@ class LogOut extends React.Component {
         )
     }
 }
+
+LogOut.propTypes = {
+    classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(LogOut);
