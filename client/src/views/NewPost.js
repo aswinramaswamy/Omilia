@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import React from 'react';
 import '../css/app.css';
 import axios from 'axios';
@@ -142,4 +140,3 @@ NewPost.propTypes = {
 }
 
 export default withStyles(styles)(NewPost);
->>>>>>> Stashed changes

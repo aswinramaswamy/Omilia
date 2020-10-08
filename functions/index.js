@@ -21,13 +21,9 @@ const {
 
 // Post routes
 app.get('/posts', getAllPosts);
-<<<<<<< Updated upstream
-app.post('/post', FBAuth, createPost);
-=======
 //app.post('/post', FBAuth, createPost);
 app.post('/post', createPost);
 //app.delete('/deletePost', deletePost);
->>>>>>> Stashed changes
 
 // users routes
 app.post('/signup', signup);

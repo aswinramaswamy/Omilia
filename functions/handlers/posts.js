@@ -23,11 +23,6 @@ exports.createPost = (req, res) => {
       return res.status(400).json({body: 'Body must not be empty'});
     }
     const newPost = {
-<<<<<<< Updated upstream
-      body: req.body.body,
-      userHandle: req.user.username,
-      createdAt: new Date().toISOString()
-=======
       headers: {
         'Content-Type': 'application/json'
       },
@@ -39,7 +34,6 @@ exports.createPost = (req, res) => {
       postID: req.postID,
       isAnonymous: req.isAnonymous,
       edited: false
->>>>>>> Stashed changes
     }
   
     db

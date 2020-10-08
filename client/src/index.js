@@ -52,12 +52,9 @@ ReactDOM.render(
                 <Route path="/profile" component={Profile} />
                 <Route path="/post" component={FullPagePost} /> 
                 <Route path="/post/:postid" component={FullPagePost} />
-<<<<<<< Updated upstream
                 <Route path="/ChangeEmail" component={ChangeEmail} />
-=======
                 <Route path="/newPost" component={NewPost} />
                 <Route path="/deletePost" component={Delete} />
->>>>>>> Stashed changes
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />
             </Switch>
