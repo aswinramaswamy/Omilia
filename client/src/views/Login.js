@@ -3,7 +3,6 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Logo from "../components/Logo";
 import "../css/app.css";
 import PropTypes from "prop-types";
-import axios from "axios";
 import { Link } from "react-router-dom";
 
 //MUI Stuff
@@ -12,6 +11,10 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
+
+//Redux Stuff
+import { connect } from "react-redux";
+import { loginUser } from "../redux/actions/userActions";
 
 const styles = (theme) => ({
   ...theme.spreadIt,
@@ -23,8 +26,14 @@ class Login extends React.Component {
     this.state = {
       email: "",
       password: "",
-      errors: {},
+      errors: {}
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.UI.errors) {
+      this.setState({ errors: nextProps.UI.errors });
+    }
   }
 
   handleChange = (event) => {
@@ -39,6 +48,7 @@ class Login extends React.Component {
       email: this.state.email,
       password: this.state.password,
     };
+    this.props.loginUser(userData, this.props.history);
   };
 
   render() {
@@ -66,7 +76,7 @@ class Login extends React.Component {
                   error={errors.email ? true : false}
                   value={this.state.email}
                   onChange={this.handleChange}
-                  fullwidth
+                  fullwidth="true"
                 />
                 <br />
                 <TextField
@@ -79,7 +89,7 @@ class Login extends React.Component {
                   error={errors.password ? true : false}
                   value={this.state.password}
                   onChange={this.handleChange}
-                  fullwidth
+                  fullwidth="true"
                 />
                 <br />
                 {errors.general && (
@@ -115,6 +125,21 @@ class Login extends React.Component {
 
 Login.propTypes = {
   classes: PropTypes.object.isRequired,
+  loginUser: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  UI: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Login);
+const mapStateToProps = (state) => ({
+  user: state.user,
+  UI: state.UI
+});
+
+const mapActionsToProps = {
+  loginUser,
+};
+
+export default connect(
+  mapStateToProps,
+  mapActionsToProps
+)(withStyles(styles)(Login));
