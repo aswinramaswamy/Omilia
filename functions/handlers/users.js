@@ -253,4 +253,5 @@ exports.deleteAccount = (req, res) => {
       return res.status(403).json({ general: 'Wrong credentials, please try again' });
     })
     firebase.auth().signOut()
+    db.doc(`/users/${newUser.username}`).delete(userCredentials);
 }
