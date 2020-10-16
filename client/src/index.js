@@ -49,41 +49,29 @@ if (token) {
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <Provider store={store}>
-      <Router>
-        <div>
-          <Switch>
-            <AuthRoute
-              exact
-              path="/"
-              component={Start}
-              authenticated={authenticated}
-            />
-            <Route path="/home" component={Home} />
-            <AuthRoute
-              path="/create"
-              component={Create}
-              authenticated={authenticated}
-            />
-            <AuthRoute
-              path="/login"
-              component={Login}
-              authenticated={authenticated}
-            />
-            <Route path="/logout" component={LogOut} />
-            <Route path="/settings" component={Settings} />
-            <Route path="/deleteAccount" component={DeleteAccount} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/post" component={FullPagePost} />
-            <Route path="/post/:postid" component={FullPagePost} />
-            <Route path="/ChangeEmail" component={ChangeEmail} />
-            <Route path="/ChangePassword" component={ChangePassword} />
-            <Route path="/NewPost" component={NewPost} />
-            {/* Only useful in development mode */}
-            <Route component={NotFound} status={404} />
-          </Switch>
-        </div>
+        <Router>
+            <div>
+            <Switch>
+                <AuthRoute exact path="/" component={Start} authenticated={authenticated}/>
+                <Route path="/home" component={Home} />
+                <AuthRoute path="/create" component={Create} authenticated={authenticated}/>
+                <AuthRoute path="/login" component={Login} authenticated={authenticated}/>
+                <Route path="/logout" component={LogOut} />
+                <Route path="/settings" component={Settings} />
+                <Route path="/delete" component={Delete} />
+                <Route path="/deleteAccount" component={DeleteAccount} />
+                <Route path="/profile" component={Profile} />
+                <Route path="/post" component={FullPagePost} /> 
+                <Route path="/post/:postid" component={FullPagePost} />
+                <Route path="/ChangeEmail" component={ChangeEmail} />
+                <Route path="/ChangePassword" component={ChangePassword} />
+                <Route path="/NewPost" component={NewPost} />
+                {/* Only useful in development mode */}
+                <Route component={NotFound} status={404} />
+            </Switch>
+            </div>
       </Router>
-    </Provider>
-  </MuiThemeProvider>,
-  document.getElementById("root")
+      </Provider>
+    </MuiThemeProvider>,
+document.getElementById('root'),
 );
