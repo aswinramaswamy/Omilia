@@ -11,6 +11,8 @@ const {
   validateChangeEmail,
 } = require("../util/validation");
 
+const { format } = require("mysql");
+
 //Change Email
 exports.changeEmail = (req, res) => {
   const user = {
@@ -155,13 +157,14 @@ exports.signup = (req, res) => {
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
     username: req.body.username,
+    phone: req.body.phone,
   };
 
   const { valid, errors } = validateSignupData(newUser);
 
   if (!valid) return res.status(400).json(errors);
 
-  let token, userId;
+  let token, userId, foundPhone;
 
   db.doc(`/users/${newUser.username}`)
     .get()
@@ -171,38 +174,72 @@ exports.signup = (req, res) => {
           .status(400)
           .json({ username: "this username is already taken" });
       } else {
-        return firebase
-          .auth()
-          .createUserWithEmailAndPassword(newUser.email, newUser.password);
+        db.collection("users")
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach(function (doc) {
+            if (JSON.stringify(doc.data().phone) === JSON.stringify(newUser.phone)) {
+              foundPhone = newUser.phone;
+              console.log(newUser.phone);
+            }
+          });
+          console.log(foundPhone);
+          if (typeof foundPhone === 'undefined') {
+            console.log('in the if statement')
+            return firebase
+              .auth()
+              .createUserWithEmailAndPassword(newUser.email, newUser.password);
+          }
+        })
+        .then((data) => {
+          console.log(data);
+          if (typeof data !== 'undefined') {
+            userId = data.user.uid;
+            return data.user.getIdToken();
+          } else {
+            return res.status(401).json({ phone: "this phone number is already in use"}); //actually sends this
+          }
+        })
+        .then((idToken) => {
+          if (typeof userId !== 'undefined') {
+            token = idToken;
+            const userCredentials = {
+              username: newUser.username,
+              email: newUser.email,
+              phone: newUser.phone,
+              createdAt: new Date().toISOString(),
+              userId,
+            };
+            db.doc(`/users/${newUser.username}`).set(userCredentials);
+          }
+        })
+        .then(() => {
+          if (typeof userId !== 'undefined') {
+            return res.status(201).json({ token });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          if (err.code === "auth/email-already-in-use") {
+            return res.status(400).json({ email: "email is already in use" });
+          } else {
+            return res
+              .status(500)
+              .json({ general: "Something went wrong, please try again" });
+          }
+        });
       }
     })
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
-    })
-    .then((idToken) => {
-      token = idToken;
-      const userCredentials = {
-        username: newUser.username,
-        email: newUser.email,
-        createdAt: new Date().toISOString(),
-        userId,
-      };
-      db.doc(`/users/${newUser.username}`).set(userCredentials);
-    })
-    .then(() => {
-      return res.status(201).json({ token });
-    })
-    .catch((err) => {
-      console.error(err);
-      if (err.code === "auth/email-already-in-use") {
-        return res.status(400).json({ email: "email is already in use" });
-      } else {
-        return res
-          .status(500)
-          .json({ general: "Something went wrong, please try again" });
-      }
-    });
+};
+
+//Log user in with Phone Number
+exports.phoneLogin = (req, res) => {
+  const user = {
+    phone: req.body.phone,
+    password: req.body.password,
+  };
+
+  const { valid, errors } = validateLoginData(user);
 };
 
 //Log User In

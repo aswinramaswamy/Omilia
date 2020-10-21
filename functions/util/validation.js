@@ -1,13 +1,19 @@
 const isEmpty = (string) =>  {
     if(string.trim() === '') return true;
     else return false;
-  }
+}
   
-  const isEmail = (email) => {
-    const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (email.match(regEx)) return true;
-    else return false;
-  }
+const isEmail = (email) => {
+  const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (email.match(regEx)) return true;
+  else return false;
+}
+
+const isPhone = (phone) => {
+  const regEx = /^\(?([0-9]{3})\)?[-]?([0-9]{3})[-]?([0-9]{4})$/;
+  if (phone.match(regEx)) return true;
+  else return false;
+}
 
 const isShort = (string) => {
   if(string.trim().length < 8) return true;
@@ -44,6 +50,7 @@ exports.validateSignupData = (data) => {
     if(isShort(data.password)) errors.password = 'Must be 8 or more characters'
     if(data.password !== data.confirmPassword) errors.confirmPassword = 'Passwords must match'
     if(isEmpty(data.username)) errors.username = 'Must not be empty'
+    if(!isPhone(data.phone)) errors.phone = 'Must be a valid US phone number formatted ###-###-####'
 
     return {
         errors,
