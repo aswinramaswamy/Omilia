@@ -58,6 +58,23 @@ exports.validateSignupData = (data) => {
     }
 }
 
+exports.validatePhoneLoginData = (data) => {
+  {
+    let errors = {};
+
+    if (isEmpty(data.phone)) {
+      errors.phone = 'Phone must not be empty'
+    } else if (!isPhone(data.phone)) {
+      errors.phone = 'Must be a valid US phone number formatted ###-###-####'
+    }
+    if (isEmpty(data.password)) errors.password = 'Must not be empty';
+
+    return {
+      errors,
+      valid: Object.keys(errors).length === 0 ? true : false
+    }
+}}
+
 exports.validateLoginData = (data) => {{
     let errors = {};
 
@@ -72,4 +89,37 @@ exports.validateLoginData = (data) => {{
         errors,
         valid: Object.keys(errors).length === 0 ? true : false
     }
-}}
+}
+}
+
+exports.sendVerificationEmail = (email, link) => {
+  var smtpConfig = {
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // use SSL
+    auth: {
+      user:'from@email.com',
+      pass:'password'
+    }
+  };
+  
+  var transporter = nodemailer.createTransport(smtpConfig);
+  var mailOptions = {
+    from: "YourApp@email.com", // sender address
+    to: email, // list of receivers
+    subject: "Email verification", // Subject line
+    text: "Email verification, press here to verify your email: " +     link,
+    html: "<b>Hello there,<br> click <a href=" + link + "> here to verify</a></b>" // html body
+  };
+  
+  transporter.sendMail(mailOptions, function (error, response) {
+    if(error){
+      console.log(error);
+    }else{
+      console.log("Message sent: " + response.message);
+    }
+
+  // if you don't want to use this transport object anymore, uncomment following line
+  smtpTransport.close(); // shut down the connection pool, no more messages
+  });
+}

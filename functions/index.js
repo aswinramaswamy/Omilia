@@ -17,6 +17,7 @@ const {
 const {
   signup,
   login,
+  phoneLogin,
   logout,
   deleteAccount,
   changeEmail,
@@ -32,6 +33,7 @@ app.delete('/deletePost/:postID', deletePost);
 // users routes
 app.post('/signup', signup);
 app.post('/login', login);
+app.post('/phoneLogin', phoneLogin);
 app.post('/logout', logout);
 app.post('/deleteAccount', deleteAccount);
 app.post('/changeEmail', changeEmail);

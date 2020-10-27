@@ -7,8 +7,10 @@ firebase.initializeApp(config);
 
 const {
   validateSignupData,
+  validatePhoneLoginData,
   validateLoginData,
   validateChangeEmail,
+  sendVerificationEmail,
 } = require("../util/validation");
 
 const { format } = require("mysql");
@@ -186,6 +188,8 @@ exports.signup = (req, res) => {
           console.log(foundPhone);
           if (typeof foundPhone === 'undefined') {
             console.log('in the if statement')
+            var verificationLink = "http://www.yourapp.com/confirm_email/" + userIDHash;
+            sendVerificationEmail(newUser.email, verificationLink);
             return firebase
               .auth()
               .createUserWithEmailAndPassword(newUser.email, newUser.password);
@@ -207,6 +211,8 @@ exports.signup = (req, res) => {
               username: newUser.username,
               email: newUser.email,
               phone: newUser.phone,
+              isEmailVerified: false,
+              isPhoneVerified: false,
               createdAt: new Date().toISOString(),
               userId,
             };
@@ -239,7 +245,48 @@ exports.phoneLogin = (req, res) => {
     password: req.body.password,
   };
 
-  const { valid, errors } = validateLoginData(user);
+  const { valid, errors } = validatePhoneLoginData(user);
+
+  if (!valid) return res.status(400).json(errors);
+
+  let foundEmail;
+
+  db.collection('users')
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach(function (doc) {
+        if (JSON.stringify(doc.data().phone) === JSON.stringify(user.phone)) {
+          foundEmail = doc.data().email;
+          console.log(doc.data().email);
+        }
+      });
+      console.log(foundEmail);
+      if (typeof foundEmail !== 'undefined') {
+        console.log('in the if statement')
+        return firebase
+          .auth()
+          .signInWithEmailAndPassword(foundEmail, user.password);
+      }
+    })
+    .then((data) => {
+      console.log(data);
+      if (typeof data !== 'undefined') {
+        return data.user.getIdToken();
+      } else {
+        return res.status(401).json({ phone: "incorrect phone number"}); //actually sends this
+      }
+    })
+    .then((token) => {
+      return res.json({ token });
+    })
+    .catch((err) => {
+      console.error(err);
+      // auth/wrong-password
+      // auth/user-not-found
+      return res
+        .status(403)
+        .json({ general: "Wrong credentials, please try again" });
+    });
 };
 
 //Log User In
@@ -333,3 +380,35 @@ exports.deleteAccount = (req, res) => {
     });
   firebase.auth().signOut();
 };
+
+//Confirm Email
+exports.confirmEmail = (req) => {
+  var hash = request.params.hash; //Get the has from the request parameter
+  var hashRef = db.collection('Email-Verifications').doc(hash); //Get the reference for the userID document
+  var getHash = hashRef.get()
+    .then(doc => {
+      if (!doc.exists) {
+        console.log('No such document!');
+      } else {
+        //Getting user based on userID and updating emailverification
+        admin.auth().updateUser(doc.data()['userID'], {
+          emailVerified: true
+        })
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log("Successfully updated user", userRecord.toJSON());
+          var deleteDoc = db.collection('Email-Verifications').doc(hash).delete(); //Delete the email-verification document since it is no longer needed.
+          return response.status(200).send(generateVerificationSuccessRedirect());
+        })
+        .catch(function(error) {
+          console.log("Error updating user:", error);
+          return response.status(500);
+        });
+      }
+    })
+    .catch(err => {
+      console.log('Error getting document', err);
+      return response.status(500);
+    }
+  );
+}
