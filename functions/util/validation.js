@@ -1,6 +1,7 @@
 const isEmpty = (string) => {
-    if(string.trim() === '') return true;
-    else return false;
+  if (typeof string === 'undefined') return true;
+  else if (string.trim() === '') return true;
+  else return false;
 }
   
 const isEmail = (email) => {
@@ -10,7 +11,7 @@ const isEmail = (email) => {
 }
 
 const isPhone = (phone) => {
-  const regEx = /^\(?([0-9]{3})\)?[-]?([0-9]{3})[-]?([0-9]{4})$/;
+  const regEx = /^([0-9]{3})[-]([0-9]{3})[-]([0-9]{4})$/;
   if (phone.match(regEx)) return true;
   else return false;
 }
@@ -38,24 +39,27 @@ exports.validateChangeEmail = (data) => {
 }
 
 exports.validateSignupData = (data) => {
-    let errors = {};
-  
-    if(isEmpty(data.email)) {
-      errors.email = 'Email must not be empty'
-    } else if(!isEmail(data.email)){
-      errors.email = 'Must be a valid email address'
-    }
-  
-    if(isEmpty(data.password)) errors.password = 'Must not be empty'
-    if(isShort(data.password)) errors.password = 'Must be 8 or more characters'
-    if(data.password !== data.confirmPassword) errors.confirmPassword = 'Passwords must match'
-    if(isEmpty(data.username)) errors.username = 'Must not be empty'
-    if(!isPhone(data.phone)) errors.phone = 'Must be a valid US phone number formatted ###-###-####'
+  let errors = {};
 
-    return {
-        errors,
-        valid: Object.keys(errors).length === 0 ? true : false
-    }
+  if(isEmpty(data.email)) {
+    errors.email = 'Email must not be empty'
+  } else if(!isEmail(data.email)){
+    errors.email = 'Must be a valid email address'
+  }
+
+  if (!isEmpty(data.phone)) {
+    if(!isPhone(data.phone)) errors.phone = 'Must be a valid US phone number formatted ###-###-####'
+  }
+
+  if(isEmpty(data.password)) errors.password = 'Must not be empty'
+  if(isShort(data.password)) errors.password = 'Must be 8 or more characters'
+  if(data.password !== data.confirmPassword) errors.confirmPassword = 'Passwords must match'
+  if(isEmpty(data.username)) errors.username = 'Must not be empty'
+
+  return {
+      errors,
+      valid: Object.keys(errors).length === 0 ? true : false
+  }
 }
 
 exports.validatePhoneLoginData = (data) => {

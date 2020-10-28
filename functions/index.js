@@ -22,6 +22,7 @@ const {
   deleteAccount,
   changeEmail,
   changePassword,
+  confirmEmail
 } = require('./handlers/users');
 
 // Post routes
@@ -38,6 +39,7 @@ app.post('/logout', logout);
 app.post('/deleteAccount', deleteAccount);
 app.post('/changeEmail', changeEmail);
 app.post('/changePassword', changePassword);
+app.get('/confirmEmail/:username', confirmEmail)
 
 
 exports.api = functions.https.onRequest(app);

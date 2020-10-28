@@ -233,7 +233,7 @@ exports.signup = (req, res) => {
             }
           });
           if (typeof foundPhone === 'undefined') { //If the phone number is not found
-            var verificationLink = "http://localhost:5000/omilia-b1cce/us-central1/api/confirmEmail/" + "username=" + newUser.username; //Verification Link Creation
+            var verificationLink = "https://us-central1-omilia-b1cce.cloudfunctions.net/api/confirmEmail/" + newUser.username; //Verification Link Creation
             sendVerificationEmail(newUser.email, verificationLink); //Should send the email
             return firebase //Creates User and Returns the data of the user
               .auth()
@@ -421,30 +421,17 @@ exports.deleteAccount = (req, res) => {
   firebase.auth().signOut();
 };
 
-//Confirm Email - Needs to be updated to our needs.
+//Confirm Email
 exports.confirmEmail = (req, res) => {  
+  let username = req.params.username;
   //Promise Chain
   db.collection('users')
-    .doc(req.username) //Get the reference for the user document
-    .get()
-    .then(doc => {
-      if (!doc.exists) {
-        console.log('No such document!');
-      } else {
-        //Getting user based on userID and updating emailverification
-        firebase.auth().updateUser(doc.data()['userID'], {
-          emailVerified: true
-        })
-        .then(function(userRecord) {
-          // See the UserRecord reference doc for the contents of userRecord.
-          console.log("Successfully updated user");
-          return res.status(200).json({ success: "Email Verification Success" });
-        })
-        .catch(function(error) {
-          console.log("Error updating user:", error);
-          return res.status(500);
-        });
-      }
+    .doc(username) //Get the reference for the user document
+    .update({ isEmailVerified: true }) //Updating the email to be verified
+    .then((doc) => { //
+      console.log("Successfully updated user");
+      console.log(JSON.stringify(doc));
+      return res.status(200).json({ success: "Email Verification Success" });
     })
     .catch(err => {
       console.log('Error getting document', err);
