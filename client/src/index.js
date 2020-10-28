@@ -15,6 +15,7 @@ import AuthRoute from "./components/AuthRoute";
 
 //Import Views
 import Create from "./views/Create";
+import AccountMade from "./views/AccountMade";
 import Home from "./views/Home";
 import Login from "./views/Login";
 import LogOut from "./views/LogOut";
@@ -55,7 +56,8 @@ ReactDOM.render(
                 <AuthRoute exact path="/" component={Start} authenticated={authenticated}/>
                 <Route path="/home" component={Home} />
                 <AuthRoute path="/create" component={Create} authenticated={authenticated}/>
-                <AuthRoute path="/login" component={Login} authenticated={authenticated}/>
+                <AuthRoute path="/login" component={Login} authenticated={authenticated} />
+                <AuthRoute path="/accountMade" component={AccountMade} authenticated={authenticated} />
                 <Route path="/logout" component={LogOut} />
                 <Route path="/settings" component={Settings} />
                 <Route path="/delete" component={Delete} />

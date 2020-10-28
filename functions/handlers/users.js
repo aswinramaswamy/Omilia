@@ -300,7 +300,9 @@ exports.phoneLogin = (req, res) => {
     .then((snapshot) => {
       snapshot.forEach(function (doc) {
         if (JSON.stringify(doc.data().phone) === JSON.stringify(user.phone)) {
-          foundEmail = doc.data().email;
+          if (doc.data().isEmailVerified === true) {
+            foundEmail = doc.data().email;
+          }
         }
       });
       if (typeof foundEmail !== 'undefined') {
@@ -313,7 +315,7 @@ exports.phoneLogin = (req, res) => {
       if (typeof data !== 'undefined') {
         return data.user.getIdToken();
       } else {
-        return res.status(401).json({ phone: "incorrect phone number"}); //actually sends this
+        return new Error; //res.status(401).json({ phone: "incorrect phone number"}); //actually sends this
       }
     })
     .then((token) => {
@@ -340,22 +342,36 @@ exports.login = (req, res) => {
 
   if (!valid) return res.status(400).json(errors);
 
-  firebase
-    .auth()
-    .signInWithEmailAndPassword(user.email, user.password)
-    .then((data) => {
-      return data.user.getIdToken();
-    })
-    .then((token) => {
-      return res.json({ token });
-    })
-    .catch((err) => {
-      console.error(err);
-      // auth/wrong-password
-      // auth/user-not-found
-      return res
-        .status(403)
-        .json({ general: "Wrong credentials, please try again" });
+  db.collection('users')
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach(function (doc) {
+        if (JSON.stringify(doc.data().email) === JSON.stringify(user.email)) {
+          if (doc.data().isEmailVerified === true) {
+            firebase
+              .auth()
+              .signInWithEmailAndPassword(user.email, user.password)
+              .then((data) => {
+                return data.user.getIdToken();
+              })
+              .then((token) => {
+                return res.json({ token });
+              })
+              .catch((err) => {
+                console.error(err);
+                // auth/wrong-password
+                // auth/user-not-found
+                return res
+                  .status(403)
+                  .json({ general: "Wrong credentials, please try again" });
+              });
+          } else {
+            return res
+              .status(403)
+              .json({ general: "Email is not found or is not verified, please try again" })
+          }
+        }
+      });
     });
 };
 
@@ -431,7 +447,7 @@ exports.confirmEmail = (req, res) => {
     .then((doc) => { //
       console.log("Successfully updated user");
       console.log(JSON.stringify(doc));
-      return res.status(200).json({ success: "Email Verification Success" });
+      return res.status(200).send('Email is validated, please return to Omilia and login.');
     })
     .catch(err => {
       console.log('Error getting document', err);
