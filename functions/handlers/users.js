@@ -1,16 +1,22 @@
+//Database Shortcut
 const { db } = require("../util/admin");
 
+//Firebase Internet Location
 const config = require("../util/config");
 
+//For Email Creation
+const nodemailer = require("nodemailer");
+
+//Initialize Firebase Code
 const firebase = require("firebase");
 firebase.initializeApp(config);
 
+//Importing Validation Functions
 const {
   validateSignupData,
   validatePhoneLoginData,
   validateLoginData,
-  validateChangeEmail,
-  sendVerificationEmail,
+  validateChangeEmail
 } = require("../util/validation");
 
 const { format } = require("mysql");
@@ -154,6 +160,7 @@ exports.changePassword = (req, res) => {
 
 //Create User
 exports.signup = (req, res) => {
+  //Sent in from Client
   const newUser = {
     email: req.body.email,
     password: req.body.password,
@@ -162,41 +169,78 @@ exports.signup = (req, res) => {
     phone: req.body.phone,
   };
 
+  //Checking if Fields are correct
   const { valid, errors } = validateSignupData(newUser);
-
   if (!valid) return res.status(400).json(errors);
 
+  //Email Send Function
+  function sendVerificationEmail(email, link) {
+    //SMTP Config
+    var smtpConfig = {
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // use SSL
+      auth: {
+        user: 'omiliacs307@gmail.com', //Personal Username
+        pass: 'Omilia2020CS307' //Personal Password
+      }
+    }
+
+    //Opening Email Path
+    var transporter = nodemailer.createTransport(smtpConfig);
+
+    //Email Customization
+    var mailOptions = {
+      from: "Omilia@email.com", // sender address
+      to: email, // list of receivers
+      subject: "Email Verification for your Omilia Account", // Subject line
+      text: "Email verification, press here to verify your email: " + link,
+      html: "<b>Hello there,<br> Click <a href=" + link + "> here to verify</a></b>" // html body
+    };
+
+    //Using an Email Path
+    transporter.sendMail(mailOptions, function (error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Message sent: " + response.message);
+      }
+
+      //Closing Email Path
+      transporter.close(); // shut down the connection pool, no more messages
+    });
+  }
+
+  //Creating Temp Variables
   let token, userId, foundPhone;
 
-  db.doc(`/users/${newUser.username}`)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
+  //The Promise Chain
+  db.doc(`/users/${newUser.username}`) //Access database by document
+    .get() //Accesses the user requested, returns the user as a doc
+    .then((doc) => { 
+      if (doc.exists) { //If user already exists
         return res
           .status(400)
           .json({ username: "this username is already taken" });
-      } else {
-        db.collection("users")
-        .get()
-        .then((snapshot) => {
+      } else { //User does not exist, so make a new one
+        //Second Promise Chain to find if the phone number is already taken
+        db.collection("users") //Access 'users' collection
+        .get() //Access all users and return as 'snapshot' array essentially
+        .then((snapshot) => { //Checking every user if the phone number is already taken
           snapshot.forEach(function (doc) {
-            if (JSON.stringify(doc.data().phone) === JSON.stringify(newUser.phone)) {
+            if (JSON.stringify(doc.data().phone) === JSON.stringify(newUser.phone)) { //If the phone number is found
               foundPhone = newUser.phone;
-              console.log(newUser.phone);
             }
           });
-          console.log(foundPhone);
-          if (typeof foundPhone === 'undefined') {
-            console.log('in the if statement')
-            var verificationLink = "http://www.yourapp.com/confirm_email/" + userIDHash;
-            sendVerificationEmail(newUser.email, verificationLink);
-            return firebase
+          if (typeof foundPhone === 'undefined') { //If the phone number is not found
+            var verificationLink = "http://localhost:5000/omilia-b1cce/us-central1/api/confirmEmail/" + "username=" + newUser.username; //Verification Link Creation
+            sendVerificationEmail(newUser.email, verificationLink); //Should send the email
+            return firebase //Creates User and Returns the data of the user
               .auth()
               .createUserWithEmailAndPassword(newUser.email, newUser.password);
           }
         })
         .then((data) => {
-          console.log(data);
           if (typeof data !== 'undefined') {
             userId = data.user.uid;
             return data.user.getIdToken();
@@ -257,19 +301,15 @@ exports.phoneLogin = (req, res) => {
       snapshot.forEach(function (doc) {
         if (JSON.stringify(doc.data().phone) === JSON.stringify(user.phone)) {
           foundEmail = doc.data().email;
-          console.log(doc.data().email);
         }
       });
-      console.log(foundEmail);
       if (typeof foundEmail !== 'undefined') {
-        console.log('in the if statement')
         return firebase
           .auth()
           .signInWithEmailAndPassword(foundEmail, user.password);
       }
     })
     .then((data) => {
-      console.log(data);
       if (typeof data !== 'undefined') {
         return data.user.getIdToken();
       } else {
@@ -381,28 +421,28 @@ exports.deleteAccount = (req, res) => {
   firebase.auth().signOut();
 };
 
-//Confirm Email
-exports.confirmEmail = (req) => {
-  var hash = request.params.hash; //Get the has from the request parameter
-  var hashRef = db.collection('Email-Verifications').doc(hash); //Get the reference for the userID document
-  var getHash = hashRef.get()
+//Confirm Email - Needs to be updated to our needs.
+exports.confirmEmail = (req, res) => {  
+  //Promise Chain
+  db.collection('users')
+    .doc(req.username) //Get the reference for the user document
+    .get()
     .then(doc => {
       if (!doc.exists) {
         console.log('No such document!');
       } else {
         //Getting user based on userID and updating emailverification
-        admin.auth().updateUser(doc.data()['userID'], {
+        firebase.auth().updateUser(doc.data()['userID'], {
           emailVerified: true
         })
         .then(function(userRecord) {
           // See the UserRecord reference doc for the contents of userRecord.
-          console.log("Successfully updated user", userRecord.toJSON());
-          var deleteDoc = db.collection('Email-Verifications').doc(hash).delete(); //Delete the email-verification document since it is no longer needed.
-          return response.status(200).send(generateVerificationSuccessRedirect());
+          console.log("Successfully updated user");
+          return res.status(200).json({ success: "Email Verification Success" });
         })
         .catch(function(error) {
           console.log("Error updating user:", error);
-          return response.status(500);
+          return res.status(500);
         });
       }
     })
