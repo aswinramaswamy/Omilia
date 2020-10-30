@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Profiler } from "react";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Logo from "../components/Logo";
 import "../css/app.css";
@@ -13,7 +13,8 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 //import IconButton from '@material-ui/core/IconButton'
-//import { logoutUser } from '../redux/actions/userActions'
+import { connect } from 'react-redux';
+import { logoutUser } from "../redux/actions/userActions";
 
 const styles = (theme) => ({
   ...theme.spreadIt,
@@ -45,7 +46,8 @@ class LogOut extends React.Component {
       email: this.state.email,
       password: this.state.password,
     };
-    axios
+    this.props.logoutUser((userData, this.props.history));
+    /*axios
       .post("/logout", userData)
       .then((res) => {
         console.log(res.data);
@@ -53,6 +55,7 @@ class LogOut extends React.Component {
         this.setState({
           loading: false,
         });
+        this.props.logoutUser;
         this.props.history.push("/");
       })
       .catch((err) => {
@@ -60,7 +63,7 @@ class LogOut extends React.Component {
           errors: err.response.data,
           loading: false,
         });
-      });
+      });*/
   };
 
   render() {
@@ -77,7 +80,7 @@ class LogOut extends React.Component {
               <Typography variant="h2" className={classes.pageTitle}>
                 Account Log Out
               </Typography>
-              <form noValidate onSubmit={this.handleSubmit}>
+              <form noValidate onSubmit={this.handleLogOut}>
                 <TextField
                   id="email"
                   name="email"
@@ -110,7 +113,7 @@ class LogOut extends React.Component {
                   </Typography>
                 )}
                 <Link to="/">
-                  <Button
+                  <Button /*onClick={this.handleLogOut}*/
                     type="submit"
                     variant="contained"
                     color="primary"
@@ -142,6 +145,21 @@ class LogOut extends React.Component {
 
 LogOut.propTypes = {
   classes: PropTypes.object.isRequired,
+  logoutUser: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  UI: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(LogOut);
+const mapStateToProps = (state) => ({
+  user: state.user,
+  UI: state.UI
+});
+
+const mapActionsToProps = {
+  logoutUser,
+};
+
+export default connect(
+  mapStateToProps,
+  mapActionsToProps
+  )(withStyles(styles)(LogOut));
