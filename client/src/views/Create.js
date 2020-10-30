@@ -24,6 +24,7 @@ class Create extends React.Component {
             email: '',
             password: '',
             confirmPassword: '',
+            phone: '',
             username: '',
             loading: false,
             errors: {}
@@ -45,17 +46,17 @@ class Create extends React.Component {
             email: this.state.email,
             password: this.state.password,
             confirmPassword: this.state.confirmPassword,
+            phone: this.state.phone,
             username: this.state.username
         }
         axios
             .post('/signup', newUserData)
             .then(res => {
                 console.log(res.data)
-                localStorage.setItem('FBIdToken', `Bearer  ${res.data.token}`);
                 this.setState({
                     loading: false
                 });
-                this.props.history.push('/home');
+                this.props.history.push('/AccountMade');
             })
             .catch(err => {
                 this.setState({
@@ -113,6 +114,18 @@ class Create extends React.Component {
                                 helperText={errors.confirmPassword} 
                                 error={errors.confirmPassword ? true : false} 
                                 value={this.state.confirmPassword} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
+                                id="phone" 
+                                name="phone" 
+                                type="text" 
+                                label="Phone Number (Optional)" 
+                                className={classes.textField}
+                                helperText={errors.phone} 
+                                error={errors.phone ? true : false} 
+                                value={this.state.phone} 
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />

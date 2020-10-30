@@ -14,7 +14,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 //Redux Stuff
 import { connect } from "react-redux";
-import { loginUser } from "../redux/actions/userActions";
+import { loginUser, phoneLogin } from "../redux/actions/userActions";
 
 const styles = (theme) => ({
   ...theme.spreadIt,
@@ -44,11 +44,20 @@ class Login extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const userData = {
-      email: this.state.email,
-      password: this.state.password,
-    };
-    this.props.loginUser(userData, this.props.history);
+    const regEx = /^([0-9]{3})[-]([0-9]{3})[-]([0-9]{4})$/;
+    if (this.state.email.match(regEx)) { 
+      const userData = {
+        phone: this.state.email,
+        password: this.state.password
+      };
+      this.props.phoneLogin(userData, this.props.history);
+    } else {
+      const userData = {
+        email: this.state.email,
+        password: this.state.password,
+      };
+      this.props.loginUser(userData, this.props.history);
+    }
   };
 
   render() {
@@ -69,8 +78,8 @@ class Login extends React.Component {
                 <TextField
                   id="email"
                   name="email"
-                  type="email"
-                  label="Email"
+                  type="text"
+                  label="Email or Phone Number"
                   className={classes.textField}
                   helperText={errors.email}
                   error={errors.email ? true : false}
@@ -125,6 +134,7 @@ class Login extends React.Component {
 
 Login.propTypes = {
   classes: PropTypes.object.isRequired,
+  phoneLogin: PropTypes.func.isRequired,
   loginUser: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
   UI: PropTypes.object.isRequired
@@ -137,6 +147,7 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
   loginUser,
+  phoneLogin,
 };
 
 export default connect(
