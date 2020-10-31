@@ -456,3 +456,21 @@ exports.confirmEmail = (req, res) => {
     }
   );
 }
+
+exports.getAllUsers = (req, res) => {
+  db
+  .collection('posts')
+  .orderBy('createdAt', 'desc')
+  .get()
+  .then(data => {
+    let users = [];
+    data.forEach(doc => {
+      users.push({
+        postId: doc.id,
+        ...doc.data()
+      });
+    });
+    return res.json(posts);
+  })
+  .catch(err => console.error(err));
+}
