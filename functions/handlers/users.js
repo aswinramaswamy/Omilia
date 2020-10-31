@@ -419,7 +419,7 @@ exports.deleteAccount = (req, res) => {
 
   firebase
     .auth()
-    .signOut()
+    .signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
       return data.user.getIdToken();
     })
@@ -434,7 +434,7 @@ exports.deleteAccount = (req, res) => {
         .status(403)
         .json({ general: "Wrong credentials, please try again" });
     });
-  //firebase.auth().signOut();
+  firebase.auth().signOut();
   db.doc(`/users/${newUser.username}`).delete(userCredentials);
 };
 
