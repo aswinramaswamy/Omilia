@@ -408,6 +408,15 @@ exports.logout = (req, res) => {
 
 //Delete Account
 exports.deleteAccount = (req, res) => {
+  admin.auth().getUser(userId)
+  .then(function(userRecord) {
+    // See the UserRecord reference doc for the contents of userRecord.
+    console.log('Successfully fetched user data:', userRecord.toJSON());
+  })
+  .catch(function(error) {
+    console.log('Error fetching user data:', error);
+  });
+  
   const user = {
     email: req.body.email,
     password: req.body.password,
@@ -415,7 +424,7 @@ exports.deleteAccount = (req, res) => {
 
   const { valid, errors } = validateLoginData(user);
 
-  if (!valid) return res.status(400).json(errors);
+  /*if (!valid) return res.status(400).json(errors);
 
   firebase
     .auth()
@@ -434,8 +443,66 @@ exports.deleteAccount = (req, res) => {
         .status(403)
         .json({ general: "Wrong credentials, please try again" });
     });
-  firebase.auth().signOut();
-  db.doc(`/users/${newUser.username}`).delete(userCredentials);
+    admin.auth().deleteUser(uid)
+    .then(function() {
+      console.log('Successfully deleted user');
+    })
+    .catch(function(error) {
+      console.log('Error deleting user:', error);
+    });
+  //db.collection('users').doc(user.username).delete();*/
+  //
+  if (!valid) return res.status(400).json(errors);
+  const userCredentials = {
+    username: user.username,
+    email: user.email,
+    createdAt: new Date().toISOString(),
+    userId,
+  };
+
+  db.doc(`/users/${user.username}`)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        var user1 = firebase.auth().currentUser;
+        user1
+          .reauthenticateWithCredential(userCredentials)
+          .then(function () {
+            firebase
+              .auth()
+              .deleteUser(user1.uid)
+              .then(function () {
+                // Email sent.
+              })
+              .catch(function (error) {
+                console.log("Error deleting account", error);
+              });
+            db.doc(`/users/${user.username}`).delete();
+            if (curUser == NULL) {
+              return res.status(1).json({ general: "NULL" });
+            }
+          })
+          .catch(function (error) {
+            console.log("Error deleting account", error);
+          });
+      } else {
+        return res.status(1).json({ general: "oops" });
+      }
+    })
+    .then((data) => {
+      userId = data.user.uid;
+      return data.user.getIdToken();
+    })
+    .then(() => {
+      return res.status(201).json({ token });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
+    firebase.auth().signOut();
 };
 
 //Confirm Email

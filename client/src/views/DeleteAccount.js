@@ -22,6 +22,7 @@ class DeleteAccount extends React.Component {
         super();
         this.state = {
             email: '',
+            username: '',
             password: '',
             loading: false,
             errors: {}

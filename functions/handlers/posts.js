@@ -61,3 +61,7 @@ exports.deletePost = (req, res) => {
       }
     })
 }
+
+exports.editPost = (req, res) => {
+  
+}

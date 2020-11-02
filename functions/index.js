@@ -13,6 +13,7 @@ const {
   getAllPosts,
   createPost,
   deletePost,
+  editPost,
 } = require('./handlers/posts');
 const {
   signup,
@@ -24,12 +25,14 @@ const {
   changePassword,
   confirmEmail
 } = require('./handlers/users');
+const { default: EditPost } = require('../client/src/views/EditPost');
 
 // Post routes
 app.get('/posts', getAllPosts);
 //app.post('/post', FBAuth, createPost);
 app.post('/post', createPost);
 app.delete('/deletePost/:postID', deletePost);
+app.post('/editPost', editPost);
 
 // users routes
 app.post('/signup', signup);
