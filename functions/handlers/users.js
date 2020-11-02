@@ -20,6 +20,7 @@ const {
 } = require("../util/validation");
 
 const { format } = require("mysql");
+const admin = require("../util/admin");
 
 //Change Email
 exports.changeEmail = (req, res) => {
@@ -408,22 +409,62 @@ exports.logout = (req, res) => {
 
 //Delete Account
 exports.deleteAccount = (req, res) => {
-  admin.auth().getUser(userId)
+  /*admin.auth().deleteUser(userId)
   .then(function(userRecord) {
     // See the UserRecord reference doc for the contents of userRecord.
-    console.log('Successfully fetched user data:', userRecord.toJSON());
+    console.log('Successfully deleted user data:', userRecord.toJSON());
   })
   .catch(function(error) {
-    console.log('Error fetching user data:', error);
-  });
+    console.log('Error deleting user data:', error);
+  });*/
   
   const user = {
     email: req.body.email,
+    username: req.body.username,
     password: req.body.password,
   };
 
   const { valid, errors } = validateLoginData(user);
+  let uid;
+  db.doc(`/users/${user.username}`) //Access database by document
+    .get() //Accesses the user requested, returns the user as a doc
+    .then((doc) => {
+      uid = doc.data().userId;
+      admin.auth().deleteUser(uid)
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully deleting user', userRecord.toJSON());
+        })
+        .catch(function(error) {
+          console.log('Error deleting user:', error);
+          return res.status(503).send("Error deleting user");
+        });
+    })
+  db.collection('users')
+    .doc(user.username)
+    .delete()
+      .then((doc) => { 
+        console.log("Successfully deleted user");
+        console.log(JSON.stringify(doc));
+        var user = firebase.auth().currentUser;
+        user.delete().then(function() {
+           // delete successful.
+          }).catch(function(error) {
+            // An error happened.
+          });
 
+        return res.status(200).send('account has been deleted'); 
+      })
+      .catch(err => {
+        console.log('Error deleting account', err);
+        return response.status(500);
+      })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
   /*if (!valid) return res.status(400).json(errors);
 
   firebase
@@ -452,7 +493,7 @@ exports.deleteAccount = (req, res) => {
     });
   //db.collection('users').doc(user.username).delete();*/
   //
-  if (!valid) return res.status(400).json(errors);
+  /*if (!valid) return res.status(400).json(errors);
   const userCredentials = {
     username: user.username,
     email: user.email,
@@ -468,11 +509,11 @@ exports.deleteAccount = (req, res) => {
         user1
           .reauthenticateWithCredential(userCredentials)
           .then(function () {
-            firebase
+            admin
               .auth()
               .deleteUser(user1.uid)
               .then(function () {
-                // Email sent.
+                firebase.auth().signOut();
               })
               .catch(function (error) {
                 console.log("Error deleting account", error);
@@ -501,8 +542,8 @@ exports.deleteAccount = (req, res) => {
       return res
         .status(500)
         .json({ general: "Something went wrong, please try again" });
-    });
-    firebase.auth().signOut();
+    });*/
+    //firebase.auth().signOut();
 };
 
 //Confirm Email

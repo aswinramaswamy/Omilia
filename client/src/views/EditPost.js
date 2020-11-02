@@ -1,27 +1,34 @@
 import React from 'react';
 import '../css/app.css';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import withStyles from '@material-ui/core/styles/withStyles'
-
+import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+
+import withStyles from '@material-ui/core/styles/withStyles'
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-import FormLabel from '@material-ui/core/FormLabel';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-
+//import { editPost } from '../../../functions/handlers/posts';
 
 const styles = (theme) => ({
     ...theme.spreadIt
 })
 
-class EditPost extends React.Component {  
+class EditPost extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -44,51 +51,63 @@ class EditPost extends React.Component {
 
     handleChange = (event) => {
         this.setState({
-            [event.target.name]: event.target.value,
-            message: ""
-        })
-    }
-
-    handleCheck = (event) => {
-        this.setState({
-            isAnonymous: !this.state.isAnonymous
+            [event.target.name]: event.target.value
         })
     }
     
     handleSubmit = (event) => {
         event.preventDefault();
-        /*headers: {
-            'Authorization': `${localStorage.FBIdToken}`,
-            'authorization': `${localStorage.FBIdToken}`,
-            'Content-Type': 'application/json'
-          },*/
-        const newPost = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: this.state.body,
-            userHandle: this.state.userHandle,
-            dislikes: this.state.dislikes,
-            likes: this.state.likes,
-            edited: true,
-            editedTime: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
-            isAnonymous: this.state.isAnonymous,
-            postID: this.state.postID,
-            userID: this.state.userID,
-            link: this.state.link
-          }
-        console.log(newPost)
         this.setState({
+            postID: "Enter Post ID",
+            dialogOpen: false,
             loading: true
         });
-        //createPost({ data: newPost })
+        const postData = {
+            postID: this.state.postID
+        }
+        console.log(postData)
+        axios
+            .delete(`/deletePost/${this.state.postID}`)
+            .then(res => {
+                console.log(res.data)
+                this.setState({
+                    message: "Post deleted successfully",
+                    loading: false
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    message: "Post could not be found",
+                    errors: err.response.data,
+                    loading: false
+                })
+            })
+        const newPost = {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: this.state.body,
+                userHandle: this.state.userHandle,
+                dislikes: this.state.dislikes,
+                likes: this.state.likes,
+                edited: true,
+                editedTime: new Date().toISOString(),
+                createdAt: this.state.createdAt,
+                isAnonymous: this.state.isAnonymous,
+                postID: this.state.postID,
+                userID: this.state.userID,
+                link: this.state.link
+              }
+            console.log(newPost)
+            this.setState({
+                loading: true
+            });
         axios
             .post('/post', { data: newPost })
             .then((res) => {
                 this.setState({
                     body: "",
-                    message: "Post was successful"
+                    message: "Post was editted successfully"
                 });
             })
             .catch((err) => {
@@ -96,14 +115,25 @@ class EditPost extends React.Component {
                     message: "Post failed to send"
                 });
             })
+    }
+
+    handleClose = (event) => {
         this.setState({
-            loading: false,    
-        });
+            dialogOpen: false
+        })
+    }
+
+    handleClickOpen = (event) => {
+        this.setState({
+            message: "",
+            dialogOpen: true
+        })
     }
 
     render() {
         const { classes } = this.props;
         const { errors, loading } = this.state;
+
         return (
             <div className='newpost'>
                 <Navbar />
@@ -112,10 +142,21 @@ class EditPost extends React.Component {
                     <Grid item sm>
                         <div className='middle'>
                         <Typography variant='h2' className={classes.pageTitle} >
-                            Create Post
+                            Edit Post
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
                             <TextField 
+                                id="postID" 
+                                name="postID" 
+                                type="postID" 
+                                label="Post ID" 
+                                className={classes.textField}
+                                helperText={errors.postID}
+                                error={errors.postID ? true : false} 
+                                value={this.state.postID} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                                <TextField 
                                 multiline
                                 rows={4}
                                 id="body" 
@@ -149,7 +190,7 @@ class EditPost extends React.Component {
                                 checked={this.state.isAnonymous}
                                 name="isAnonymous" 
                                 type="isAnonymous" 
-                                label="Post Anonymously?" 
+                                label="Change to Anonymous?" 
                                 size='medium'
                                 className={classes.switch}
                                 helperText={errors.isAnonymous} 
@@ -167,12 +208,34 @@ class EditPost extends React.Component {
                                     {errors.general}
                                 </Typography>
                             )}
-                            <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
-                                Post content
+                            <Button onClick={this.handleClickOpen} variant="contained" color="primary" className={classes.Button} disable={loading}>
+                                Edit content
                                 {loading && (
                                     <CircularProgress size={20} className={classes.progress}/>
                                 )}
                             </Button>
+                            <Dialog
+                                open={this.state.dialogOpen}
+                                onClose={this.handleClose}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <DialogTitle id="alert-dialog-title">Edit Post</DialogTitle>
+                                    
+                                    <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        You are about to edit your post, are you sure you want to do this?
+                                    </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                    <Button onClick={this.handleClose} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" onClick={this.handleSubmit} color="primary" className={classes.ButtonYes} autoFocus>
+                                        Yes
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
                             <br />
                         </form>
                         <Typography color="primary" variant='caption' className={classes.pageMessage} value={this.state.message} >
@@ -187,8 +250,8 @@ class EditPost extends React.Component {
     }
 }
 
-NewPost.propTypes = {
+EditPost.propTypes = {
     classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(NewPost);
+export default withStyles(styles)(EditPost);

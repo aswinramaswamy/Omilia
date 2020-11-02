@@ -6,6 +6,7 @@ import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import Typography from '@material-ui/core/Typography'
 import { Button } from '@material-ui/core';
+import Link from 'react-router-dom/Link';
 
 class Post extends Component {
     render() {
@@ -17,7 +18,6 @@ class Post extends Component {
                         <Typography variant = "h6">UserID: {userHandle}</Typography>
                         <Typography variant = "body2">Date:{createdAt}</Typography>
                         <Typography variant = "body1">{body}</Typography>
-                        <Button color="inherit" component={Link} to="/editPost" >Edit Post</Button>
                         </CardContent>
                 </Card>
             </div>

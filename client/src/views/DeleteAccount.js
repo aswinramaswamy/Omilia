@@ -42,6 +42,7 @@ class DeleteAccount extends React.Component {
         });
         const userData = {
             email: this.state.email,
+            username: this.state.username,
             password: this.state.password
         }
         axios
@@ -76,6 +77,18 @@ class DeleteAccount extends React.Component {
                             Delete Account
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
+                            <TextField 
+                                id="username" 
+                                name="username" 
+                                type="username" 
+                                label="Username" 
+                                className={classes.textField}
+                                helperText={errors.username} 
+                                error={errors.usernmae ? true : false} 
+                                value={this.state.username} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
                             <TextField 
                                 id="email" 
                                 name="email" 
