@@ -1,6 +1,6 @@
 import React, { Profiler } from "react";
 import withStyles from "@material-ui/core/styles/withStyles";
-import Logo from "../components/Logo";
+import Logo from "../components/layout/Logo";
 import "../css/app.css";
 import PropTypes from "prop-types";
 import axios from "axios";

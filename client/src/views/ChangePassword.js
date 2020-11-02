@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/app.css';
 //Import Components
-import Navbar from '../components/Navbar';
+import Navbar from '../components/layout/Navbar';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles'
 import axios from 'axios';

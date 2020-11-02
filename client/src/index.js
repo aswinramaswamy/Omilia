@@ -11,7 +11,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 
 //Import Component
-import AuthRoute from "./components/AuthRoute";
+import AuthRoute from "./components/profile/AuthRoute";
 
 //Import Views
 import Create from "./views/Create";
@@ -27,6 +27,7 @@ import Profile from "./views/Profile";
 import ChangeEmail from "./views/ChangeEmail";
 import ChangePassword from "./views/ChangePassword";
 import editPost from "./views/EditPost"
+import SearchResults from "./views/SearchResults";
 
 import "./css/app.css";
 import FullPagePost from "./views/FullPagePost";
@@ -70,6 +71,7 @@ ReactDOM.render(
                 <Route path="/ChangePassword" component={ChangePassword} />
                 <Route path="/NewPost" component={NewPost} />
                 <Route path="/editPost" component={editPost} /> 
+                <Route path="/searchResults" component={SearchResults} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />
             </Switch>
