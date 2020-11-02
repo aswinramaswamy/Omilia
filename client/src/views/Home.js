@@ -4,7 +4,7 @@ import '../css/app.css';
 import axios from 'axios';
 
 //Components
-import Navbar from '../components/Navbar';
+import Navbar from '../components/layout/Navbar';
 import Post from '../components/Post';
 
 export default class Home extends React.Component {  

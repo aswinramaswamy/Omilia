@@ -4,14 +4,14 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles'
 
-import Navbar from '../components/Navbar';
+import Navbar from '../components/layout/Navbar';
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-import FormLabel from '@material-ui/core/FormLabel';
+//import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';

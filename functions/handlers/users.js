@@ -456,20 +456,26 @@ exports.confirmEmail = (req, res) => {
   );
 }
 
-exports.getAllUsers = (req, res) => {
-  db
-  .collection('posts')
-  .orderBy('createdAt', 'desc')
+exports.searchUsers = (req, res) => {
+  const search = req.body.search;
+  let re = new RegExp("[\*\\\$\.\+]");
+  if (re.test(search)) {
+    return res.status(201).json({ error: characters })
+  }
+  re = new RegExp("[\w\d]*" + search + "[\w\d]*", "gi");
+
+  db.collection('users')
   .get()
-  .then(data => {
+  .then((snapshot) => {
     let users = [];
-    data.forEach(doc => {
-      users.push({
-        postId: doc.id,
-        ...doc.data()
-      });
-    });
-    return res.json(posts);
+    snapshot.forEach(function (doc) {
+      if (re.test(doc.data().username)) {
+        users.push({
+          username: doc.data().username
+        });
+      }
+    })
+    return res.json(users);
   })
   .catch(err => console.error(err));
 }
