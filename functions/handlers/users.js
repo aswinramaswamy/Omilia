@@ -455,3 +455,27 @@ exports.confirmEmail = (req, res) => {
     }
   );
 }
+
+exports.searchUsers = (req, res) => {
+  const search = req.body.search;
+  let re = new RegExp("[\*\\\$\.\+]");
+  if (re.test(search)) {
+    return res.status(201).json({ error: characters })
+  }
+  re = new RegExp("[\w\d]*" + search + "[\w\d]*", "gi");
+
+  db.collection('users')
+  .get()
+  .then((snapshot) => {
+    let users = [];
+    snapshot.forEach(function (doc) {
+      if (re.test(doc.data().username)) {
+        users.push({
+          username: doc.data().username
+        });
+      }
+    })
+    return res.json(users);
+  })
+  .catch(err => console.error(err));
+}

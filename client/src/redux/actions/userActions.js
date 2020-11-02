@@ -54,3 +54,19 @@ const setAuthorizationHeader = (token) => {
   localStorage.setItem('FBIdToken', FBIdToken);
   axios.defaults.headers.common['Authorization'] = FBIdToken;
 };
+
+export const getSearchData = (search) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  axios
+    .get("/searchUsers", search)
+    .then((res) => {
+      dispatch(getUserData());
+      dispatch({ type: CLEAR_ERRORS });
+    })
+    .catch((err) => {
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data
+      });
+    });
+};
