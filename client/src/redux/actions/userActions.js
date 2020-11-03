@@ -37,6 +37,25 @@ export const loginUser = (userData, history) => (dispatch) => {
     });
 };
 
+export const logoutUser = (userData, history) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  axios
+    .post('/logout', userData)
+    .then((res) => {
+      setAuthorizationHeader(res.data.token);
+      dispatch(getUserData());
+      dispatch({ type: CLEAR_ERRORS });
+      localStorage.removeItem("FBIdToken", `Bearer ${res.data.token}`);
+      history.push('/');
+    })
+    .catch((err) => {
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data
+      });
+    });
+};
+
 export const getUserData = () => (dispatch) => {
   axios
     .get("/user")

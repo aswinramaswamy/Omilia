@@ -26,6 +26,7 @@ import Start from "./views/Start";
 import Profile from "./views/Profile";
 import ChangeEmail from "./views/ChangeEmail";
 import ChangePassword from "./views/ChangePassword";
+import editPost from "./views/EditPost"
 import SearchResults from "./views/SearchResults";
 
 import "./css/app.css";
@@ -69,6 +70,7 @@ ReactDOM.render(
                 <Route path="/ChangeEmail" component={ChangeEmail} />
                 <Route path="/ChangePassword" component={ChangePassword} />
                 <Route path="/NewPost" component={NewPost} />
+                <Route path="/editPost" component={editPost} /> 
                 <Route path="/searchResults" component={SearchResults} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />
