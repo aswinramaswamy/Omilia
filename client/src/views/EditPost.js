@@ -1,11 +1,11 @@
 import React from 'react';
 import '../css/app.css';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import Navbar from '../components/layout/Navbar';
 
 import withStyles from '@material-ui/core/styles/withStyles'
 import Typography from '@material-ui/core/Typography';
