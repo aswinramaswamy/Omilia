@@ -14,6 +14,7 @@ const {
   createPost,
   deletePost,
   editPost,
+  getPost,
 } = require('./handlers/posts');
 const {
   signup,
@@ -34,6 +35,10 @@ app.get('/posts', getAllPosts);
 app.post('/post', createPost);
 app.delete('/deletePost/:postID', deletePost);
 app.post('/editPost', editPost);
+app.get('/post/:postID', getPost);
+//TODO: (gaurav)like a scream
+//TODO: (gaurav)dislike a scream
+//TODO: (gaurav)comment on a scream
 
 // users routes
 app.post('/signup', signup);
