@@ -35,7 +35,7 @@ class EditPost extends React.Component {
             body: "",
             createdAt: new Date().toISOString(),
             dislikes: 0,
-            edited: false,
+            edited: true,
             editedTime: null,
             isAnonymous: false,
             likes: 0,

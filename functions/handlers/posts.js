@@ -63,6 +63,7 @@ exports.deletePost = (req, res) => {
 }
 
 exports.editPost = (req, res) => {
+  let postId;
   const document = db.doc(`/posts/${req.params.postID}`)
   document.get()
     .then((doc) => {
@@ -70,6 +71,7 @@ exports.editPost = (req, res) => {
         return res.status(404).json({ error: "Post not found" });
       }
       else {
+        postId = doc.id;
         res.json({ message: `document ${doc.id} deleted successfully` });
         return document.delete();
       }
@@ -84,11 +86,11 @@ exports.editPost = (req, res) => {
     dislikes: 0,
     userID: req.body.data.userID,
     userHandle: req.body.data.userHandle,
-    postID: req.body.data.postID,
+    postID: postId,
     isAnonymous: req.body.data.isAnonymous,
     edited: true,
     editedTime: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
+    createdAt: req.body.data.createdAt,
     link: req.body.data.link
   }
   var newID = "unitialized"

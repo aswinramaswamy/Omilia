@@ -26,7 +26,7 @@ const {
   confirmEmail,
   searchUsers
 } = require('./handlers/users');
-const { default: EditPost } = require('../client/src/views/EditPost');
+//const { default: EditPost } = require('../client/src/views/EditPost');
 
 // Post routes
 app.get('/posts', getAllPosts);
