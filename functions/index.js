@@ -28,11 +28,6 @@ const {
   confirmEmail,
   searchUsers
 } = require('./handlers/users');
-<<<<<<< HEAD
-//const { default: EditPost } = require('../client/src/views/EditPost');
-=======
-
->>>>>>> d23d1fdc902c2e7adfd145fc8043d4de51f50351
 
 // Post routes
 app.get('/posts', getAllPosts);
