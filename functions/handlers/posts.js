@@ -33,7 +33,8 @@ exports.createPost = (req, res) => {
       edited: false,
       editedTime: new Date().toISOString(),
       createdAt: new Date().toISOString(),
-      link: req.body.data.link
+      link: req.body.data.link,
+      topic: req.body.data.topic
     }
     var newID = "unitialized"
     db
