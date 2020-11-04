@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from '../components/Logo'
+import Logo from '../components/layout/Logo'
 import '../css/app.css';
 
 export default class FullPagePost extends React.Component {  

@@ -13,6 +13,7 @@ const {
   getAllPosts,
   createPost,
   deletePost,
+  editPost,
 } = require('./handlers/posts');
 const {
   signup,
@@ -22,14 +23,17 @@ const {
   deleteAccount,
   changeEmail,
   changePassword,
-  confirmEmail
+  confirmEmail,
+  searchUsers
 } = require('./handlers/users');
+const { default: EditPost } = require('../client/src/views/EditPost');
 
 // Post routes
 app.get('/posts', getAllPosts);
 //app.post('/post', FBAuth, createPost);
 app.post('/post', createPost);
 app.delete('/deletePost/:postID', deletePost);
+app.post('/editPost', editPost);
 
 // users routes
 app.post('/signup', signup);
@@ -40,6 +44,6 @@ app.post('/deleteAccount', deleteAccount);
 app.post('/changeEmail', changeEmail);
 app.post('/changePassword', changePassword);
 app.get('/confirmEmail/:username', confirmEmail)
-
+app.get('/searchUsers', searchUsers);
 
 exports.api = functions.https.onRequest(app);

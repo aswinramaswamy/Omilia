@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/app.css';
+import '../../css/app.css';
 
 export default class Footer extends React.Component {
     render() {

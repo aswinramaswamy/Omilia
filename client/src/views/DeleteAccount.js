@@ -1,6 +1,6 @@
 import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles'
-import Logo from '../components/Logo'
+import Logo from '../components/layout/Logo'
 import '../css/app.css';
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -22,6 +22,7 @@ class DeleteAccount extends React.Component {
         super();
         this.state = {
             email: '',
+            username: '',
             password: '',
             loading: false,
             errors: {}
@@ -41,6 +42,7 @@ class DeleteAccount extends React.Component {
         });
         const userData = {
             email: this.state.email,
+            username: this.state.username,
             password: this.state.password
         }
         axios
@@ -75,6 +77,18 @@ class DeleteAccount extends React.Component {
                             Delete Account
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
+                            <TextField 
+                                id="username" 
+                                name="username" 
+                                type="username" 
+                                label="Username" 
+                                className={classes.textField}
+                                helperText={errors.username} 
+                                error={errors.usernmae ? true : false} 
+                                value={this.state.username} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
                             <TextField 
                                 id="email" 
                                 name="email" 

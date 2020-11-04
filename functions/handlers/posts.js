@@ -61,3 +61,45 @@ exports.deletePost = (req, res) => {
       }
     })
 }
+
+exports.editPost = (req, res) => {
+  const document = db.doc(`/posts/${req.params.postID}`)
+  document.get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+      else {
+        res.json({ message: `document ${doc.id} deleted successfully` });
+        return document.delete();
+      }
+    })
+    
+  const newPost = {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: req.body.data.body,
+    likes: 0,
+    dislikes: 0,
+    userID: req.body.data.userID,
+    userHandle: req.body.data.userHandle,
+    postID: req.body.data.postID,
+    isAnonymous: req.body.data.isAnonymous,
+    edited: true,
+    editedTime: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+    link: req.body.data.link
+  }
+  var newID = "unitialized"
+  db
+    .collection('posts')
+    .add(newPost)
+    .then((doc) => {
+      doc.update({ postID: `${doc.id}` })
+      res.json({ message: `document ${doc.id} editted successfully` });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: 'something went wrong' });
+  });
+}
