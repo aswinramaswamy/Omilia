@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'react-router-dom/Link';
+import history from "../../data/history";
 
 //MUI Stuff
 import AppBar from '@material-ui/core/AppBar';
@@ -8,7 +9,7 @@ import Button from '@material-ui/core/Button';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
-import InputBase from '@material-ui/core/InputBase';
+import TextField from '@material-ui/core/TextField';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -17,6 +18,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -48,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   searchIcon: {
-    padding: theme.spacing(0, 0),
+    padding: theme.spacing(0, 20),
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -85,8 +87,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PrimarySearchAppBar() {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [search, setSearch] = useState("");
   const isMenuOpen = Boolean(anchorEl);
 
   const handleProfileMenuOpen = (event) => {
@@ -95,6 +97,15 @@ export default function PrimarySearchAppBar() {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    history.push('/SearchResults/search=' + search);
+  };
+
+  const handleChange = (event) => {
+    setSearch(event.target.value);
   };
 
   const menuId = 'primary-search-account-menu';
@@ -116,7 +127,7 @@ export default function PrimarySearchAppBar() {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="sticky">
+      <AppBar position='relative'>
         <Toolbar>
           <IconButton
             edge="start"
@@ -126,7 +137,7 @@ export default function PrimarySearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Button className={classes.menuButton} color="inherit" component={Link} to="/home" variant="h6" noWrap>
+          <Button className={classes.menuButton} color="inherit" component={Link} to="/home" variant="text">
             Omilía
           </Button>
           <div className={classes.menuButton}>
@@ -138,17 +149,25 @@ export default function PrimarySearchAppBar() {
             <Button color="inherit" component={Link} to="/settings" >Settings</Button>
           </div>
           <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
+            <form noValidate onSubmit={handleSubmit}>
+              <TextField
+                id="search"
+                name="search"
+                type="string"
+                className={classes.textField}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                value={search}
+                onChange={handleChange}
+                fullwidth="true"
+                size="small"
+                />
+            </form>
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
@@ -179,19 +198,3 @@ export default function PrimarySearchAppBar() {
     </div>
   );
 }
-
-/*export default function Navbar() {
-  return (
-    <div>
-      <AppBar position="static">
-        <Toolbar>
-          <Button color="inherit" component={Link} to="/home" >Home</Button>
-          <Button color="inherit" component={Link} to="/profile" >Profile</Button>
-          <Button color="inherit" component={Link} to="/newPost" >New Post</Button>
-          <Button color="inherit" component={Link} to="/delete" >Delete Post</Button>
-          <Button color="inherit" component={Link} to="/settings" >Settings</Button>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
-}*/

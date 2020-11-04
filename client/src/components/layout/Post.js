@@ -38,7 +38,7 @@ class Post extends Component {
                         <ArrowUpwardIcon color="primary"/>
                     </IconButton>
                     <IconButton aria-label="dislike">
-                        <ArrowDownwardIcon color="tertiary"/>
+                        <ArrowDownwardIcon color="secondary"/>
                     </IconButton>
                 </CardActions>
             </Card>

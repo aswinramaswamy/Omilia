@@ -488,7 +488,7 @@ exports.confirmEmail = (req, res) => {
 
 exports.searchUsers = (req, res) => {
   const search = req.body.search;
-  let re = new RegExp("[\*\\\$\.\+]");
+  let re = new RegExp("[\\\$\+]");
   if (re.test(search)) {
     return res.status(201).json({ error: characters })
   }

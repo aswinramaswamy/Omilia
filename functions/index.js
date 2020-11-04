@@ -14,6 +14,8 @@ const {
   createPost,
   deletePost,
   editPost,
+  getPost,
+  createComment,
 } = require('./handlers/posts');
 const {
   signup,
@@ -34,6 +36,10 @@ app.get('/posts', getAllPosts);
 app.post('/post', createPost);
 app.delete('/deletePost/:postID', deletePost);
 app.post('/editPost', editPost);
+app.get('/post/:postID', getPost);
+//TODO: (gaurav)like a scream
+//TODO: (gaurav)dislike a scream
+app.post('/post/:postID/comment', createComment);
 
 // users routes
 app.post('/signup', signup);
@@ -43,7 +49,7 @@ app.post('/logout', logout);
 app.post('/deleteAccount', deleteAccount);
 app.post('/changeEmail', changeEmail);
 app.post('/changePassword', changePassword);
-app.get('/confirmEmail/:username', confirmEmail)
-app.get('/searchUsers', searchUsers);
+app.get('/confirmEmail/:username', confirmEmail);
+app.post('/searchUsers', searchUsers);
 
 exports.api = functions.https.onRequest(app);
