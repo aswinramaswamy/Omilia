@@ -145,11 +145,9 @@ export default class Settings extends React.Component {
         return (
             <div>
                 <Navbar />
-                <Header />
                 <h2><Link to="deleteAccount" class="button">Delete Account</Link></h2>
                 <h2><Link to="ChangeEmail" class="button">Change Email</Link></h2>
                 <h2><Link to="ChangePassword" class="button">Change Password</Link></h2>
-                <Footer />
             </div>
         )
     }
