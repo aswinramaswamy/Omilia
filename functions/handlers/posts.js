@@ -20,9 +20,9 @@ exports.getAllPosts = (req, res) => {
 
 exports.createPost = (req, res) => {
     const newPost = {
-      headers: {
+      /*headers: {
         'Content-Type': 'application/json'
-      },
+      },*/
       body: req.body.data.body,
       likes: 0,
       dislikes: 0,
@@ -76,9 +76,9 @@ exports.editPost = (req, res) => {
     })
     
   const newPost = {
-    headers: {
+    /*headers: {
       'Content-Type': 'application/json'
-    },
+    },*/
     body: req.body.data.body,
     likes: 0,
     dislikes: 0,
@@ -106,19 +106,25 @@ exports.editPost = (req, res) => {
 
 exports.getPost = (req, res) => {
     let postData = {}
-    db.doc(`posts/${req.params.postID}`).get()
+    db
+    .doc(`posts/${req.params.postID}`)
+    .get()
     .then(doc => {
       if(!doc.exists) {
         return res.status(404).json({ error: 'Post not found' })
       }
       postData = doc.data();
       postData.postID = doc.id;
-      return db.collection('comments').where('postID', '==', req.params.postID).get();
+      return db
+      .collection('comments')
+      .orderBy('createdAt', 'desc')
+      .where('postID', '==', req.params.postID)
+      .get();
     })
     .then(data => {
       postData.comments = [];
       data.forEach(doc => {
-        postData.push(doc.data())
+        postData.comments.push(doc.data())
       });
       return res.json(postData);
     })
@@ -126,4 +132,34 @@ exports.getPost = (req, res) => {
       console.error(err);
       res.status(500).json({ error: err.code });
     })
+}
+
+exports.createComment = (req, res) => {
+  if(req.body.body.trim() === '') return res.status(400).json({ error: 'Must not be empty'});
+
+  const newComment = {
+    body: req.body.body,
+    createdAt: new Date().toISOString(),
+    postID: req.params.postID,
+    userHandle: req.body.userHandle,
+  };
+
+  db
+  .doc(`posts/${req.params.postID}`)
+  .get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'Post does not exist'});
+    }
+    return db
+    .collection('comments')
+    .add(newComment);
+  })
+  .then(() => {
+    res.json(newComment);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
 }

@@ -83,9 +83,9 @@ class EditPost extends React.Component {
                 })
             })
         const newPost = {
-                headers: {
+                /*headers: {
                     'Content-Type': 'application/json'
-                },
+                },*/
                 body: this.state.body,
                 userHandle: this.state.userHandle,
                 dislikes: this.state.dislikes,

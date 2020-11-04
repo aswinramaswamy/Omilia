@@ -15,6 +15,7 @@ const {
   deletePost,
   editPost,
   getPost,
+  createComment,
 } = require('./handlers/posts');
 const {
   signup,
@@ -27,7 +28,7 @@ const {
   confirmEmail,
   searchUsers
 } = require('./handlers/users');
-const { default: EditPost } = require('../client/src/views/EditPost');
+//const { default: EditPost } = require('../client/src/views/EditPost');
 
 // Post routes
 app.get('/posts', getAllPosts);
@@ -38,7 +39,7 @@ app.post('/editPost', editPost);
 app.get('/post/:postID', getPost);
 //TODO: (gaurav)like a scream
 //TODO: (gaurav)dislike a scream
-//TODO: (gaurav)comment on a scream
+app.post('/post/:postID/comment', createComment);
 
 // users routes
 app.post('/signup', signup);
