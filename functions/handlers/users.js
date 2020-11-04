@@ -20,7 +20,7 @@ const {
 } = require("../util/validation");
 
 const { format } = require("mysql");
-const admin = require("../util/admin");
+//const admin = require("../util/admin");
 
 //Change Email
 exports.changeEmail = (req, res) => {

@@ -134,6 +134,26 @@ exports.getPost = (req, res) => {
     })
 }
 
+
+exports.getPosthandle = (req, res) => {
+  db
+    .collection('posts')
+    .orderBy('createdAt', 'desc')
+    .where('userHandle', '==', 'aswin')
+    .get()
+    .then(data => {
+      let posts = [];
+      data.forEach(doc => {
+        posts.push({
+          postId: doc.id,
+          ...doc.data()
+        });
+      });
+      return res.json(posts);
+    })
+    .catch(err => console.error(err));
+}
+
 exports.createComment = (req, res) => {
   if(req.body.body.trim() === '') return res.status(400).json({ error: 'Must not be empty'});
 

@@ -14,6 +14,7 @@ const {
   createPost,
   deletePost,
   editPost,
+  getPosthandle,
   getPost,
   createComment,
 } = require('./handlers/posts');
@@ -28,11 +29,7 @@ const {
   confirmEmail,
   searchUsers
 } = require('./handlers/users');
-<<<<<<< HEAD
 //const { default: EditPost } = require('../client/src/views/EditPost');
-=======
-
->>>>>>> d23d1fdc902c2e7adfd145fc8043d4de51f50351
 
 // Post routes
 app.get('/posts', getAllPosts);
@@ -41,6 +38,8 @@ app.post('/post', createPost);
 app.delete('/deletePost/:postID', deletePost);
 app.post('/editPost', editPost);
 app.get('/post/:postID', getPost);
+app.get('/userpost', getPosthandle);
+
 //TODO: (gaurav)like a scream
 //TODO: (gaurav)dislike a scream
 app.post('/post/:postID/comment', createComment);

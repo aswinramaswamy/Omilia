@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import '../css/app.css';
 //Import Components
 import Navbar from '../components/layout/Navbar';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
+
 
 /*class Settings extends React.Component {  
     constructor(){

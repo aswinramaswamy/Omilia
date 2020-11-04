@@ -141,6 +141,18 @@ class NewPost extends React.Component {
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />
+                            <TextField 
+                                id="userHandle" 
+                                name="userHandle" 
+                                type="userHandle" 
+                                label="Username" 
+                                className={classes.textField2}
+                                helperText={errors.userHandle} 
+                                error={errors.userHandle ? true : false} 
+                                value={this.state.userHandle} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
                             <FormControl component="fieldset">
                             <FormGroup>
                             <FormControlLabel

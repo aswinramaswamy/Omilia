@@ -3,17 +3,38 @@ import { Link } from 'react-router-dom';
 import '../css/app.css';
 //Import Components
 import Navbar from '../components/layout/Navbar';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
+import Post from '../components/layout/Post';
+import axios from 'axios';
+
 
 export default class Profile extends React.Component {  
+    state = {
+        posts: null
+    }
+    componentDidMount(){
+        axios
+            .get('/userpost')
+            .then(res => {
+                this.setState({
+                    posts: res.data
+                });
+            })
+            .catch(err => console.log(err));
+        }
     render() {
-        return (
+        let recentPostsMarkup = this.state.posts ? (
+            this.state.posts.map((post) => <Post post={post}/>)
+            ) : (
+                <p>Loading...</p>
+            );
+        
+            return (
             <div>
                 <Navbar />
-                <Header />
                 <h2><Link to="settings" class="button">Edit info</Link></h2>
-                <Footer />
+                <div className="center">
+                    {recentPostsMarkup}
+                </div>
             </div>
         )
     }
