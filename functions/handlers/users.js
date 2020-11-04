@@ -1,5 +1,5 @@
 //Database Shortcut
-const { db } = require("../util/admin");
+const { db, admin } = require("../util/admin");
 
 //Firebase Internet Location
 const config = require("../util/config");
@@ -33,53 +33,76 @@ exports.changeEmail = (req, res) => {
   const { valid, errors } = validateChangeEmail(user);
 
   if (!valid) return res.status(400).json(errors);
-  const userCredentials = {
-    username: user.username,
-    email: user.email,
-    createdAt: new Date().toISOString(),
-    userId,
-  };
 
-  db.doc(`/users/${user.username}`)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var user1 = firebase.auth().currentUser;
-        user1
-          .reauthenticateWithCredential(userCredentials)
-          .then(function () {
-            var curUser = firebase.auth().currentUser;
-            return curUser.updateEmail(user.newEmail);
-          })
-          .then(function () {
-            firebase
-              .auth()
-              .sendPasswordResetEmail(user.newEmail)
-              .then(function () {
-                // Email sent.
-              })
-              .catch(function (error) {
-                console.log("Error changing Email", error);
-              });
-            db.doc(`/users/${user.username}`).update({ email: user.newEmail });
-            if (curUser == NULL) {
-              return res.status(1).json({ general: "NULL" });
-            }
-          })
-          .catch(function (error) {
-            console.log("Error changing Email", error);
-          });
-      } else {
-        return res.status(1).json({ general: "oops" });
+  //Email Send Function
+  function sendVerificationEmail(email) {
+    //SMTP Config
+    var smtpConfig = {
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // use SSL
+      auth: {
+        user: 'omiliacs307@gmail.com', //Personal Username
+        pass: 'Omilia2020CS307' //Personal Password
       }
+    }
+
+    //Opening Email Path
+    var transporter = nodemailer.createTransport(smtpConfig);
+
+    //Email Customization
+    var mailOptions = {
+      from: "Omilia@email.com", // sender address
+      to: user.newEmail, // list of receivers
+      subject: "Email Change Verification for your Omilia Account", // Subject line
+      text: "Email verification, your email has been changed ",
+      html: "<b>Hello there,<br> email changed </b>" // html body
+    };
+
+    //Using an Email Path
+    transporter.sendMail(mailOptions, function (error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Message sent: " + response.message);
+      }
+
+      //Closing Email Path
+      transporter.close(); // shut down the connection pool, no more messages
+    });
+  }
+
+
+  let uid;
+  db.doc(`/users/${user.username}`) //Access database by document
+    .get() //Accesses the user requested, returns the user as a doc
+    .then((doc) => {
+      uid = doc.data().userId;
+      admin.auth().updateUser(uid, {
+        email: user.newEmail
+      })
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+          return res.status(503).send("Error updating email auth");
+        });
     })
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
-    })
-    .then(() => {
-      return res.status(201).json({ token });
-    })
+  db.collection('users')
+    .doc(user.username)
+    .update({ email: user.newEmail })
+      .then((doc) => { 
+        console.log("Successfully updated email");
+        console.log(JSON.stringify(doc));
+        sendVerificationEmail(user.newEmail); //Should send the email
+        return res.status(200).send('Email has been changed'); 
+      })
+      .catch(err => {
+        console.log('Error changing email', err);
+        return response.status(500);
+      })
     .catch((err) => {
       console.error(err);
       return res
@@ -88,74 +111,76 @@ exports.changeEmail = (req, res) => {
     });
 };
 
+
 // Change Password
 exports.changePassword = (req, res) => {
   const user = {
     username: req.body.username,
     currentEmail: req.body.currentEmail,
-    newPassword: req.body.newPassword,
     currentPassword: req.body.currentPassword,
+    newPassword: req.body.newPassword,
   };
 
   const { valid, errors } = validateChangeEmail(user);
 
   if (!valid) return res.status(400).json(errors);
-  const userCredentials = {
-    username: user.username,
-    email: user.email,
-    createdAt: new Date().toISOString(),
-    userId,
-  };
-
-  db.doc(`/users/${user.username}`)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var user1 = firebase.auth().currentUser;
-        user1
-          .reauthenticateWithCredential(userCredentials)
-          .then(function () {
-            var curUser = firebase.auth().currentUser;
-            return curUser
-              .updatePassword(user.newPassword)
-              .then(function () {
-                // Updated.
-              })
-              .catch(function (error) {
-                console.log("Error changing Password", error);
-              });
-          })
-          .then(function () {
-            firebase
-              .auth()
-              .sendPasswordResetEmail(user.newEmail)
-              .then(function () {
-                // Email sent.
-              })
-              .catch(function (error) {
-                console.log("Error changing Password", error);
-              });
-          })
-          .catch(function (error) {
-            console.log("Error changing Password", error);
-          });
-      } else {
-        return res.status(1).json({ general: "oops" });
+  
+  //Email Send Function
+  function sendVerificationPassword(email) {
+    //SMTP Config
+    var smtpConfig = {
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // use SSL
+      auth: {
+        user: 'omiliacs307@gmail.com', //Personal Username
+        pass: 'Omilia2020CS307' //Personal Password
       }
-    })
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
-    })
-    .then(() => {
-      return res.status(201).json({ token });
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ general: "Something went wrong, please try again" });
+    }
+
+    //Opening Email Path
+    var transporter = nodemailer.createTransport(smtpConfig);
+
+    //Email Customization
+    var mailOptions = {
+      from: "Omilia@email.com", // sender address
+      to: user.currentEmail, // list of receivers
+      subject: "Password Change Verification for your Omilia Account", // Subject line
+      text: "Password verification, your Password has been changed ",
+      html: "<b>Hello there,<br> Password changed </b>" // html body
+    };
+
+    //Using an Email Path
+    transporter.sendMail(mailOptions, function (error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Message sent: " + response.message);
+      }
+
+      //Closing Email Path
+      transporter.close(); // shut down the connection pool, no more messages
     });
+  }
+
+  let uid;
+  db.doc(`/users/${user.username}`) //Access database by document
+    .get() //Accesses the user requested, returns the user as a doc
+    .then((doc) => {
+      uid = doc.data().userId;
+      admin.auth().updateUser(uid, {
+        password: user.newPassword
+      })
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+          sendVerificationPassword(user.currentEmail); //Should send the email
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+          return res.status(400).send("Error updating password auth");
+        });
+    })
 };
 
 //Create User
