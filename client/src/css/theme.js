@@ -11,12 +11,6 @@ export default {
             main: '#3C797C',
             dark: 'black',
             contrastText: '#fff'
-        },
-        tertiary: {
-            light: 'pink',
-            main: 'red',
-            dark: 'purple',
-            constrastText: 'white'
         }
     },
     spreadIt: {

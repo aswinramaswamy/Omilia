@@ -5,6 +5,7 @@ import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import themeFile from "./css/theme";
 import jwtDecode from "jwt-decode";
+import history from "./data/history";
 
 //Redux
 import { Provider } from "react-redux";
@@ -26,7 +27,7 @@ import Start from "./views/Start";
 import Profile from "./views/Profile";
 import ChangeEmail from "./views/ChangeEmail";
 import ChangePassword from "./views/ChangePassword";
-import editPost from "./views/EditPost"
+import editPost from "./views/EditPost.js";
 import SearchResults from "./views/SearchResults";
 
 import "./css/app.css";
@@ -52,7 +53,7 @@ if (token) {
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <Provider store={store}>
-        <Router>
+        <Router history={history}>
             <div>
             <Switch>
                 <AuthRoute exact path="/" component={Start} authenticated={authenticated}/>
@@ -71,7 +72,7 @@ ReactDOM.render(
                 <Route path="/ChangePassword" component={ChangePassword} />
                 <Route path="/NewPost" component={NewPost} />
                 <Route path="/editPost" component={editPost} /> 
-                <Route path="/searchResults" component={SearchResults} />
+                <Route path="/searchResults/:search" component={SearchResults} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />
             </Switch>

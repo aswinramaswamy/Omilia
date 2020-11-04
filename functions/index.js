@@ -26,7 +26,7 @@ const {
   confirmEmail,
   searchUsers
 } = require('./handlers/users');
-const { default: EditPost } = require('../client/src/views/EditPost');
+
 
 // Post routes
 app.get('/posts', getAllPosts);
@@ -43,7 +43,7 @@ app.post('/logout', logout);
 app.post('/deleteAccount', deleteAccount);
 app.post('/changeEmail', changeEmail);
 app.post('/changePassword', changePassword);
-app.get('/confirmEmail/:username', confirmEmail)
-app.get('/searchUsers', searchUsers);
+app.get('/confirmEmail/:username', confirmEmail);
+app.post('/searchUsers', searchUsers);
 
 exports.api = functions.https.onRequest(app);
