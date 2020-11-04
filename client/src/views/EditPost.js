@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import '../css/app.css';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 
-import withStyles from '@material-ui/core/styles/withStyles'
+import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
@@ -22,11 +22,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-//import { editPost } from '../../../functions/handlers/posts';
 
 const styles = (theme) => ({
     ...theme.spreadIt
-})
+});
 
 class EditPost extends React.Component {
     constructor() {
@@ -52,7 +51,7 @@ class EditPost extends React.Component {
     handleChange = (event) => {
         this.setState({
             [event.target.name]: event.target.value
-        })
+        });
     }
     
     handleSubmit = (event) => {
@@ -80,12 +79,12 @@ class EditPost extends React.Component {
                     message: "Post could not be found",
                     errors: err.response.data,
                     loading: false
-                })
+                });
             })
         const newPost = {
-                headers: {
+                /*headers: {
                     'Content-Type': 'application/json'
-                },
+                },*/
                 body: this.state.body,
                 userHandle: this.state.userHandle,
                 dislikes: this.state.dislikes,
@@ -120,14 +119,14 @@ class EditPost extends React.Component {
     handleClose = (event) => {
         this.setState({
             dialogOpen: false
-        })
+        });
     }
 
     handleClickOpen = (event) => {
         this.setState({
             message: "",
             dialogOpen: true
-        })
+        });
     }
 
     render() {
@@ -252,6 +251,6 @@ class EditPost extends React.Component {
 
 EditPost.propTypes = {
     classes: PropTypes.object.isRequired
-}
+};
 
 export default withStyles(styles)(EditPost);
