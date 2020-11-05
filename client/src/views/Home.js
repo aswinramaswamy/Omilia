@@ -1,33 +1,26 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/app.css';
-import axios from 'axios';
+import PropTypes from 'prop-types';
 
 //Components
 import Navbar from '../components/layout/Navbar';
 import Post from '../components/layout/Post';
 
+import { connect } from 'react-redux';
+import { getPosts } from '../redux/actions/dataActions';
+
 class Home extends Component {  
-    state = {
-        posts: null
-    }
-    componentDidMount(){
-        axios
-            .get('/posts')
-            .then(res => {
-                this.setState({
-                    posts: res.data
-                });
-            })
-            .catch(err => console.log(err));
-    }
-    render() {
-        let recentPostsMarkup = this.state.posts ? (
-        this.state.posts.map((post) => <Post post={post}/>)
+    componentDidMount() {
+        this.props.getPosts();
+      }
+      render() {
+        const { posts, loading } = this.props.data;
+        let recentPostsMarkup = !loading ? (
+          posts.map((post) => <Post key={post.postID} post={post} />)
         ) : (
             <p>Loading...</p>
         );
-
         return (
             <div>
                 <Navbar/>
@@ -41,4 +34,16 @@ class Home extends Component {
     }
 }
 
-export default Home;
+Home.propTypes = {
+    getPosts: PropTypes.func.isRequired,
+    data: PropTypes.object.isRequired
+  };
+  
+  const mapStateToProps = (state) => ({
+    data: state.data
+  });
+  
+  export default connect(
+    mapStateToProps,
+    { getPosts }
+  )(Home);

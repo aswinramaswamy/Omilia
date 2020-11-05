@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import Navbar from '../components/layout/Navbar';
 
 import withStyles from '@material-ui/core/styles/withStyles'
+import CreatePostButton from '../components/CreatePostButton';
+import DeletePostButton from '../components/DeletePostButton';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -149,6 +151,8 @@ class Delete extends React.Component {
                     </Grid>
                     <Grid item sm />
                 </Grid>
+                <CreatePostButton />
+                <DeletePostButton />
             </div>
         )
     }

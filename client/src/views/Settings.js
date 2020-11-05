@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import '../css/app.css';
 //Import Components
 import Navbar from '../components/layout/Navbar';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
+
 
 /*class Settings extends React.Component {  
     constructor(){
@@ -145,11 +144,10 @@ export default class Settings extends React.Component {
         return (
             <div>
                 <Navbar />
-                <Header />
                 <h2><Link to="deleteAccount" class="button">Delete Account</Link></h2>
                 <h2><Link to="ChangeEmail" class="button">Change Email</Link></h2>
                 <h2><Link to="ChangePassword" class="button">Change Password</Link></h2>
-                <Footer />
+                <h2><Link to="ChangeUsername" class="button">Change Username</Link></h2>
             </div>
         )
     }

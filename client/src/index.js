@@ -27,6 +27,7 @@ import Start from "./views/Start";
 import Profile from "./views/Profile";
 import ChangeEmail from "./views/ChangeEmail";
 import ChangePassword from "./views/ChangePassword";
+import ChangeUsername from "./views/ChangeUsername";
 import editPost from "./views/EditPost.js";
 import SearchResults from "./views/SearchResults";
 import followUser from "./views/followUser";
@@ -71,9 +72,10 @@ ReactDOM.render(
                 <Route path="/deleteAccount" component={DeleteAccount} />
                 <Route path="/profile" component={Profile} />
                 <Route path="/post" component={FullPagePost} /> 
-                <Route path="/post/:postid" component={FullPagePost} />
+                <Route path="/post/:postID" component={FullPagePost} />
                 <Route path="/ChangeEmail" component={ChangeEmail} />
                 <Route path="/ChangePassword" component={ChangePassword} />
+                <Route path="/ChangeUsername" component={ChangeUsername} />
                 <Route path="/NewPost" component={NewPost} />
                 <Route path="/editPost" component={editPost} />
                 <Route path="/followUser" component={followUser} /> 

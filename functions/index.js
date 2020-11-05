@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 
 const app = require('express')();
-//const FBAuth = require('./util/fbAuth');
+const FBAuth = require('./util/fbAuth');
 
 const cors = require('cors');
 app.use(cors());
@@ -14,8 +14,13 @@ const {
   createPost,
   deletePost,
   editPost,
+  getPosthandle,
   getPost,
   createComment,
+  likePost,
+  unlikePost,
+  dislikePost,
+  undislikePost
 } = require('./handlers/posts');
 const {
   signup,
@@ -25,6 +30,8 @@ const {
   deleteAccount,
   changeEmail,
   changePassword,
+  changeUsername,
+  getProfile,
   confirmEmail,
   searchUsers,
   followUser,
@@ -41,9 +48,13 @@ app.post('/post', createPost);
 app.delete('/deletePost/:postID', deletePost);
 app.post('/editPost', editPost);
 app.get('/post/:postID', getPost);
-//TODO: (gaurav)like a scream
-//TODO: (gaurav)dislike a scream
+app.get('/userpost/:userHandle', getPosthandle);
+app.get('/post/:postID/like', likePost);
+app.get('/post/:postID/unlike', unlikePost);
+app.get('/post/:postID/dislike', dislikePost);
+app.get('/post/:postID/undislike', undislikePost);
 app.post('/post/:postID/comment', createComment);
+
 
 // users routes
 app.post('/signup', signup);
@@ -53,11 +64,16 @@ app.post('/logout', logout);
 app.post('/deleteAccount', deleteAccount);
 app.post('/changeEmail', changeEmail);
 app.post('/changePassword', changePassword);
+app.post('/changeUsername', changeUsername);
 app.get('/confirmEmail/:username', confirmEmail);
 app.post('/searchUsers', searchUsers);
+<<<<<<< HEAD
 app.post('/followUser', followUser);
 app.post('/followTopic', followTopic);
 app.post('/unfollowUser', unfollowUser);
 app.post('/unfollowTopic', unfollowTopic);
+=======
+app.get('/userdata', getProfile);
+>>>>>>> f37c8cf19a698c58cfb77bf8d2738c37b3d8d558
 
 exports.api = functions.https.onRequest(app);

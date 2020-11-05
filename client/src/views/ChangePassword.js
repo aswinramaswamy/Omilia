@@ -45,7 +45,7 @@ class ChangePassword extends React.Component {
     const userData = {
         currentEmail: this.state.currentEmail,
         username: this.state.username,
-        newEmail: this.state.newEmail,
+        newPassword: this.state.newPassword,
         currentPassword: this.state.currentPassword
     }
     

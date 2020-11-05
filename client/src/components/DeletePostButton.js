@@ -47,7 +47,8 @@ export default class DeletePostButton extends React.Component {
             link: "",
             topic: "",
             loading: false,
-            createSubmit: false
+            dialogOpenConfirm: false,
+            successDialog: false
         }
     }
 
@@ -58,7 +59,9 @@ export default class DeletePostButton extends React.Component {
     }
     handleClose = (event) => {
         this.setState({
-            dialogOpen: false
+            postID: "",
+            dialogOpen: false,
+            message: ""
         })
     }
 
@@ -69,57 +72,56 @@ export default class DeletePostButton extends React.Component {
         })
     }
 
-    handleCloseSubmit = (event) => {
+    handleOpenConfirm = (event) => {
         this.setState({
-            createSubmit: false,
-            dialogOpen: false
+            dialogOpenConfirm: true
         })
     }
 
+    handleCloseConfirm = (event) => {
+        this.setState({
+            dialogOpenConfirm: false
+        })
+    }
+
+    handleCloseSuccess = (event) => {
+        this.setState({
+            successDialog: false,
+            message: "",
+            postID: ""
+        })
+    }
+    
     handleSubmit = (event) => {
         event.preventDefault();
-        const newPost = {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: this.state.body,
-            userHandle: this.state.userHandle,
-            dislikes: this.state.dislikes,
-            likes: this.state.likes,
-            edited: false,
-            editedTime: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
-            isAnonymous: this.state.isAnonymous,
-            postID: this.state.postID,
-            userID: this.state.userID,
-            link: this.state.link,
-            topic: this.state.topic
-          }
-        console.log(newPost)
         this.setState({
+            postID: "Enter Post ID",
             loading: true
         });
-        //createPost({ data: newPost })
+        const postData = {
+            postID: this.state.postID
+        }
+        console.log(postData)
         axios
-            .post('/post', { data: newPost })
-            .then((res) => {
+            .delete(`/deletePost/${this.state.postID}`)
+            .then(res => {
+                console.log(res.data)
                 this.setState({
-                    body: "",
-                    message: "Post was successful",
-                    createSubmit: true,
+                    message: "Post deleted successfully",
+                    loading: false,
                     dialogOpen: false,
-                    topic: "",
-                    link: ""
+                    dialogOpenConfirm: false,
+                    successDialog: true
                 });
             })
-            .catch((err) => {
+            .catch(err => {
                 this.setState({
-                    message: "Post failed to send"
-                });
+                    message: "Post could not be found",
+                    errors: err.response.data,
+                    loading: false,
+                    dialogOpenConfirm: false
+                })
             })
-        this.setState({
-            loading: false,    
-        });
     }
 
     render() {
@@ -128,7 +130,7 @@ export default class DeletePostButton extends React.Component {
         return (
             <div className="createPostButton">
                 <Button variant="contained" onClick={this.handleOpen} color="primary">
-                    Create Post
+                    Delete Post
                 </Button>
                 <div className="dialog">
                     <Dialog
@@ -137,101 +139,75 @@ export default class DeletePostButton extends React.Component {
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
-                        <Grid container className="form" direction='column'>
-                            <Grid item sm />
-                            <Grid item sm>
-                                <div className='middle'>
-                                <Typography variant='h2' className="pageTitle" >
-                                    Create Post
-                                </Typography>
-                                <form noValidate onSubmit={this.handleSubmit}>
-                                <TextField 
-                                    id="topic" 
-                                    name="topic" 
-                                    type="topic" 
-                                    label="Topic" 
-                                    className="TextField"
-                                    helperText={errors.topic} 
-                                    error={errors.topic ? true : false} 
-                                    value={this.state.topic} 
-                                    onChange={this.handleChange} 
-                                fullwidth="true" />
-                                <br />
-                                <TextField 
-                                    multiline
-                                    rows={4}
-                                    id="body" 
-                                    name="body" 
-                                    type="body" 
-                                    label="Post content" 
-                                    className="TextField2"
-                                    helperText={errors.body} 
-                                    error={errors.body ? true : false} 
-                                    value={this.state.body} 
-                                    onChange={this.handleChange} 
+                    <Grid container className="form" direction='column'>
+                    <Grid item sm />
+                    <Grid item sm></Grid>    
+                        <div className="middle">
+                            <Typography variant='h2' className="pageTitle" >
+                                Delete Post
+                            </Typography>
+                            <form noValidate onSubmit={this.handleSubmit}>
+                            <TextField 
+                                id="postID" 
+                                name="postID" 
+                                type="postID" 
+                                label="Post ID" 
+                                className="textField"
+                                helperText={errors.postID}
+                                error={errors.postID ? true : false} 
+                                value={this.state.postID} 
+                                onChange={this.handleChange} 
                                 fullwidth />
                                 <br />
-                                <TextField 
-                                    id="link" 
-                                    name="link" 
-                                    type="link" 
-                                    label="Link" 
-                                    className="TextField3"
-                                    helperText={errors.link} 
-                                    error={errors.link ? true : false} 
-                                    value={this.state.link} 
-                                    onChange={this.handleChange} 
-                                    fullwidth />
-                                <br />
-                                <FormControl component="fieldset">
-                                <FormGroup>
-                                <FormControlLabel
-                                    control={<Switch 
-                                        id="isAnonymous"
-                                        checked={this.state.isAnonymous}
-                                        name="isAnonymous" 
-                                        type="isAnonymous" 
-                                        label="Post Anonymously?" 
-                                        size='medium'
-                                        className="Switch"
-                                        helperText={errors.isAnonymous} 
-                                        error={errors.isAnonymous ? true : false} 
-                                        value={this.state.isAnonymous} 
-                                        onClick={this.handleCheck} 
-                                    fullwidth />}
-                                    label="Anonymous"
-                                />
-                                </FormGroup>
-                                </FormControl>
-                                <br />
                                 { errors.general && (
-                                <Typography variant='h2' className="ErrorDisplay">
-                                    {errors.general}
+                                    <Typography variant='h2' className="customError">
+                                        {errors.general}
+                                    </Typography>
+                                )}
+                                <Button onClick={this.handleOpenConfirm} variant="contained" color="primary" className="Button" disable={loading}>
+                                    Delete content
+                                </Button>
+                                <Button onClick={this.handleClose} variant="contained" color="primary" className="Button">
+                                    Cancel
+                                </Button>
+                                <Dialog
+                                open={this.state.dialogOpenConfirm}
+                                onClose={this.handleCloseConfirm}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <Typography variant='h2' className="pageTitle" >
+                                    <font color='black'>Confirm Delete?</font>
                                 </Typography>
-                            )}
-                        <DialogActions>
-                            <Button variant="contained" onClick={this.handleClose} color="primary" fullWidth="true">
-                                Cancel
-                            </Button>
-                            <Button type="submit" variant="contained" onClick={this.handleSubmit} color="primary" className="ButtonYes" autoFocus fullWidth="true">
-                                Post
-                            </Button>
-                        </DialogActions>
-                            <br />
+                                    
+                                    <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        You are about to delete a post, are you sure you want to do this?
+                                    </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                    <Button onClick={this.handleCloseConfirm} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" onClick={this.handleSubmit} color="primary" className="ButtonYes" autoFocus>
+                                        Yes
+                                    </Button>
+                                </DialogActions>
+                                </Dialog>
+                                <br />
                             </form>
-                            <Typography color="primary" variant='caption' className="MessageBox" value={this.state.message} >
+                            <Typography color="primary" variant='caption' className="pageMessage" value={this.state.message} >
                                 {this.state.message}
                             </Typography>
-                            </div>
-                            </Grid>
-                            <Grid item sm />
-                        </Grid>
+                        </div>
+                    <Grid item sm />
+                    </Grid>
                     </Dialog>
                 </div>
                 <div name="message">
                 <Dialog
-                        open={this.state.createSubmit}
-                        onClose={this.handleClose}
+                        open={this.state.successDialog}
+                        onClose={this.handleCloseSuccess}
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                     >
@@ -241,7 +217,7 @@ export default class DeletePostButton extends React.Component {
                                 <div className='middle'>
                                 <Paper className="Paper" backgroundColor='red'>
                                 <Typography variant='h2' className="pageTitle" >
-                                    <font color='black'>Post Created Successfully</font>
+                                    <font color='black'>Post Deleted Successfully</font>
                                 </Typography>
                                 <br />
                                 { errors.general && (
@@ -255,7 +231,7 @@ export default class DeletePostButton extends React.Component {
                             </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={this.handleCloseSubmit} color="primary">
+                                <Button onClick={this.handleCloseSuccess} color="primary">
                                     Stay here
                                 </Button>
                                 <Button component={Link} to="/home" color="primary" className="ButtonHome" autoFocus>

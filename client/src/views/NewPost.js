@@ -6,6 +6,7 @@ import withStyles from '@material-ui/core/styles/withStyles'
 
 import Navbar from '../components/layout/Navbar';
 import CreatePostButton from '../components/CreatePostButton';
+import DeletePostButton from '../components/DeletePostButton';
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
@@ -58,12 +59,12 @@ class NewPost extends React.Component {
     }
     
     handleSubmit = (event) => {
-        const regEx = /^([0-9]{3})[-]$/;
         event.preventDefault();
         const newPost = {
-            /*headers: {
-                'Content-Type': 'application/json'
-            },*/
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': localStorage.FBIdToken
+            },
             body: this.state.body,
             userHandle: this.state.userHandle,
             dislikes: this.state.dislikes,
@@ -81,6 +82,7 @@ class NewPost extends React.Component {
         this.setState({
             loading: true
         });
+        
         //createPost({ data: newPost })
         axios
             .post('/post', { data: newPost })
@@ -154,6 +156,18 @@ class NewPost extends React.Component {
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />
+                            <TextField 
+                                id="userHandle" 
+                                name="userHandle" 
+                                type="userHandle" 
+                                label="Username" 
+                                className={classes.textField2}
+                                helperText={errors.userHandle} 
+                                error={errors.userHandle ? true : false} 
+                                value={this.state.userHandle} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
                             <FormControl component="fieldset">
                             <FormGroup>
                             <FormControlLabel
@@ -196,6 +210,7 @@ class NewPost extends React.Component {
                     <Grid item sm />
                 </Grid>
                 <CreatePostButton />
+                <DeletePostButton />
             </div>
         )
     }
