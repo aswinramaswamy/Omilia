@@ -27,6 +27,7 @@ import Start from "./views/Start";
 import Profile from "./views/Profile";
 import ChangeEmail from "./views/ChangeEmail";
 import ChangePassword from "./views/ChangePassword";
+import ChangeUsername from "./views/ChangeUsername";
 import editPost from "./views/EditPost.js";
 import SearchResults from "./views/SearchResults";
 
@@ -70,6 +71,7 @@ ReactDOM.render(
                 <Route path="/post/:postid" component={FullPagePost} />
                 <Route path="/ChangeEmail" component={ChangeEmail} />
                 <Route path="/ChangePassword" component={ChangePassword} />
+                <Route path="/ChangeUsername" component={ChangeUsername} />
                 <Route path="/NewPost" component={NewPost} />
                 <Route path="/editPost" component={editPost} /> 
                 <Route path="/searchResults/:search" component={SearchResults} />

@@ -22,6 +22,123 @@ const {
 const { format } = require("mysql");
 //const admin = require("../util/admin");
 
+
+//get userdata
+exports.getProfile = (req, res) => {
+  db
+  .collection('users')
+  .doc('aswin2')
+  .get()
+  .then(data => {
+    let prof = doc.data;
+    return res.json(posts);
+  })
+  .catch(err => console.error(err));
+}
+
+//Change Username
+exports.changeUsername = (req, res) => {
+  const user = {
+    username: req.body.username,
+    currentEmail: req.body.currentEmail,
+    newUsername: req.body.newUsername,
+    currentPassword: req.body.currentPassword,
+  };
+
+  //const { valid, errors } = validateChangeEmail(user);
+
+  //if (!valid) return res.status(400).json(errors);
+
+  //Email Send Function
+  function sendVerificationEmail(email) {
+    //SMTP Config
+    var smtpConfig = {
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // use SSL
+      auth: {
+        user: 'omiliacs307@gmail.com', //Personal Username
+        pass: 'Omilia2020CS307' //Personal Password
+      }
+    }
+
+    //Opening Email Path
+    var transporter = nodemailer.createTransport(smtpConfig);
+
+    //Email Customization
+    var mailOptions = {
+      from: "Omilia@email.com", // sender address
+      to: user.newEmail, // list of receivers
+      subject: "Username Change Verification for your Omilia Account", // Subject line
+      text: "Email verification, your username has been changed ",
+      html: "<b>Hello there,<br> username changed </b>" // html body
+    };
+
+    //Using an Email Path
+    transporter.sendMail(mailOptions, function (error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Message sent: " + response.message);
+      }
+
+      //Closing Email Path
+      transporter.close(); // shut down the connection pool, no more messages
+    });
+  }
+
+
+ /* let uid;
+  db.doc(`/users/${user.username}`) //Access database by document
+    .get() //Accesses the user requested, returns the user as a doc
+    .then((doc) => {
+      uid = doc.data().userId;
+      admin.auth().updateUser(uid, {
+        displayName: user.newUsername
+      })
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+          return res.status(503).send("Error updating username auth");
+        });
+    })*/
+  db.collection('users')
+    .doc(user.username)
+    .get()
+    .then((doc) => {
+      if (doc && doc.exists) {
+          var data = doc.data();
+          // saves the data to 'name'
+          db.collection('users').doc(user.newUsername).set(data).then((doc) => {
+          db.collection('users').doc(user.username).delete();
+          db.collection('users').doc(user.newUsername).update({ username: user.newUsername });
+          sendVerificationEmail(user.currentEmail); //Should send the email
+          return res.status(200).send('username has been changed'); 
+          })
+        }
+      })
+    //.update({ username: user.newUsername })
+     /* .then((doc) => { 
+        console.log("Successfully updated username");
+        console.log(JSON.stringify(doc));
+        sendVerificationEmail(user.currentEmail); //Should send the email
+        return res.status(200).send('username has been changed'); 
+      })*/
+      .catch(err => {
+        console.log('Error changing username', err);
+        return response.status(500);
+      })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
+};
+
 //Change Email
 exports.changeEmail = (req, res) => {
   const user = {
@@ -122,9 +239,9 @@ exports.changePassword = (req, res) => {
     newPassword: req.body.newPassword,
   };
 
-  const { valid, errors } = validateChangeEmail(user);
+  //const { valid, errors } = validateChangeEmail(user);
 
-  if (!valid) return res.status(400).json(errors);
+  //if (!valid) return res.status(400).json(errors);
   
   //Email Send Function
   function sendVerificationPassword(email) {

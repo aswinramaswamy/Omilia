@@ -18,16 +18,14 @@ const styles = (theme) => ({
     ...theme.spreadIt
 })
 
-
-
-class ChangeEmail extends React.Component {  
+class ChangeUsername extends React.Component {  
     constructor(){
       super();
       this.state = {
           currentEmail: "",
           username: "",
           currentPassword: "",
-          newEmail: "",
+          newUsername: "",
           loading: false,
           errors: {}
       };
@@ -39,7 +37,7 @@ class ChangeEmail extends React.Component {
     })
   }
 
-  onChangeEmailPress = (event) => {
+  onChangeUsernamePress = (event) => {
     event.preventDefault();
     this.setState({
         loading: true
@@ -47,12 +45,12 @@ class ChangeEmail extends React.Component {
     const userData = {
         currentEmail: this.state.currentEmail,
         username: this.state.username,
-        newEmail: this.state.newEmail,
+        newUsername: this.state.newUsername,
         currentPassword: this.state.currentPassword
     }
     
     axios
-        .post('/changeEmail', userData)
+        .post('/changeUsername', userData)
         .then(res => {
             console.log(res.data)
             localStorage.setItem('FBIdToken', `Bearer  ${res.data.token}`);
@@ -77,7 +75,7 @@ class ChangeEmail extends React.Component {
       return (
           <div>
               <Navbar />
-              <form noValidate onSubmit={this.onChangeEmailPress}>
+              <form noValidate onSubmit={this.onChangeUsernamePress}>
               <TextField 
                       id="currentEmail" 
                       name="currentEmail" 
@@ -115,14 +113,14 @@ class ChangeEmail extends React.Component {
                       fullwidth />
                   <br />
                   <TextField 
-                      id="newEmail" 
-                      name="newEmail" 
-                      type="newEmail" 
-                      label="New Email" 
+                      id="newUsername" 
+                      name="newUsername" 
+                      type="newUsername" 
+                      label="New Username" 
                       className={classes.textField}
-                      helperText={errors.newEmail}  
-                      error={errors.newEmail ? true : false} 
-                      value={this.state.newEmail} 
+                      helperText={errors.newUsername}  
+                      error={errors.newUsername ? true : false} 
+                      value={this.state.newUsername} 
                       onChange={this.handleChange} 
                       fullwidth />
                   <br />
@@ -132,7 +130,7 @@ class ChangeEmail extends React.Component {
                       </Typography>
                   )}
                   <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
-                      Change Email
+                      Change Username
                       {loading && (
                           <CircularProgress size={20} className={classes.progress}/>
                       )}
@@ -143,10 +141,8 @@ class ChangeEmail extends React.Component {
       )}
 }
 
-ChangeEmail.propTypes = {
+ChangeUsername.propTypes = {
     classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(ChangeEmail);
-
-
+export default withStyles(styles)(ChangeUsername);

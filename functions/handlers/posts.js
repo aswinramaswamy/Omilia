@@ -138,21 +138,21 @@ exports.getPost = (req, res) => {
 
 exports.getPosthandle = (req, res) => {
   db
-    .collection('posts')
-    .orderBy('createdAt', 'desc')
-    .where('userHandle', '==', 'aswin')
-    .get()
-    .then(data => {
-      let posts = [];
-      data.forEach(doc => {
-        posts.push({
-          postId: doc.id,
-          ...doc.data()
-        });
+  .collection('posts')
+  .orderBy('createdAt', 'desc')
+  .where('userHandle','==',req.params.userHandle)
+  .get()
+  .then(data => {
+    let posts = [];
+    data.forEach(doc => {
+      posts.push({
+        postId: doc.id,
+        ...doc.data()
       });
-      return res.json(posts);
-    })
-    .catch(err => console.error(err));
+    });
+    return res.json(posts);
+  })
+  .catch(err => console.error(err));
 }
 
 exports.createComment = (req, res) => {

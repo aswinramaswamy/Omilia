@@ -26,6 +26,8 @@ const {
   deleteAccount,
   changeEmail,
   changePassword,
+  changeUsername,
+  getProfile,
   confirmEmail,
   searchUsers
 } = require('./handlers/users');
@@ -38,7 +40,7 @@ app.post('/post', createPost);
 app.delete('/deletePost/:postID', deletePost);
 app.post('/editPost', editPost);
 app.get('/post/:postID', getPost);
-app.get('/userpost', getPosthandle);
+app.get('/userpost/:userHandle', getPosthandle);
 
 //TODO: (gaurav)like a scream
 //TODO: (gaurav)dislike a scream
@@ -52,7 +54,9 @@ app.post('/logout', logout);
 app.post('/deleteAccount', deleteAccount);
 app.post('/changeEmail', changeEmail);
 app.post('/changePassword', changePassword);
+app.post('/changeUsername', changeUsername);
 app.get('/confirmEmail/:username', confirmEmail);
 app.post('/searchUsers', searchUsers);
+app.get('/userdata', getProfile);
 
 exports.api = functions.https.onRequest(app);
