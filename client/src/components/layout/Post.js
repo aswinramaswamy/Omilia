@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import Link from 'react-router-dom/Link';
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime'
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { connect } from 'react-redux';
+import { likePost, unlikePost, dislikePost, undislikePost } from '../../redux/actions/dataActions';
+import PropTypes from 'prop-types';
 
 //MUI
 import withStyles from '@material-ui/core/styles/withStyles'
@@ -11,6 +13,7 @@ import CardContent from '@material-ui/core/CardContent'
 import IconButton from '@material-ui/core/IconButton';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
 import Typography from '@material-ui/core/Typography'
 
 const styles = {
@@ -20,15 +23,71 @@ const styles = {
 };
 
 class Post extends Component {
+
+    likedPost = () => {
+        if (
+          this.props.user.likes &&
+          this.props.user.likes.find(
+            (like) => like.postID === this.props.postID
+          )
+        )
+          return true;
+        else return false;
+      };
+      dislikedPost = () => {
+        if (
+          this.props.user.dislikes &&
+          this.props.user.dislikes.find(
+            (dislike) => dislike.postID === this.props.postID
+          )
+        )
+          return true;
+        else return false;
+      };
+      likePost = () => {
+        this.props.likePost(this.props.post.postID);
+      };
+      unlikePost = () => {
+        this.props.unlikePost(this.props.post.postID);
+      };
+      dislikePost = () => {
+        this.props.dislikePost(this.props.post.postID);
+      };
+      undislikePost = () => {
+        this.props.undislikePost(this.props.post.postID);
+      };
     render() {
         dayjs.extend(relativeTime)
-        const { classes, post : { createdAt, body, userHandle } } = this.props
+        const { classes, post : { createdAt, body, userHandle, likes, dislikes, commentCount } } = this.props
+        const likeButton = this.likedPost() ? (
+            <IconButton tip="Undo like" onClick={this.unlikePost}>
+              <ArrowUpwardIcon color="primary" />
+              <span><Typography>{likes}</Typography></span>
+            </IconButton>
+          ) : (
+            <IconButton tip="Like" onClick={this.likePost}>
+              <ArrowUpwardIcon color="secondary" />
+              <span><Typography>{likes}</Typography></span>
+            </IconButton>
+          );
+          const dislikeButton = this.dislikedPost() ? (
+            <IconButton tip="Undo dislike" onClick={this.undislikePost}>
+              <ArrowDownwardIcon color="primary" />
+              <span><Typography>{dislikes}</Typography></span>
+            </IconButton>
+          ) : (
+            <IconButton tip="dislike" onClick={this.dislikePost}>
+              <ArrowDownwardIcon color="secondary" />
+              <span><Typography>{dislikes}</Typography></span>
+            </IconButton>
+          );
         return (
+            <div>
             <Card className={classes.card}>
                 <CardContent>
                     <Typography variant="h6" color="primary">
-                         {userHandle}
-                     </Typography>
+                        {userHandle}
+                    </Typography>
                     <Typography variant="body2" color="textSecondary">
                         {dayjs(createdAt).fromNow()}
                     </Typography>
@@ -37,16 +96,39 @@ class Post extends Component {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <IconButton aria-label="like">
-                        <ArrowUpwardIcon color="primary"/>
-                    </IconButton>
-                    <IconButton aria-label="dislike">
-                        <ArrowDownwardIcon color="secondary"/>
+                    {likeButton}
+                    {dislikeButton}
+                    <IconButton>
+                        <CommentOutlinedIcon color="primary"/>
+                        <span><Typography>{commentCount}</Typography></span>
                     </IconButton>
                 </CardActions>
-            </Card>
+            </Card> 
+            
+            </div>       
         )
     }
 }
 
-export default withStyles(styles)(Post);
+Post.propTypes = {
+    likePost: PropTypes.func.isRequired,
+    unlikePost: PropTypes.func.isRequired,
+    dislikePost: PropTypes.func.isRequired,
+    undislikePost: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired,
+    post: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => ({
+    user: state.user
+})
+
+const mapActionsToProps = {
+    likePost,
+    unlikePost,
+    dislikePost,
+    undislikePost
+}
+
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Post));
