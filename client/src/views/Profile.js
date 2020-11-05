@@ -32,8 +32,6 @@ export default class Profile extends React.Component {
             return (
             <div>
                 <Navbar />
-                <h2>@aswin</h2>
-                <h2>aswinramaswamy@gmail.com</h2>
                 <h2><Link to="settings" class="button">Edit info</Link></h2>
                 <div className="center">
                     {recentPostsMarkup}
