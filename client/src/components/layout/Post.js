@@ -22,39 +22,48 @@ const styles = {
     }
 };
 
+let liked = false;
+let disliked = false;
+
 class Post extends Component {
 
     likedPost = () => {
-        if (
+        /*if (
           this.props.user.likes &&
           this.props.user.likes.find(
             (like) => like.postID === this.props.postID
           )
         )
           return true;
-        else return false;
+        else return false;*/
+        return liked;
       };
       dislikedPost = () => {
-        if (
+        /*if (
           this.props.user.dislikes &&
           this.props.user.dislikes.find(
             (dislike) => dislike.postID === this.props.postID
           )
         )
           return true;
-        else return false;
+        else return false;*/
+        return disliked;
       };
       likePost = () => {
         this.props.likePost(this.props.post.postID);
+        liked = true;
       };
       unlikePost = () => {
         this.props.unlikePost(this.props.post.postID);
+        liked = false;
       };
       dislikePost = () => {
         this.props.dislikePost(this.props.post.postID);
+        disliked = true;
       };
       undislikePost = () => {
         this.props.undislikePost(this.props.post.postID);
+        disliked = false;
       };
     render() {
         dayjs.extend(relativeTime)
