@@ -592,6 +592,7 @@ exports.deleteAccount = (req, res) => {
         var user = firebase.auth().currentUser;
         user.delete().then(function() {
            // delete successful.
+           firebase.auth().signOut();
           }).catch(function(error) {
             // An error happened.
           });
@@ -608,7 +609,6 @@ exports.deleteAccount = (req, res) => {
         .status(500)
         .json({ general: "Something went wrong, please try again" });
     });
-    firebase.auth().signOut();
 };
 
 //Confirm Email
