@@ -6,6 +6,7 @@ import withStyles from '@material-ui/core/styles/withStyles'
 
 import Navbar from '../components/layout/Navbar';
 import CreatePostButton from '../components/CreatePostButton';
+import DeletePostButton from '../components/DeletePostButton';
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
@@ -209,6 +210,7 @@ class NewPost extends React.Component {
                     <Grid item sm />
                 </Grid>
                 <CreatePostButton />
+                <DeletePostButton />
             </div>
         )
     }
