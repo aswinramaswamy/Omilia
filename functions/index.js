@@ -14,6 +14,7 @@ const {
   createPost,
   deletePost,
   editPost,
+  getPosthandle,
   getPost,
   createComment,
   likePost,
@@ -29,9 +30,12 @@ const {
   deleteAccount,
   changeEmail,
   changePassword,
+  changeUsername,
+  getProfile,
   confirmEmail,
   searchUsers
 } = require('./handlers/users');
+//const { default: EditPost } = require('../client/src/views/EditPost');
 
 // Post routes
 app.get('/posts', getAllPosts);
@@ -40,6 +44,7 @@ app.post('/post', createPost);
 app.delete('/deletePost/:postID', deletePost);
 app.post('/editPost', editPost);
 app.get('/post/:postID', getPost);
+app.get('/userpost/:userHandle', getPosthandle);
 app.get('/post/:postID/like', likePost);
 app.get('/post/:postID/unlike', unlikePost);
 app.get('/post/:postID/dislike', dislikePost);
@@ -55,7 +60,9 @@ app.post('/logout', logout);
 app.post('/deleteAccount', deleteAccount);
 app.post('/changeEmail', changeEmail);
 app.post('/changePassword', changePassword);
+app.post('/changeUsername', changeUsername);
 app.get('/confirmEmail/:username', confirmEmail);
 app.post('/searchUsers', searchUsers);
+app.get('/userdata', getProfile);
 
 exports.api = functions.https.onRequest(app);

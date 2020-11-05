@@ -33,7 +33,8 @@ exports.createPost = (req, res) => {
       edited: false,
       editedTime: new Date().toISOString(),
       createdAt: new Date().toISOString(),
-      link: req.body.data.link
+      link: req.body.data.link,
+      topic: req.body.data.topic
     }
     var newID = "unitialized"
     db
@@ -132,6 +133,26 @@ exports.getPost = (req, res) => {
       console.error(err);
       res.status(500).json({ error: err.code });
     })
+}
+
+
+exports.getPosthandle = (req, res) => {
+  db
+  .collection('posts')
+  .orderBy('createdAt', 'desc')
+  .where('userHandle','==',req.params.userHandle)
+  .get()
+  .then(data => {
+    let posts = [];
+    data.forEach(doc => {
+      posts.push({
+        postId: doc.id,
+        ...doc.data()
+      });
+    });
+    return res.json(posts);
+  })
+  .catch(err => console.error(err));
 }
 
 exports.createComment = (req, res) => {

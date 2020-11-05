@@ -1,5 +1,5 @@
 //Database Shortcut
-const { db } = require("../util/admin");
+const { db, admin } = require("../util/admin");
 
 //Firebase Internet Location
 const config = require("../util/config");
@@ -20,7 +20,124 @@ const {
 } = require("../util/validation");
 
 const { format } = require("mysql");
-const admin = require("../util/admin");
+//const admin = require("../util/admin");
+
+
+//get userdata
+exports.getProfile = (req, res) => {
+  db
+  .collection('users')
+  .doc('aswin2')
+  .get()
+  .then(data => {
+    let prof = doc.data;
+    return res.json(posts);
+  })
+  .catch(err => console.error(err));
+}
+
+//Change Username
+exports.changeUsername = (req, res) => {
+  const user = {
+    username: req.body.username,
+    currentEmail: req.body.currentEmail,
+    newUsername: req.body.newUsername,
+    currentPassword: req.body.currentPassword,
+  };
+
+  //const { valid, errors } = validateChangeEmail(user);
+
+  //if (!valid) return res.status(400).json(errors);
+
+  //Email Send Function
+  function sendVerificationEmail(email) {
+    //SMTP Config
+    var smtpConfig = {
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // use SSL
+      auth: {
+        user: 'omiliacs307@gmail.com', //Personal Username
+        pass: 'Omilia2020CS307' //Personal Password
+      }
+    }
+
+    //Opening Email Path
+    var transporter = nodemailer.createTransport(smtpConfig);
+
+    //Email Customization
+    var mailOptions = {
+      from: "Omilia@email.com", // sender address
+      to: user.newEmail, // list of receivers
+      subject: "Username Change Verification for your Omilia Account", // Subject line
+      text: "Email verification, your username has been changed ",
+      html: "<b>Hello there,<br> username changed </b>" // html body
+    };
+
+    //Using an Email Path
+    transporter.sendMail(mailOptions, function (error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Message sent: " + response.message);
+      }
+
+      //Closing Email Path
+      transporter.close(); // shut down the connection pool, no more messages
+    });
+  }
+
+
+ /* let uid;
+  db.doc(`/users/${user.username}`) //Access database by document
+    .get() //Accesses the user requested, returns the user as a doc
+    .then((doc) => {
+      uid = doc.data().userId;
+      admin.auth().updateUser(uid, {
+        displayName: user.newUsername
+      })
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+          return res.status(503).send("Error updating username auth");
+        });
+    })*/
+  db.collection('users')
+    .doc(user.username)
+    .get()
+    .then((doc) => {
+      if (doc && doc.exists) {
+          var data = doc.data();
+          // saves the data to 'name'
+          db.collection('users').doc(user.newUsername).set(data).then((doc) => {
+          db.collection('users').doc(user.username).delete();
+          db.collection('users').doc(user.newUsername).update({ username: user.newUsername });
+          sendVerificationEmail(user.currentEmail); //Should send the email
+          return res.status(200).send('username has been changed'); 
+          })
+        }
+      })
+    //.update({ username: user.newUsername })
+     /* .then((doc) => { 
+        console.log("Successfully updated username");
+        console.log(JSON.stringify(doc));
+        sendVerificationEmail(user.currentEmail); //Should send the email
+        return res.status(200).send('username has been changed'); 
+      })*/
+      .catch(err => {
+        console.log('Error changing username', err);
+        return response.status(500);
+      })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
+};
 
 //Change Email
 exports.changeEmail = (req, res) => {
@@ -34,53 +151,76 @@ exports.changeEmail = (req, res) => {
   const { valid, errors } = validateChangeEmail(user);
 
   if (!valid) return res.status(400).json(errors);
-  const userCredentials = {
-    username: user.username,
-    email: user.email,
-    createdAt: new Date().toISOString(),
-    userId,
-  };
 
-  db.doc(`/users/${user.username}`)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var user1 = firebase.auth().currentUser;
-        user1
-          .reauthenticateWithCredential(userCredentials)
-          .then(function () {
-            var curUser = firebase.auth().currentUser;
-            return curUser.updateEmail(user.newEmail);
-          })
-          .then(function () {
-            firebase
-              .auth()
-              .sendPasswordResetEmail(user.newEmail)
-              .then(function () {
-                // Email sent.
-              })
-              .catch(function (error) {
-                console.log("Error changing Email", error);
-              });
-            db.doc(`/users/${user.username}`).update({ email: user.newEmail });
-            if (curUser == NULL) {
-              return res.status(1).json({ general: "NULL" });
-            }
-          })
-          .catch(function (error) {
-            console.log("Error changing Email", error);
-          });
-      } else {
-        return res.status(1).json({ general: "oops" });
+  //Email Send Function
+  function sendVerificationEmail(email) {
+    //SMTP Config
+    var smtpConfig = {
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // use SSL
+      auth: {
+        user: 'omiliacs307@gmail.com', //Personal Username
+        pass: 'Omilia2020CS307' //Personal Password
       }
+    }
+
+    //Opening Email Path
+    var transporter = nodemailer.createTransport(smtpConfig);
+
+    //Email Customization
+    var mailOptions = {
+      from: "Omilia@email.com", // sender address
+      to: user.newEmail, // list of receivers
+      subject: "Email Change Verification for your Omilia Account", // Subject line
+      text: "Email verification, your email has been changed ",
+      html: "<b>Hello there,<br> email changed </b>" // html body
+    };
+
+    //Using an Email Path
+    transporter.sendMail(mailOptions, function (error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Message sent: " + response.message);
+      }
+
+      //Closing Email Path
+      transporter.close(); // shut down the connection pool, no more messages
+    });
+  }
+
+
+  let uid;
+  db.doc(`/users/${user.username}`) //Access database by document
+    .get() //Accesses the user requested, returns the user as a doc
+    .then((doc) => {
+      uid = doc.data().userId;
+      admin.auth().updateUser(uid, {
+        email: user.newEmail
+      })
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+          return res.status(503).send("Error updating email auth");
+        });
     })
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
-    })
-    .then(() => {
-      return res.status(201).json({ token });
-    })
+  db.collection('users')
+    .doc(user.username)
+    .update({ email: user.newEmail })
+      .then((doc) => { 
+        console.log("Successfully updated email");
+        console.log(JSON.stringify(doc));
+        sendVerificationEmail(user.newEmail); //Should send the email
+        return res.status(200).send('Email has been changed'); 
+      })
+      .catch(err => {
+        console.log('Error changing email', err);
+        return response.status(500);
+      })
     .catch((err) => {
       console.error(err);
       return res
@@ -89,74 +229,76 @@ exports.changeEmail = (req, res) => {
     });
 };
 
+
 // Change Password
 exports.changePassword = (req, res) => {
   const user = {
     username: req.body.username,
     currentEmail: req.body.currentEmail,
-    newPassword: req.body.newPassword,
     currentPassword: req.body.currentPassword,
+    newPassword: req.body.newPassword,
   };
 
-  const { valid, errors } = validateChangeEmail(user);
+  //const { valid, errors } = validateChangeEmail(user);
 
-  if (!valid) return res.status(400).json(errors);
-  const userCredentials = {
-    username: user.username,
-    email: user.email,
-    createdAt: new Date().toISOString(),
-    userId,
-  };
-
-  db.doc(`/users/${user.username}`)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var user1 = firebase.auth().currentUser;
-        user1
-          .reauthenticateWithCredential(userCredentials)
-          .then(function () {
-            var curUser = firebase.auth().currentUser;
-            return curUser
-              .updatePassword(user.newPassword)
-              .then(function () {
-                // Updated.
-              })
-              .catch(function (error) {
-                console.log("Error changing Password", error);
-              });
-          })
-          .then(function () {
-            firebase
-              .auth()
-              .sendPasswordResetEmail(user.newEmail)
-              .then(function () {
-                // Email sent.
-              })
-              .catch(function (error) {
-                console.log("Error changing Password", error);
-              });
-          })
-          .catch(function (error) {
-            console.log("Error changing Password", error);
-          });
-      } else {
-        return res.status(1).json({ general: "oops" });
+  //if (!valid) return res.status(400).json(errors);
+  
+  //Email Send Function
+  function sendVerificationPassword(email) {
+    //SMTP Config
+    var smtpConfig = {
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // use SSL
+      auth: {
+        user: 'omiliacs307@gmail.com', //Personal Username
+        pass: 'Omilia2020CS307' //Personal Password
       }
-    })
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
-    })
-    .then(() => {
-      return res.status(201).json({ token });
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ general: "Something went wrong, please try again" });
+    }
+
+    //Opening Email Path
+    var transporter = nodemailer.createTransport(smtpConfig);
+
+    //Email Customization
+    var mailOptions = {
+      from: "Omilia@email.com", // sender address
+      to: user.currentEmail, // list of receivers
+      subject: "Password Change Verification for your Omilia Account", // Subject line
+      text: "Password verification, your Password has been changed ",
+      html: "<b>Hello there,<br> Password changed </b>" // html body
+    };
+
+    //Using an Email Path
+    transporter.sendMail(mailOptions, function (error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Message sent: " + response.message);
+      }
+
+      //Closing Email Path
+      transporter.close(); // shut down the connection pool, no more messages
     });
+  }
+
+  let uid;
+  db.doc(`/users/${user.username}`) //Access database by document
+    .get() //Accesses the user requested, returns the user as a doc
+    .then((doc) => {
+      uid = doc.data().userId;
+      admin.auth().updateUser(uid, {
+        password: user.newPassword
+      })
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+          sendVerificationPassword(user.currentEmail); //Should send the email
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+          return res.status(400).send("Error updating password auth");
+        });
+    })
 };
 
 //Create User
@@ -229,7 +371,7 @@ exports.signup = (req, res) => {
         .get() //Access all users and return as 'snapshot' array essentially
         .then((snapshot) => { //Checking every user if the phone number is already taken
           snapshot.forEach(function (doc) {
-            if (JSON.stringify(doc.data().phone) === JSON.stringify(newUser.phone)) { //If the phone number is found
+            if (JSON.stringify(doc.data().phone) !== JSON.stringify('') && JSON.stringify(doc.data().phone) === JSON.stringify(newUser.phone)) { //If the phone number is found
               foundPhone = newUser.phone;
             }
           });
@@ -309,26 +451,28 @@ exports.phoneLogin = (req, res) => {
       if (typeof foundEmail !== 'undefined') {
         return firebase
           .auth()
-          .signInWithEmailAndPassword(foundEmail, user.password);
-      }
-    })
-    .then((data) => {
-      if (typeof data !== 'undefined') {
-        return data.user.getIdToken();
+          .signInWithEmailAndPassword(foundEmail, user.password)
+          .then((data) => {
+            return data.user.getIdToken();
+          })
+          .then((token) => {
+            return res.json({ token: token });
+          })
+          .catch((err) => {
+            console.error(err);
+            // auth/wrong-password
+            // auth/user-not-found
+            return res
+              .status(403)
+              .json({ general: "Wrong credentials, please try again" });
+          });
       } else {
-        return new Error; //res.status(401).json({ phone: "incorrect phone number"}); //actually sends this
+        return res.status(403).json({ general: "Wrong Credentials, please try again"});
       }
-    })
-    .then((token) => {
-      return res.json({ token });
     })
     .catch((err) => {
       console.error(err);
-      // auth/wrong-password
-      // auth/user-not-found
-      return res
-        .status(403)
-        .json({ general: "Wrong credentials, please try again" });
+      return res.status(403).json({ general: "Wrong credentials, please try again"});
     });
 };
 

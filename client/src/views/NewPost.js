@@ -5,13 +5,14 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles'
 
 import Navbar from '../components/layout/Navbar';
+import CreatePostButton from '../components/CreatePostButton';
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-//import FormLabel from '@material-ui/core/FormLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -38,7 +39,8 @@ class NewPost extends React.Component {
             loading: false, 
             errors: {},
             message: "",
-            link: ""
+            link: "",
+            topic: ""
         }
     }
 
@@ -56,12 +58,8 @@ class NewPost extends React.Component {
     }
     
     handleSubmit = (event) => {
+        const regEx = /^([0-9]{3})[-]$/;
         event.preventDefault();
-        /*headers: {
-            'Authorization': `${localStorage.FBIdToken}`,
-            'authorization': `${localStorage.FBIdToken}`,
-            'Content-Type': 'application/json'
-          },*/
         const newPost = {
             /*headers: {
                 'Content-Type': 'application/json'
@@ -76,7 +74,8 @@ class NewPost extends React.Component {
             isAnonymous: this.state.isAnonymous,
             postID: this.state.postID,
             userID: this.state.userID,
-            link: this.state.link
+            link: this.state.link,
+            topic: this.state.topic
           }
         console.log(newPost)
         this.setState({
@@ -118,6 +117,20 @@ class NewPost extends React.Component {
                             <TextField 
                                 multiline
                                 rows={4}
+                                id="topic" 
+                                name="topic" 
+                                type="topic" 
+                                label="Topic" 
+                                className={classes.textField}
+                                helperText={errors.topic} 
+                                error={errors.topic ? true : false} 
+                                value={this.state.topic} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
+                                multiline
+                                rows={4}
                                 id="body" 
                                 name="body" 
                                 type="body" 
@@ -138,6 +151,18 @@ class NewPost extends React.Component {
                                 helperText={errors.link} 
                                 error={errors.link ? true : false} 
                                 value={this.state.link} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
+                                id="userHandle" 
+                                name="userHandle" 
+                                type="userHandle" 
+                                label="Username" 
+                                className={classes.textField2}
+                                helperText={errors.userHandle} 
+                                error={errors.userHandle ? true : false} 
+                                value={this.state.userHandle} 
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />
@@ -182,6 +207,7 @@ class NewPost extends React.Component {
                     </Grid>
                     <Grid item sm />
                 </Grid>
+                <CreatePostButton />
             </div>
         )
     }
