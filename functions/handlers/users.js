@@ -371,7 +371,7 @@ exports.signup = (req, res) => {
         .get() //Access all users and return as 'snapshot' array essentially
         .then((snapshot) => { //Checking every user if the phone number is already taken
           snapshot.forEach(function (doc) {
-            if (JSON.stringify(doc.data().phone) === JSON.stringify(newUser.phone)) { //If the phone number is found
+            if (JSON.stringify(doc.data().phone) !== JSON.stringify('') && JSON.stringify(doc.data().phone) === JSON.stringify(newUser.phone)) { //If the phone number is found
               foundPhone = newUser.phone;
             }
           });
@@ -451,26 +451,28 @@ exports.phoneLogin = (req, res) => {
       if (typeof foundEmail !== 'undefined') {
         return firebase
           .auth()
-          .signInWithEmailAndPassword(foundEmail, user.password);
-      }
-    })
-    .then((data) => {
-      if (typeof data !== 'undefined') {
-        return data.user.getIdToken();
+          .signInWithEmailAndPassword(foundEmail, user.password)
+          .then((data) => {
+            return data.user.getIdToken();
+          })
+          .then((token) => {
+            return res.json({ token: token });
+          })
+          .catch((err) => {
+            console.error(err);
+            // auth/wrong-password
+            // auth/user-not-found
+            return res
+              .status(403)
+              .json({ general: "Wrong credentials, please try again" });
+          });
       } else {
-        return new Error; //res.status(401).json({ phone: "incorrect phone number"}); //actually sends this
+        return res.status(403).json({ general: "Wrong Credentials, please try again"});
       }
-    })
-    .then((token) => {
-      return res.json({ token });
     })
     .catch((err) => {
       console.error(err);
-      // auth/wrong-password
-      // auth/user-not-found
-      return res
-        .status(403)
-        .json({ general: "Wrong credentials, please try again" });
+      return res.status(403).json({ general: "Wrong credentials, please try again"});
     });
 };
 
