@@ -16,6 +16,10 @@ const {
   editPost,
   getPost,
   createComment,
+  likePost,
+  unlikePost,
+  dislikePost,
+  undislikePost
 } = require('./handlers/posts');
 const {
   signup,
@@ -36,9 +40,12 @@ app.post('/post', createPost);
 app.delete('/deletePost/:postID', deletePost);
 app.post('/editPost', editPost);
 app.get('/post/:postID', getPost);
-//TODO: (gaurav)like a scream
-//TODO: (gaurav)dislike a scream
+app.get('/post/:postID/like', likePost);
+app.get('/post/:postID/unlike', unlikePost);
+app.get('/post/:postID/dislike', dislikePost);
+app.get('/post/:postID/undislike', undislikePost);
 app.post('/post/:postID/comment', createComment);
+
 
 // users routes
 app.post('/signup', signup);

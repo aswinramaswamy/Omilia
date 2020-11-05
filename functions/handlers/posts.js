@@ -9,7 +9,7 @@ exports.getAllPosts = (req, res) => {
       let posts = [];
       data.forEach(doc => {
         posts.push({
-          postId: doc.id,
+          postID: doc.id,
           ...doc.data()
         });
       });
@@ -151,12 +151,116 @@ exports.createComment = (req, res) => {
     if(!doc.exists) {
       return res.status(404).json({ error: 'Post does not exist'});
     }
-    return db
-    .collection('comments')
-    .add(newComment);
+    if(!doc.data().commentCount) {
+      return doc.ref.update({commentCount: 1 });
+    }
+    return doc.ref.update({commentCount: doc.data().commentCount + 1 });
+  })
+  .then(() => {
+    return db.collection('comments').add(newComment);
   })
   .then(() => {
     res.json(newComment);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+}
+
+exports.likePost = (req, res) => {
+  const postDocument = db.doc(`posts/${req.params.postID}`);
+  
+  let postData;
+
+  postDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'Post does not exist'});
+    }
+    //increase like count in doc
+    postData = doc.data();
+    postData.postID = doc.id;
+    postData.likes++;
+    return postDocument.update({ likes: postData.likes });
+  })
+  .then(() => {
+    return res.json(postData);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+}
+
+exports.unlikePost = (req, res) => {
+  const postDocument = db.doc(`posts/${req.params.postID}`);
+  
+  let postData;
+
+  postDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'Post does not exist'});
+    }
+    //increase like count in doc
+    postData = doc.data();
+    postData.postID = doc.id;
+    postData.likes--;
+    return postDocument.update({ likes: postData.likes });
+  })
+  .then(() => {
+    return res.json(postData);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+}
+
+exports.dislikePost = (req, res) => {
+  const postDocument = db.doc(`posts/${req.params.postID}`);
+  
+  let postData;
+
+  postDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'Post does not exist'});
+    }
+    //increase like count in doc
+    postData = doc.data();
+    postData.postID = doc.id;
+    postData.dislikes++;
+    return postDocument.update({ dislikes: postData.dislikes });
+  })
+  .then(() => {
+    return res.json(postData);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+}
+
+exports.undislikePost = (req, res) => {
+  const postDocument = db.doc(`posts/${req.params.postID}`);
+  
+  let postData;
+
+  postDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'Post does not exist'});
+    }
+    //increase like count in doc
+    postData = doc.data();
+    postData.postID = doc.id;
+    postData.dislikes--;
+    return postDocument.update({ dislikes: postData.dislikes });
+  })
+  .then(() => {
+    return res.json(postData);
   })
   .catch(err => {
     console.log(err);
