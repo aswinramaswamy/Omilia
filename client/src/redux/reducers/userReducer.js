@@ -3,6 +3,10 @@ import {
     SET_AUTHENTICATED,
     SET_UNAUTHENTICATED,
     LOADING_USER,
+    LIKE_POST,
+    UNLIKE_POST,
+    DISLIKE_POST,
+    UNDISLIKE_POST
   } from '../types';
   
   const initialState = {
@@ -10,6 +14,7 @@ import {
     loading: false,
     credentials: {},
     likes: [],
+    dislikes: [],
     notifications: []
   };
   
@@ -33,6 +38,42 @@ import {
           ...state,
           loading: true
         };
+        case LIKE_POST:
+          return {
+            ...state,
+            likes: [
+              ...state.likes,
+              {
+                userHandle: state.credentials.handle,
+                postID: action.payload.postID
+              }
+            ]
+          };
+        case UNLIKE_POST:
+          return {
+            ...state,
+            likes: state.likes.filter(
+              (like) => like.postID !== action.payload.postID
+            )
+          };
+          case DISLIKE_POST:
+            return {
+              ...state,
+              dislikes: [
+                ...state.dislikes,
+                {
+                  userHandle: state.credentials.handle,
+                  postID: action.payload.postID
+                }
+              ]
+            };
+          case UNDISLIKE_POST:
+            return {
+              ...state,
+              dislikes: state.dislikes.filter(
+                (dislike) => dislike.postID !== action.payload.postID
+              )
+            };
       default:
         return state;
     }

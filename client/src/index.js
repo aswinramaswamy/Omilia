@@ -30,6 +30,10 @@ import ChangePassword from "./views/ChangePassword";
 import ChangeUsername from "./views/ChangeUsername";
 import editPost from "./views/EditPost.js";
 import SearchResults from "./views/SearchResults";
+import followUser from "./views/followUser";
+import followTopic from "./views/followTopic";
+import unfollowUser from "./views/unfollowUser";
+import unfollowTopic from "./views/unfollowTopic";
 
 import "./css/app.css";
 import FullPagePost from "./views/FullPagePost";
@@ -68,12 +72,16 @@ ReactDOM.render(
                 <Route path="/deleteAccount" component={DeleteAccount} />
                 <Route path="/profile" component={Profile} />
                 <Route path="/post" component={FullPagePost} /> 
-                <Route path="/post/:postid" component={FullPagePost} />
+                <Route path="/post/:postID" component={FullPagePost} />
                 <Route path="/ChangeEmail" component={ChangeEmail} />
                 <Route path="/ChangePassword" component={ChangePassword} />
                 <Route path="/ChangeUsername" component={ChangeUsername} />
                 <Route path="/NewPost" component={NewPost} />
-                <Route path="/editPost" component={editPost} /> 
+                <Route path="/editPost" component={editPost} />
+                <Route path="/followUser" component={followUser} /> 
+                <Route path="/followTopic" component={followTopic} /> 
+                <Route path="/unfollowUser" component={unfollowUser} /> 
+                <Route path="/unfollowTopic" component={unfollowTopic} />
                 <Route path="/searchResults/:search" component={SearchResults} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />

@@ -26,6 +26,8 @@ class Create extends React.Component {
             confirmPassword: '',
             phone: '',
             username: '',
+            userFollows: {},
+            topicFollows: {},
             loading: false,
             errors: {}
         }
@@ -47,7 +49,9 @@ class Create extends React.Component {
             password: this.state.password,
             confirmPassword: this.state.confirmPassword,
             phone: this.state.phone,
-            username: this.state.username
+            username: this.state.username,
+            userFollows: this.state.userFollows,
+            topicFollows: this.state.topicFollows
         }
         axios
             .post('/signup', newUserData)

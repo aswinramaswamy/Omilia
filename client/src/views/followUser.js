@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import Navbar from '../components/layout/Navbar';
 
 import withStyles from '@material-ui/core/styles/withStyles'
-import CreatePostButton from '../components/CreatePostButton';
-import DeletePostButton from '../components/DeletePostButton';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -22,11 +20,12 @@ const styles = (theme) => ({
     ...theme.spreadIt
 })
 
-class Delete extends React.Component {
+class FollowUser extends React.Component {
     constructor() {
         super();
         this.state = {
-            postID: "Enter Post ID",
+            yourUserName: "Enter Your Username",
+            userID: "Enter Username to follow",
             dialogOpen: false,
             message: "",
             loading: false, 
@@ -43,26 +42,28 @@ class Delete extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
         this.setState({
-            postID: "Enter Post ID",
+            yourUserName: "Enter Your Username",
+            userID: "Enter User ID",
             dialogOpen: false,
             loading: true
         });
         const postData = {
-            postID: this.state.postID
+            userID: this.state.userID,
+            yourUserName: this.state.yourUserName
         }
         console.log(postData)
         axios
-            .delete(`/deletePost/${this.state.postID}`)
+            .post('/followUser', { data: postData })
             .then(res => {
                 console.log(res.data)
                 this.setState({
-                    message: "Post deleted successfully",
+                    message: "User followed successfully",
                     loading: false
                 });
             })
             .catch(err => {
                 this.setState({
-                    message: "Post could not be found",
+                    message: "User could not be found",
                     errors: err.response.data,
                     loading: false
                 })
@@ -94,18 +95,30 @@ class Delete extends React.Component {
                     <Grid item sm>
                         <div className='middle'>
                         <Typography variant='h2' className={classes.pageTitle} >
-                            Delete Post
+                            Follow User
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
                             <TextField 
-                                id="postID" 
-                                name="postID" 
-                                type="postID" 
-                                label="Post ID" 
+                                id="yourUserName" 
+                                name="yourUserName" 
+                                type="yourUserName" 
+                                label="Your UserName" 
                                 className={classes.textField}
-                                helperText={errors.postID}
-                                error={errors.postID ? true : false} 
-                                value={this.state.postID} 
+                                helperText={errors.yourUserName}
+                                error={errors.yourUserName ? true : false} 
+                                value={this.state.yourUserName} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
+                                id="userID" 
+                                name="userID" 
+                                type="userID" 
+                                label="User ID" 
+                                className={classes.textField}
+                                helperText={errors.userID}
+                                error={errors.userID ? true : false} 
+                                value={this.state.userID} 
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />
@@ -115,7 +128,7 @@ class Delete extends React.Component {
                                 </Typography>
                             )}
                             <Button onClick={this.handleClickOpen} variant="contained" color="primary" className={classes.Button} disable={loading}>
-                                Delete content
+                                Follow User
                                 {loading && (
                                     <CircularProgress size={20} className={classes.progress}/>
                                 )}
@@ -126,11 +139,11 @@ class Delete extends React.Component {
                                 aria-labelledby="alert-dialog-title"
                                 aria-describedby="alert-dialog-description"
                             >
-                                <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
+                                <DialogTitle id="alert-dialog-title">Follow User</DialogTitle>
                                     
                                     <DialogContent>
                                     <DialogContentText id="alert-dialog-description">
-                                        You are about to delete a post, are you sure you want to do this?
+                                        Follow this user?
                                     </DialogContentText>
                                     </DialogContent>
                                     <DialogActions>
@@ -151,15 +164,13 @@ class Delete extends React.Component {
                     </Grid>
                     <Grid item sm />
                 </Grid>
-                <CreatePostButton />
-                <DeletePostButton />
             </div>
         )
     }
 }
 
-Delete.propTypes = {
+FollowUser.propTypes = {
     classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(Delete);
+export default withStyles(styles)(FollowUser);

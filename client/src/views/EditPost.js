@@ -32,9 +32,9 @@ class EditPost extends React.Component {
         super();
         this.state = {
             body: "",
-            createdAt: new Date().toISOString(),
+            createdAt: "",
             dislikes: 0,
-            edited: false,
+            edited: true,
             editedTime: null,
             isAnonymous: false,
             likes: 0,
@@ -66,6 +66,20 @@ class EditPost extends React.Component {
         }
         console.log(postData)
         axios
+            .post('/post/:postID', postData)
+            .then(res => {
+                this.setState({
+                    createdAt: res.data.createdAt
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    message: "Post could not be found",
+                    errors: err.response.data,
+                    loading: false
+                });
+            })
+        axios
             .delete(`/deletePost/${this.state.postID}`)
             .then(res => {
                 console.log(res.data)
@@ -95,7 +109,8 @@ class EditPost extends React.Component {
                 isAnonymous: this.state.isAnonymous,
                 postID: this.state.postID,
                 userID: this.state.userID,
-                link: this.state.link
+                link: this.state.link,
+                topic: this.state.topic,
               }
             console.log(newPost)
             this.setState({
@@ -144,7 +159,7 @@ class EditPost extends React.Component {
                             Edit Post
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
-                            <TextField 
+                        <TextField 
                                 id="postID" 
                                 name="postID" 
                                 type="postID" 
@@ -155,7 +170,22 @@ class EditPost extends React.Component {
                                 value={this.state.postID} 
                                 onChange={this.handleChange} 
                                 fullwidth />
-                                <TextField 
+                            <br />
+                        <TextField 
+                                multiline
+                                rows={4}
+                                id="topic" 
+                                name="topic" 
+                                type="topic" 
+                                label="Topic" 
+                                className={classes.textField}
+                                helperText={errors.topic} 
+                                error={errors.topic ? true : false} 
+                                value={this.state.topic} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
                                 multiline
                                 rows={4}
                                 id="body" 
@@ -201,7 +231,7 @@ class EditPost extends React.Component {
                                 checked={this.state.isAnonymous}
                                 name="isAnonymous" 
                                 type="isAnonymous" 
-                                label="Change to Anonymous?" 
+                                label="Post Anonymously?" 
                                 size='medium'
                                 className={classes.switch}
                                 helperText={errors.isAnonymous} 

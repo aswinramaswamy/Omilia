@@ -10,7 +10,6 @@ import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -21,6 +20,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = (theme) => ({
     ...theme.spreadIt
@@ -53,12 +53,14 @@ export default class CreatePostButton extends React.Component {
 
     handleOpen = (event) => {
         this.setState({
-            dialogOpen: true
+            dialogOpen: true,
+            loading: false
         })
     }
     handleClose = (event) => {
         this.setState({
-            dialogOpen: false
+            dialogOpen: false,
+            loading: false
         })
     }
 
@@ -72,15 +74,21 @@ export default class CreatePostButton extends React.Component {
     handleCloseSubmit = (event) => {
         this.setState({
             createSubmit: false,
-            dialogOpen: false
+            dialogOpen: false,
+            loading: false
         })
     }
 
     handleSubmit = (event) => {
+        this.setState({
+            loading: true
+        })
         event.preventDefault();
+        const format = /^[a-z]{2}[a-z]+$/;
         const newPost = {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'authorization': localStorage.FBIdToken
             },
             body: this.state.body,
             userHandle: this.state.userHandle,
@@ -96,9 +104,6 @@ export default class CreatePostButton extends React.Component {
             topic: this.state.topic
           }
         console.log(newPost)
-        this.setState({
-            loading: true
-        });
         //createPost({ data: newPost })
         axios
             .post('/post', { data: newPost })
@@ -109,13 +114,35 @@ export default class CreatePostButton extends React.Component {
                     createSubmit: true,
                     dialogOpen: false,
                     topic: "",
-                    link: ""
+                    link: "",
+                    loading: true
                 });
             })
-            .catch((err) => {
-                this.setState({
-                    message: "Post failed to send"
-                });
+            .catch(err => {
+                if (this.state.topic.trim() === '') {
+                    this.setState({
+                        message: "Topic must not be null",
+                        loading: false
+                    })
+                }
+                else if (this.state.body.trim() === '') {
+                    this.setState({
+                        message: "Post Content must not be null",
+                        loading: false
+                    })
+                }
+                else if (!format.test(this.state.topic)) {
+                    this.setState({
+                        message: "Topic must only contain lowercase letters and be at least 3 characters long",
+                        loading: false
+                    })
+                } 
+                else {
+                    this.setState({
+                        message: "Error sending post",
+                        loading: false
+                    })
+                }
             })
         this.setState({
             loading: false,    

@@ -146,6 +146,10 @@ export default function PrimarySearchAppBar() {
             <Button color="inherit" component={Link} to="/newPost" >New Post</Button>
             <Button color="inherit" component={Link} to="/delete" >Delete Post</Button>
             <Button color="inherit" component={Link} to="/editPost" >Edit Post</Button>
+            <Button color="inherit" component={Link} to="/followUser" >Follow User</Button>
+            <Button color="inherit" component={Link} to="/followTopic" >Follow Topic</Button>
+            <Button color="inherit" component={Link} to="/unfollowUser" >Unfollow User</Button>
+            <Button color="inherit" component={Link} to="/unfollowTopic" >Unfollow Topic</Button>
             <Button color="inherit" component={Link} to="/settings" >Settings</Button>
           </div>
           <div className={classes.search}>

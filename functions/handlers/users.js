@@ -371,7 +371,7 @@ exports.signup = (req, res) => {
         .get() //Access all users and return as 'snapshot' array essentially
         .then((snapshot) => { //Checking every user if the phone number is already taken
           snapshot.forEach(function (doc) {
-            if (JSON.stringify(doc.data().phone) === JSON.stringify(newUser.phone)) { //If the phone number is found
+            if (JSON.stringify(doc.data().phone) !== JSON.stringify('') && JSON.stringify(doc.data().phone) === JSON.stringify(newUser.phone)) { //If the phone number is found
               foundPhone = newUser.phone;
             }
           });
@@ -451,26 +451,28 @@ exports.phoneLogin = (req, res) => {
       if (typeof foundEmail !== 'undefined') {
         return firebase
           .auth()
-          .signInWithEmailAndPassword(foundEmail, user.password);
-      }
-    })
-    .then((data) => {
-      if (typeof data !== 'undefined') {
-        return data.user.getIdToken();
+          .signInWithEmailAndPassword(foundEmail, user.password)
+          .then((data) => {
+            return data.user.getIdToken();
+          })
+          .then((token) => {
+            return res.json({ token: token });
+          })
+          .catch((err) => {
+            console.error(err);
+            // auth/wrong-password
+            // auth/user-not-found
+            return res
+              .status(403)
+              .json({ general: "Wrong credentials, please try again" });
+          });
       } else {
-        return new Error; //res.status(401).json({ phone: "incorrect phone number"}); //actually sends this
+        return res.status(403).json({ general: "Wrong Credentials, please try again"});
       }
-    })
-    .then((token) => {
-      return res.json({ token });
     })
     .catch((err) => {
       console.error(err);
-      // auth/wrong-password
-      // auth/user-not-found
-      return res
-        .status(403)
-        .json({ general: "Wrong credentials, please try again" });
+      return res.status(403).json({ general: "Wrong credentials, please try again"});
     });
 };
 
@@ -551,22 +553,21 @@ exports.logout = (req, res) => {
 
 //Delete Account
 exports.deleteAccount = (req, res) => {
-  /*admin.auth().deleteUser(userId)
-  .then(function(userRecord) {
-    // See the UserRecord reference doc for the contents of userRecord.
-    console.log('Successfully deleted user data:', userRecord.toJSON());
-  })
-  .catch(function(error) {
-    console.log('Error deleting user data:', error);
-  });*/
-  
   const user = {
-    email: req.body.email,
     username: req.body.username,
+    email: req.body.email,
     password: req.body.password,
   };
 
   const { valid, errors } = validateLoginData(user);
+
+  if (!valid) return res.status(400).json(errors);
+  const userCredentials = {
+    username: user.username,
+    email: user.email,
+    createdAt: new Date().toISOString(),
+  };
+
   let uid;
   db.doc(`/users/${user.username}`) //Access database by document
     .get() //Accesses the user requested, returns the user as a doc
@@ -591,6 +592,7 @@ exports.deleteAccount = (req, res) => {
         var user = firebase.auth().currentUser;
         user.delete().then(function() {
            // delete successful.
+           firebase.auth().signOut();
           }).catch(function(error) {
             // An error happened.
           });
@@ -607,85 +609,6 @@ exports.deleteAccount = (req, res) => {
         .status(500)
         .json({ general: "Something went wrong, please try again" });
     });
-  /*if (!valid) return res.status(400).json(errors);
-
-  firebase
-    .auth()
-    .signInWithEmailAndPassword(user.email, user.password)
-    .then((data) => {
-      return data.user.getIdToken();
-    })
-    .then((token) => {
-      return res.json({ token });
-    })
-    .catch((err) => {
-      console.error(err);
-      // auth/wrong-password
-      // auth/user-not-found
-      return res
-        .status(403)
-        .json({ general: "Wrong credentials, please try again" });
-    });
-    admin.auth().deleteUser(uid)
-    .then(function() {
-      console.log('Successfully deleted user');
-    })
-    .catch(function(error) {
-      console.log('Error deleting user:', error);
-    });
-  //db.collection('users').doc(user.username).delete();*/
-  //
-  /*if (!valid) return res.status(400).json(errors);
-  const userCredentials = {
-    username: user.username,
-    email: user.email,
-    createdAt: new Date().toISOString(),
-    userId,
-  };
-
-  db.doc(`/users/${user.username}`)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var user1 = firebase.auth().currentUser;
-        user1
-          .reauthenticateWithCredential(userCredentials)
-          .then(function () {
-            admin
-              .auth()
-              .deleteUser(user1.uid)
-              .then(function () {
-                firebase.auth().signOut();
-              })
-              .catch(function (error) {
-                console.log("Error deleting account", error);
-              });
-            db.doc(`/users/${user.username}`).delete();
-            if (curUser == NULL) {
-              return res.status(1).json({ general: "NULL" });
-            }
-          })
-          .catch(function (error) {
-            console.log("Error deleting account", error);
-          });
-      } else {
-        return res.status(1).json({ general: "oops" });
-      }
-    })
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
-    })
-    .then(() => {
-      return res.status(201).json({ token });
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ general: "Something went wrong, please try again" });
-    });*/
-    //firebase.auth().signOut();
 };
 
 //Confirm Email
@@ -729,4 +652,164 @@ exports.searchUsers = (req, res) => {
     return res.json(users);
   })
   .catch(err => console.error(err));
+}
+
+exports.followUser = (req, res) => {
+  const user = {
+    yourUserName: req.body.yourUserName,
+    userId: req.body.userId
+  };
+
+  let uid = user.userId;
+  db.collection('users')
+    .doc(user.yourUserName)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        var user1 = firebase.auth().currentUser;
+        user1.userFollows.push(userId)
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+        });
+      } else {
+        return res.status(1).json({ general: "oops" });
+      }
+    })
+    .then((data) => {
+      userId = data.user.uid;
+      return data.user.getIdToken();
+    })
+    .then(() => {
+      return res.status(201).json({ token });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
+}
+
+exports.followTopic = (req, res) => {
+  const user = {
+    yourUserName: req.body.yourUserName,
+    topic: req.body.topic
+  };
+
+  let uid = user.userId;
+  db.collection('users')
+    .doc(user.yourUserName)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        var user1 = firebase.auth().currentUser;
+        user1.topicFollows.push(topic)
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+        });
+      } else {
+        return res.status(1).json({ general: "oops" });
+      }
+    })
+    .then((data) => {
+      userId = data.user.uid;
+      return data.user.getIdToken();
+    })
+    .then(() => {
+      return res.status(201).json({ token });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
+}
+
+exports.unfollowUser = (req, res) => {
+  const user = {
+    yourUserName: req.body.yourUserName,
+    userId: req.body.userId
+  };
+
+  let uid = user.userId;
+  db.collection('users')
+    .doc(user.yourUserName)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        var user1 = firebase.auth().currentUser;
+        user1.userFollows.push(userId)
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+        });
+      } else {
+        return res.status(1).json({ general: "oops" });
+      }
+    })
+    .then((data) => {
+      userId = data.user.uid;
+      return data.user.getIdToken();
+    })
+    .then(() => {
+      return res.status(201).json({ token });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
+}
+
+exports.unfollowTopic = (req, res) => {
+  const user = {
+    yourUserName: req.body.yourUserName,
+    topic: req.body.topic
+  };
+
+  let uid = user.userId;
+  db.collection('users')
+    .doc(user.yourUserName)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        var user1 = firebase.auth().currentUser;
+        user1.topicFollows.push(topic)
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+        });
+      } else {
+        return res.status(1).json({ general: "oops" });
+      }
+    })
+    .then((data) => {
+      userId = data.user.uid;
+      return data.user.getIdToken();
+    })
+    .then(() => {
+      return res.status(201).json({ token });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
 }
