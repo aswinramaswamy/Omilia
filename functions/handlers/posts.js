@@ -30,7 +30,7 @@ exports.createPost = (req, res) => {
       userHandle: req.body.data.userHandle,
       postID: req.body.data.postID,
       isAnonymous: req.body.data.isAnonymous,
-      edited: false,
+      edited: req.body.data.edited,
       editedTime: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       link: req.body.data.link,
@@ -64,7 +64,8 @@ exports.deletePost = (req, res) => {
 }
 
 exports.editPost = (req, res) => {
-  let postId;
+  /*let id;
+  let created;
   const document = db.doc(`/posts/${req.params.postID}`)
   document.get()
     .then((doc) => {
@@ -72,11 +73,12 @@ exports.editPost = (req, res) => {
         return res.status(404).json({ error: "Post not found" });
       }
       else {
-        postId = doc.id;
+        id = req.params.postID;
+        created = req.params.createdAt;
         res.json({ message: `document ${doc.id} deleted successfully` });
         return document.delete();
       }
-    })
+    })*/
     
   const newPost = {
     /*headers: {
@@ -87,12 +89,13 @@ exports.editPost = (req, res) => {
     dislikes: 0,
     userID: req.body.data.userID,
     userHandle: req.body.data.userHandle,
-    postID: postId,
+    postID: req.body.data.postID,
     isAnonymous: req.body.data.isAnonymous,
     edited: true,
     editedTime: new Date().toISOString(),
     createdAt: req.body.data.createdAt,
-    link: req.body.data.link
+    link: req.body.data.link,
+    topic: req.body.data.topic
   }
   var newID = "unitialized"
   db

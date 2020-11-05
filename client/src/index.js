@@ -29,6 +29,10 @@ import ChangeEmail from "./views/ChangeEmail";
 import ChangePassword from "./views/ChangePassword";
 import editPost from "./views/EditPost.js";
 import SearchResults from "./views/SearchResults";
+import followUser from "./views/followUser";
+import followTopic from "./views/followTopic";
+import unfollowUser from "./views/unfollowUser";
+import unfollowTopic from "./views/unfollowTopic";
 
 import "./css/app.css";
 import FullPagePost from "./views/FullPagePost";
@@ -71,7 +75,11 @@ ReactDOM.render(
                 <Route path="/ChangeEmail" component={ChangeEmail} />
                 <Route path="/ChangePassword" component={ChangePassword} />
                 <Route path="/NewPost" component={NewPost} />
-                <Route path="/editPost" component={editPost} /> 
+                <Route path="/editPost" component={editPost} />
+                <Route path="/followUser" component={followUser} /> 
+                <Route path="/followTopic" component={followTopic} /> 
+                <Route path="/unfollowUser" component={unfollowUser} /> 
+                <Route path="/unfollowTopic" component={unfollowTopic} />
                 <Route path="/searchResults/:search" component={SearchResults} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />

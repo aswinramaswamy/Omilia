@@ -26,7 +26,11 @@ const {
   changeEmail,
   changePassword,
   confirmEmail,
-  searchUsers
+  searchUsers,
+  followUser,
+  followTopic,
+  unfollowUser,
+  unfollowTopic
 } = require('./handlers/users');
 //const { default: EditPost } = require('../client/src/views/EditPost');
 
@@ -51,5 +55,9 @@ app.post('/changeEmail', changeEmail);
 app.post('/changePassword', changePassword);
 app.get('/confirmEmail/:username', confirmEmail);
 app.post('/searchUsers', searchUsers);
+app.post('/followUser', followUser);
+app.post('/followTopic', followTopic);
+app.post('/unfollowUser', unfollowUser);
+app.post('/unfollowTopic', unfollowTopic);
 
 exports.api = functions.https.onRequest(app);
