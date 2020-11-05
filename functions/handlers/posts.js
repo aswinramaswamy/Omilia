@@ -19,14 +19,26 @@ exports.getAllPosts = (req, res) => {
 }
 
 exports.createPost = (req, res) => {
+    const format = /^[a-z]{2}[a-z]+$/;
+    if(req.body.data.body.trim() === '') {
+      return res.status(400).send({ error: 'Post must contain text content' })
+    }
+    if(req.body.data.topic.trim() === '') {
+      return res.status(400).send({ error: 'Post must include a topic' })
+    }
+    if(!format.test(req.body.data.topic)) {
+      return res.status(400).send({ error: 'Topic must be only lowercase letters' })
+    }
+    //console.log(firebase.auth().currentUser);
     const newPost = {
-      /*headers: {
-        'Content-Type': 'application/json'
-      },*/
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': req.headers.authorization
+      },
       body: req.body.data.body,
       likes: 0,
       dislikes: 0,
-      userID: req.body.data.userID,
+      userID: req.headers.authorization,
       userHandle: req.body.data.userHandle,
       postID: req.body.data.postID,
       isAnonymous: req.body.data.isAnonymous,

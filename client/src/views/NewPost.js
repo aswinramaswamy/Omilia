@@ -58,12 +58,12 @@ class NewPost extends React.Component {
     }
     
     handleSubmit = (event) => {
-        const regEx = /^([0-9]{3})[-]$/;
         event.preventDefault();
         const newPost = {
-            /*headers: {
-                'Content-Type': 'application/json'
-            },*/
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': localStorage.FBIdToken
+            },
             body: this.state.body,
             userHandle: this.state.userHandle,
             dislikes: this.state.dislikes,
@@ -81,6 +81,7 @@ class NewPost extends React.Component {
         this.setState({
             loading: true
         });
+        
         //createPost({ data: newPost })
         axios
             .post('/post', { data: newPost })
