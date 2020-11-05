@@ -67,13 +67,10 @@ app.post('/changePassword', changePassword);
 app.post('/changeUsername', changeUsername);
 app.get('/confirmEmail/:username', confirmEmail);
 app.post('/searchUsers', searchUsers);
-<<<<<<< HEAD
 app.post('/followUser', followUser);
 app.post('/followTopic', followTopic);
 app.post('/unfollowUser', unfollowUser);
 app.post('/unfollowTopic', unfollowTopic);
-=======
 app.get('/userdata', getProfile);
->>>>>>> f37c8cf19a698c58cfb77bf8d2738c37b3d8d558
 
 exports.api = functions.https.onRequest(app);
