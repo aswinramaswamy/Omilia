@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import '../css/app.css';
 import axios from 'axios';
+import User from '../components/layout/UserDisplay';
 
 //Components
 import Navbar from '../components/layout/Navbar';
-import User from '../components/layout/UserDisplay';
+import SimpleTabs from '../components/search/SearchSimpleTabs';
 
 class SearchResults extends Component {
   state = {
@@ -26,19 +27,10 @@ class SearchResults extends Component {
   }
 
   render() {
-      let recentSearchResult = this.state.searchResults ? (
-      this.state.searchResults.map((result) => <User user={result.username}/>)
-      ) : (
-          <p>Loading...</p>
-      );
-
       return (
           <div>
               <Navbar/>
-              <br></br>
-              <div className="center">
-                  {recentSearchResult}
-              </div>
+              <SimpleTabs searchResults={this.state.searchResults}></SimpleTabs>
           </div>
       );
   }

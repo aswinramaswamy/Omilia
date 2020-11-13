@@ -18,7 +18,7 @@ class UserDisplay extends Component {
         return (
             <Card className={classes.card}>
                 <CardContent>
-                    <Typography variant="h6" color="primary">
+                    <Typography color="primary">
                         {username}
                      </Typography>
                 </CardContent>
