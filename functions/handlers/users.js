@@ -638,20 +638,34 @@ exports.searchUsers = (req, res) => {
   }
   re = new RegExp("[\w\d]*" + search + "[\w\d]*", "gi");
 
+  let results = [];
   db.collection('users')
-  .get()
-  .then((snapshot) => {
-    let users = [];
-    snapshot.forEach(function (doc) {
-      if (re.test(doc.data().username)) {
-        users.push({
-          username: doc.data().username
-        });
-      }
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach(function (doc) {
+        if (re.test(doc.data().username)) {
+          results.push({
+            username: doc.data().username
+          });
+        }
+      })
     })
-    return res.json(users);
-  })
-  .catch(err => console.error(err));
+    .catch(err => console.error(err));
+  
+  db.collection('posts')
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach(function (doc) {
+        if (re.test(doc.data().body)) {
+          results.push({
+            postId: doc.id,
+            ...doc.data()
+          });
+        }
+      });
+      return res.json(results);
+    })
+    .catch(err => console.error(err));
 }
 
 exports.followUser = (req, res) => {

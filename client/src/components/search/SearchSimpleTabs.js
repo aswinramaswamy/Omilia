@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import User from '../layout/UserDisplay';
+import Post from '../layout/Post';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -59,11 +60,41 @@ export default function SimpleTabs(thing) {
   };
 
   console.log(thing.searchResults);
-  let recentSearchResult = (thing.searchResults !== null) ? (
-    thing.searchResults.map((result) => <User user={result.username}/>)
+  let allSearchResult = (thing.searchResults !== null) ? (
+    thing.searchResults.map((result) => {
+      if (result["username"]) {
+        return <User user={result.username} />;
+      } else {
+        return <Post key={result.postID} post={result} />;
+      }
+    })
     ) : (
         <p>Loading...</p>
     );
+  
+    let userSearchResult = (thing.searchResults !== null) ? (
+      thing.searchResults.map((result) => {
+        if (result["username"]) {
+          return <User user={result.username} />;
+        } else {
+          return;
+        }
+      })
+      ) : (
+          <p>Loading...</p>
+    );
+  
+    let postSearchResult = (thing.searchResults !== null) ? (
+      thing.searchResults.map((result) => {
+        if (!result["username"]) {
+          return <Post key={result.postID} post={result} />;
+        } else {
+          return;
+        }
+      })
+      ) : (
+          <p>Loading...</p>
+      );
 
   return (
     <div className={classes.root}>
@@ -75,15 +106,19 @@ export default function SimpleTabs(thing) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-              <div className="center">
-                  {recentSearchResult}
-              </div>
+        <div className="center">
+          {allSearchResult}
+        </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <div className="center">
+          {userSearchResult}
+        </div>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <div className="center">
+          {postSearchResult}
+        </div>
       </TabPanel>
     </div>
   );
