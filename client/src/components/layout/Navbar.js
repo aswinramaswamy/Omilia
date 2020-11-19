@@ -101,7 +101,9 @@ export default function PrimarySearchAppBar() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    //context.history.push('/SearchResults/search=' + search);
     history.push('/SearchResults/search=' + search);
+    history.go(0);
   };
 
   const handleChange = (event) => {
@@ -119,9 +121,9 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
+      <MenuItem onClick={handleMenuClose} component={Link} to="/profile" >Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose} component={Link} to="/settings">My account</MenuItem>
+      <MenuItem onClick={handleMenuClose} component={Link} to="/logout">Log Out</MenuItem>
     </Menu>
   );
 

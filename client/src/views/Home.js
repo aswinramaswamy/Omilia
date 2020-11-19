@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 //Components
 import Navbar from '../components/layout/Navbar';
+import HomeTabs from '../components/layout/HomeTabs';
 import Post from '../components/layout/Post';
 
 import { connect } from 'react-redux';
@@ -23,8 +24,9 @@ class Home extends Component {
         );
         return (
             <div>
-                <Navbar/>
-                <h1><Link to="logout"><button>Log Out</button></Link></h1>
+              <Navbar />
+              <HomeTabs allPosts={posts}></HomeTabs>
+              <h1><Link to="logout"><button>Log Out</button></Link></h1>
                 <h2>TIMELINE</h2>
                 <div className="center">
                     {recentPostsMarkup}
