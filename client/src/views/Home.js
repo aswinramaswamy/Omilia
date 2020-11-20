@@ -25,6 +25,7 @@ class Home extends Component {
         return (
             <div>
               <Navbar />
+              <br></br>
               <HomeTabs allPosts={posts}></HomeTabs>
               <h1><Link to="logout"><button>Log Out</button></Link></h1>
                 <h2>TIMELINE</h2>
