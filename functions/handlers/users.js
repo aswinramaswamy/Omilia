@@ -437,6 +437,7 @@ exports.phoneLogin = (req, res) => {
   if (!valid) return res.status(400).json(errors);
 
   let foundEmail;
+  let foundUsername;
 
   db.collection('users')
     .get()
@@ -445,6 +446,7 @@ exports.phoneLogin = (req, res) => {
         if (JSON.stringify(doc.data().phone) === JSON.stringify(user.phone)) {
           if (doc.data().isEmailVerified === true) {
             foundEmail = doc.data().email;
+            foundUsername = doc.data().username;
           }
         }
       });
@@ -456,7 +458,7 @@ exports.phoneLogin = (req, res) => {
             return data.user.getIdToken();
           })
           .then((token) => {
-            return res.json({ token: token });
+            return res.json({ token, email: foundEmail, username: foundUsername });
           })
           .catch((err) => {
             console.error(err);
@@ -498,9 +500,10 @@ exports.login = (req, res) => {
               .signInWithEmailAndPassword(user.email, user.password)
               .then((data) => {
                 return data.user.getIdToken();
+                //return res.json({ data: data.user.getIdToken, ...doc.data() });
               })
               .then((token) => {
-                return res.json({ token });
+                return res.json({ token, email: doc.data().email, username: doc.data().username });
               })
               .catch((err) => {
                 console.error(err);

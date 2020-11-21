@@ -35,6 +35,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import HomeIcon from '@material-ui/icons/Home';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
   grow: {
     flexGrow: 1,
   },
@@ -106,6 +110,8 @@ export default function PrimarySearchAppBar() {
   const isMenuOpen = Boolean(anchorEl);
   const [open, setOpen] = React.useState(false);
   const drawerWidth = 240;
+  const homePath = "/home/username=" + localStorage.getItem('username');
+  const profilePath = "/profile/username=" + localStorage.getItem('username');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -145,7 +151,7 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose} component={Link} to="/profile" >Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose} component={Link} to={profilePath} >Profile</MenuItem>
       <MenuItem onClick={handleMenuClose} component={Link} to="/settings">Settings</MenuItem>
       <MenuItem onClick={handleMenuClose} component={Link} to="/logout">Log Out</MenuItem>
     </Menu>
@@ -168,7 +174,7 @@ export default function PrimarySearchAppBar() {
         </div>
       <Divider />
       <List>
-        <ListItem button component={Link} to="/home">
+        <ListItem button component={Link} to={homePath}>
           <ListItemIcon><HomeIcon /></ListItemIcon>
         </ListItem>
       </List>
@@ -222,12 +228,12 @@ export default function PrimarySearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Button className={classes.menuButton} color="inherit" component={Link} to="/home" variant="text">
+          <Button className={classes.menuButton} color="inherit" component={Link} to={homePath} variant="text">
             Omilía
           </Button>
           <div className={classes.menuButton}>
-            <Button color="inherit" component={Link} to="/home" >Home</Button>
-            <Button color="inherit" component={Link} to="/profile" >Profile</Button>
+            <Button color="inherit" component={Link} to={homePath} >Home</Button>
+            <Button color="inherit" component={Link} to={profilePath} >Profile</Button>
             <Button color="inherit" component={Link} to="/newPost" >New Post</Button>
             <Button color="inherit" component={Link} to="/delete" >Delete Post</Button>
             <Button color="inherit" component={Link} to="/editPost" >Edit Post</Button>
@@ -238,7 +244,7 @@ export default function PrimarySearchAppBar() {
             <Button color="inherit" component={Link} to="/settings" >Settings</Button>
           </div>
           <div className={classes.search}>
-            <form noValidate onSubmit={handleSubmit}>
+            <form className={classes.root} noValidate onSubmit={handleSubmit}>
               <TextField
                 id="search"
                 name="search"
