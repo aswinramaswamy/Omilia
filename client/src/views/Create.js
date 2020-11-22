@@ -28,6 +28,8 @@ class Create extends React.Component {
             username: '',
             userFollows: {},
             topicFollows: {},
+            picture: '',
+            description: '',
             loading: false,
             errors: {}
         }
@@ -51,7 +53,9 @@ class Create extends React.Component {
             phone: this.state.phone,
             username: this.state.username,
             userFollows: this.state.userFollows,
-            topicFollows: this.state.topicFollows
+            topicFollows: this.state.topicFollows,
+            picture: this.state.picture,
+            description: this.state.description,
         }
         axios
             .post('/signup', newUserData)
@@ -142,6 +146,30 @@ class Create extends React.Component {
                                 helperText={errors.username} 
                                 error={errors.username ? true : false} 
                                 value={this.state.username} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
+                                id="picture" 
+                                name="picture" 
+                                type="text" 
+                                label="Profile Picture (Optional)" 
+                                className={classes.textField}
+                                helperText={errors.picture} 
+                                error={errors.picture ? true : false} 
+                                value={this.state.picture} 
+                                onChange={this.handleChange} 
+                                fullwidth />
+                            <br />
+                            <TextField 
+                                id="description" 
+                                name="description" 
+                                type="text" 
+                                label="User Description (Optional)" 
+                                className={classes.textField}
+                                helperText={errors.description} 
+                                error={errors.description ? true : false} 
+                                value={this.state.description} 
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />

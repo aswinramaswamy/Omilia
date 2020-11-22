@@ -310,6 +310,8 @@ exports.signup = (req, res) => {
     confirmPassword: req.body.confirmPassword,
     username: req.body.username,
     phone: req.body.phone,
+    picture: req.body.picture,
+    description: req.body.description,
   };
 
   //Checking if Fields are correct
@@ -398,6 +400,8 @@ exports.signup = (req, res) => {
               username: newUser.username,
               email: newUser.email,
               phone: newUser.phone,
+              picture: newUser.picture,
+              description: newUser.description,
               isEmailVerified: false,
               isPhoneVerified: false,
               createdAt: new Date().toISOString(),
@@ -827,3 +831,41 @@ exports.unfollowTopic = (req, res) => {
         .json({ general: "Something went wrong, please try again" });
     });
 }
+
+exports.changeProfile = (req, res) => {
+  const user = {
+    username: req.body.username,
+    picture: req.body.picture,
+    description: req.body.description,
+  };
+
+  db.collection('users')
+    .doc(user.username)
+    .get()
+    .then((doc) => {
+      if (doc && doc.exists) {
+          var data = doc.data();
+          // saves the data to 'name'
+          db.collection('users').doc(user.picture).set(data).then((doc) => {
+            db.collection('users').doc(user.picture).delete();
+            db.collection('users').doc(user.picture).update({ username: user.picture });
+            return res.status(200).send('picture has been changed'); 
+          })
+          db.collection('users').doc(user.description).set(data).then((doc) => {
+            db.collection('users').doc(user.description).delete();
+            db.collection('users').doc(user.description).update({ username: user.description });
+            return res.status(200).send('description has been changed'); 
+            })
+      }
+    })
+    .catch(err => {
+      console.log('Error changing picture or description', err);
+      return response.status(500);
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
+};

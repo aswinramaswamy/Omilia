@@ -1,18 +1,32 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import '../css/app.css';
 //Import Components
 import Navbar from '../components/layout/Navbar';
+import PropTypes from 'prop-types';
+import withStyles from '@material-ui/core/styles/withStyles'
+import axios from 'axios';
 
 
-/*class Settings extends React.Component {  
+
+//MUI Stuff
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+const styles = (theme) => ({
+    ...theme.spreadIt
+})
+
+
+
+class editProfile extends React.Component {  
     constructor(){
       super();
       this.state = {
-          currentEmail: "",
           username: "",
-          currentPassword: "",
-          newEmail: "",
+          picture: "",
+          description: "",
           loading: false,
           errors: {}
       };
@@ -30,14 +44,13 @@ import Navbar from '../components/layout/Navbar';
         loading: true
     });
     const userData = {
-        currentEmail: this.state.currentEmail,
         username: this.state.username,
-        newEmail: this.state.newEmail,
-        currentPassword: this.state.currentPassword
+        picture: this.state.picture,
+        description: this.state.description
     }
     
     axios
-        .post('/home', userData)
+        .post('/editProfile', userData)
         .then(res => {
             console.log(res.data)
             localStorage.setItem('FBIdToken', `Bearer  ${res.data.token}`);
@@ -55,12 +68,6 @@ import Navbar from '../components/layout/Navbar';
 }
 
 
-onChangeEmailPress = () => {
-      var user = firebase.auth().currentUser;
-      user.updateEmail(this.state.newEmail).then(() => {
-      }).catch((error) => { console.log(error.message); });
-  }
-
     render() {
       const { classes } = this.props;
       const { errors, loading } = this.state;
@@ -68,20 +75,7 @@ onChangeEmailPress = () => {
       return (
           <div>
               <Navbar />
-              <h2><Link to="delete" class="button">Delete Account</Link></h2>
-             <form noValidate onSubmit={this.onChangeEmailPress}>
-              <TextField 
-                      id="currentEmail" 
-                      name="currentEmail" 
-                      type="currentEmail" 
-                      label="Current Email" 
-                      className={classes.textField}
-                      helperText={errors.currentEmail} 
-                      error={errors.currentEmail ? true : false} 
-                      value={this.state.currentEmail} 
-                      onChange={this.handleChange} 
-                      fullwidth />
-                  <br />
+              <form noValidate onSubmit={this.onChangeEmailPress}>
               <TextField 
                       id="username" 
                       name="username" 
@@ -95,26 +89,26 @@ onChangeEmailPress = () => {
                       fullwidth />
                   <br />
                   <TextField 
-                      id="currentPassword" 
-                      name="currentPassword" 
-                      type="currentPassword" 
-                      label="Current Password" 
+                      id="picture" 
+                      name="picture" 
+                      type="picture" 
+                      label="Profile Picture" 
                       className={classes.textField}
-                      helperText={errors.currentPassword} 
-                      error={errors.currentPassword ? true : false} 
-                      value={this.state.currentPassword} 
+                      helperText={errors.picture} 
+                      error={errors.picture ? true : false} 
+                      value={this.state.picture} 
                       onChange={this.handleChange} 
                       fullwidth />
                   <br />
                   <TextField 
-                      id="newEmail" 
-                      name="newEmail" 
-                      type="newEmail" 
-                      label="New Email" 
+                      id="description" 
+                      name="description" 
+                      type="description" 
+                      label="User Description" 
                       className={classes.textField}
-                      helperText={errors.newEmail}  
-                      error={errors.newEmail ? true : false} 
-                      value={this.state.newEmail} 
+                      helperText={errors.description} 
+                      error={errors.description ? true : false} 
+                      value={this.state.description} 
                       onChange={this.handleChange} 
                       fullwidth />
                   <br />
@@ -124,7 +118,7 @@ onChangeEmailPress = () => {
                       </Typography>
                   )}
                   <Button type="submit" variant="contained" color="primary" className={classes.Button} disable={loading}>
-                      Change Email
+                      Change Profile Picture and/or User Description
                       {loading && (
                           <CircularProgress size={20} className={classes.progress}/>
                       )}
@@ -134,24 +128,11 @@ onChangeEmailPress = () => {
           </div>
       )}
 }
-*/
 
-
-
-
-export default class Settings extends React.Component {  
-    render() {
-        return (
-            <div>
-                <Navbar />
-                <h2><Link to="deleteAccount" class="button">Delete Account</Link></h2>
-                <h2><Link to="ChangeEmail" class="button">Change Email</Link></h2>
-                <h2><Link to="ChangePassword" class="button">Change Password</Link></h2>
-                <h2><Link to="ChangeUsername" class="button">Change Username</Link></h2>
-                <h2><Link to="editProfile" class="button">Edit Profile Picture and/or Description</Link></h2>
-            </div>
-        )
-    }
+editProfile.propTypes = {
+    classes: PropTypes.object.isRequired
 }
+
+export default withStyles(styles)(editProfile);
 
 
