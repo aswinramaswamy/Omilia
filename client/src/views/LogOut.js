@@ -5,6 +5,7 @@ import "../css/app.css";
 import PropTypes from "prop-types";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import history from "../data/history";
 
 //MUI Stuff
 import TextField from "@material-ui/core/TextField";
@@ -46,7 +47,10 @@ class LogOut extends React.Component {
       email: this.state.email,
       password: this.state.password,
     };
-    this.props.logoutUser((userData, this.props.history));
+    //this.props.logoutUser((userData, this.props.history));
+    this.props.logoutUser();
+    history.push('/');
+    history.go(0);
     /*axios
       .post("/logout", userData)
       .then((res) => {
@@ -112,8 +116,8 @@ class LogOut extends React.Component {
                     {errors.general}
                   </Typography>
                 )}
-                <Link to="/">
-                  <Button /*onClick={this.handleLogOut}*/
+                
+                  <Button onClick={this.handleLogOut}
                     type="submit"
                     variant="contained"
                     color="primary"
@@ -128,7 +132,7 @@ class LogOut extends React.Component {
                       />
                     )}
                   </Button>
-                </Link>
+                
                 <br />
                 <small>
                   Don't want to log out? Cancel <Link to="/home">here</Link>.

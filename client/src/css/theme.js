@@ -3,13 +3,13 @@ export default {
         primary: {
             light: 'white',
             main: '#3C797C',
-            dark: 'black',
+            dark: 'white',
             contrastText: '#fff'
         },
         secondary: {
             light: 'white',
             main: '#3C797C',
-            dark: 'black',
+            dark: 'white',
             contrastText: '#fff'
         }
     },
@@ -18,7 +18,8 @@ export default {
             useNextVariant: true
         },
         form: {
-            textAlign: 'center'
+            textAlign: 'center',
+            color: 'white'
         },
         image: {
             margin: '20px auto 20px auto'
