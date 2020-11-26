@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 
 import User from '../layout/UserDisplay';
-import Post from '../layout/Post';
+import Post from '../layout/Post/Post';
 import history from "../../data/history";
 
 import { makeStyles } from '@material-ui/core/styles';
