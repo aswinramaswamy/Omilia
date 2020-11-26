@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import User from '../layout/UserDisplay';
-import Post from '../layout/Post';
+import Post from '../layout/Post/Post';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
