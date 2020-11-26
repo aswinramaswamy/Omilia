@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 
 //Components
 import Navbar from '../components/layout/Navbar';
-import Post from '../components/layout/Post';
+import Post from '../components/layout/Post/Post';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { connect } from 'react-redux';
 import { getPosts } from '../redux/actions/dataActions';
@@ -16,10 +17,10 @@ class Home extends Component {
       }
       render() {
         const { posts, loading } = this.props.data;
-        let recentPostsMarkup = !loading ? (
-          posts.map((post) => <Post key={post.postID} post={post} />)
+        let recentPostsMarkup = loading ? (
+          <CircularProgress className="middle" size={200} thickness={2}/>
         ) : (
-            <p>Loading...</p>
+          posts.map((post) => <Post key={post.postID} post={post} />)
         );
         return (
             <div>
@@ -36,11 +37,13 @@ class Home extends Component {
 
 Home.propTypes = {
     getPosts: PropTypes.func.isRequired,
-    data: PropTypes.object.isRequired
+    data: PropTypes.object.isRequired,
+    UI: PropTypes.object.isRequired
   };
   
   const mapStateToProps = (state) => ({
-    data: state.data
+    data: state.data,
+    UI: state.UI
   });
   
   export default connect(
