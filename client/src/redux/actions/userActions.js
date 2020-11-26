@@ -1,4 +1,11 @@
-import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI } from "../types";
+import {
+  SET_USER,
+  SET_ERRORS,
+  CLEAR_ERRORS,
+  LOADING_UI,
+  SET_UNAUTHENTICATED,
+  LOADING_USER
+} from '../types';
 import axios from 'axios';
 
 export const phoneLogin = (userData, history) => (dispatch) => {
@@ -7,9 +14,11 @@ export const phoneLogin = (userData, history) => (dispatch) => {
     .post('/phoneLogin', userData)
     .then((res) => {
       setAuthorizationHeader(res.data.token);
+      localStorage.setItem('email', res.data.email);
+      localStorage.setItem('username', res.data.username)
       dispatch(getUserData());
       dispatch({ type: CLEAR_ERRORS });
-      history.push('/home');
+      history.push('/home/username=' + res.data.username);
     })
     .catch((err) => {
       dispatch({
@@ -25,9 +34,11 @@ export const loginUser = (userData, history) => (dispatch) => {
     .post('/login', userData)
     .then((res) => {
       setAuthorizationHeader(res.data.token);
+      localStorage.setItem('email', res.data.email);
+      localStorage.setItem('username', res.data.username)
       dispatch(getUserData());
       dispatch({ type: CLEAR_ERRORS });
-      history.push('/home');
+      history.push('/home/username=' + res.data.username);
     })
     .catch((err) => {
       dispatch({
@@ -37,7 +48,14 @@ export const loginUser = (userData, history) => (dispatch) => {
     });
 };
 
-export const logoutUser = (userData, history) => (dispatch) => {
+export const logoutUser = () => (dispatch) => {
+  localStorage.removeItem('FBIdToken');
+  delete axios.defaults.headers.common['Authorization'];
+  localStorage.clear();
+  dispatch({ type: SET_UNAUTHENTICATED });
+};
+
+/*export const logoutUser = (userData, history) => (dispatch) => {
   dispatch({ type: LOADING_UI });
   axios
     .post('/logout', userData)
@@ -54,15 +72,16 @@ export const logoutUser = (userData, history) => (dispatch) => {
         payload: err.response.data
       });
     });
-};
+};*/
 
 export const getUserData = () => (dispatch) => {
+  dispatch({ type: LOADING_USER });
   axios
-    .get("/user")
+    .get('/user')
     .then((res) => {
       dispatch({
         type: SET_USER,
-        payload: res.data,
+        payload: res.data
       });
     })
     .catch((err) => console.log(err));

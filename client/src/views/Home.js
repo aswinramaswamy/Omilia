@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 //Components
 import Navbar from '../components/layout/Navbar';
+import HomeTabs from '../components/layout/HomeTabs';
 import Post from '../components/layout/Post/Post';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -17,19 +18,11 @@ class Home extends Component {
       }
       render() {
         const { posts, loading } = this.props.data;
-        let recentPostsMarkup = loading ? (
-          <CircularProgress className="middle" size={200} thickness={2}/>
-        ) : (
-          posts.map((post) => <Post key={post.postID} post={post} />)
-        );
         return (
             <div>
-                <Navbar/>
-                <h1><Link to="logout"><button>Log Out</button></Link></h1>
-                <h2>TIMELINE</h2>
-                <div className="center">
-                    {recentPostsMarkup}
-                </div>
+              <Navbar />
+              <h1><Link to="logout"><button>Log Out</button></Link></h1>
+              <HomeTabs allPosts={posts}></HomeTabs>
             </div>
         );
     }

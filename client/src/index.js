@@ -2,10 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import { SET_AUTHENTICATED } from './redux/types';
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import themeFile from "./css/theme";
 import jwtDecode from "jwt-decode";
 import history from "./data/history";
+import { logoutUser, getUserData } from './redux/actions/userActions';
+
+import axios from 'axios';
 
 //Redux
 import { Provider } from "react-redux";
@@ -43,6 +47,20 @@ import DeleteAccount from "./views/DeleteAccount";
 const theme = createMuiTheme(themeFile);
 
 const token = localStorage.FBIdToken;
+if (token) {
+  const decodedToken = jwtDecode(token);
+  if (decodedToken.exp * 1000 < Date.now()) {
+    store.dispatch(logoutUser());
+    window.location.href = '/';
+  } else {
+    store.dispatch({ type: SET_AUTHENTICATED });
+    axios.defaults.headers.common['Authorization'] = token;
+    store.dispatch(getUserData());
+  }
+}
+
+const logEmail = localStorage.getItem('email');
+const logUsername = localStorage.getItem('username');
 
 let authenticated;
 if (token) {
@@ -62,7 +80,7 @@ ReactDOM.render(
             <div>
             <Switch>
                 <AuthRoute exact path="/" component={Start} authenticated={authenticated}/>
-                <Route path="/home" component={Home} />
+                <Route path="/home/:username" component={Home} />
                 <AuthRoute path="/create" component={Create} authenticated={authenticated}/>
                 <AuthRoute path="/login" component={Login} authenticated={authenticated} />
                 <AuthRoute path="/accountMade" component={AccountMade} authenticated={authenticated} />
@@ -70,7 +88,7 @@ ReactDOM.render(
                 <Route path="/settings" component={Settings} />
                 <Route path="/delete" component={Delete} />
                 <Route path="/deleteAccount" component={DeleteAccount} />
-                <Route path="/profile" component={Profile} />
+                <Route path="/profile/:username" component={Profile} />
                 <Route path="/post" component={FullPagePost} /> 
                 <Route path="/post/:postID" component={FullPagePost} />
                 <Route path="/ChangeEmail" component={ChangeEmail} />

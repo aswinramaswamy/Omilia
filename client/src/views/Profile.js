@@ -11,8 +11,9 @@ export default class Profile extends React.Component {
     state = {
         posts: null
     }
-    
-    componentDidMount(){
+
+    componentDidMount() {
+        let handle = this.props.match.params.username;
         axios
             .get('/userpost/aswin')
             .then(res => {

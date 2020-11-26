@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import clsx from 'clsx';
 import Link from 'react-router-dom/Link';
 import history from "../../data/history";
 
@@ -6,6 +7,7 @@ import history from "../../data/history";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
+import Drawer from '@material-ui/core/Drawer';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -19,8 +21,24 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import EditIcon from '@material-ui/icons/Edit';
+import SettingsIcon from '@material-ui/icons/Settings';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import DeleteIcon from '@material-ui/icons/Delete';
+import HomeIcon from '@material-ui/icons/Home';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
   grow: {
     flexGrow: 1,
   },
@@ -90,6 +108,18 @@ export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [search, setSearch] = useState("");
   const isMenuOpen = Boolean(anchorEl);
+  const [open, setOpen] = React.useState(false);
+  const drawerWidth = 240;
+  const homePath = "/home/username=" + localStorage.getItem('username');
+  const profilePath = "/profile/username=" + localStorage.getItem('username');
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -101,7 +131,9 @@ export default function PrimarySearchAppBar() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    //context.history.push('/SearchResults/search=' + search);
     history.push('/SearchResults/search=' + search);
+    history.go(0);
   };
 
   const handleChange = (event) => {
@@ -119,30 +151,89 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
+      <MenuItem onClick={handleMenuClose} component={Link} to={profilePath} >Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose} component={Link} to="/settings">Settings</MenuItem>
+      <MenuItem onClick={handleMenuClose} component={Link} to="/logout">Log Out</MenuItem>
     </Menu>
+  );
+
+  const drawerMenu = (
+    <Drawer
+        className={classes.drawer}
+        variant="temporary"
+        anchor="left"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose} anchor='right'>
+            <ChevronLeftIcon />
+          </IconButton>
+        </div>
+      <Divider />
+      <List>
+        <ListItem button component={Link} to={homePath}>
+          <ListItemIcon><HomeIcon /></ListItemIcon>
+        </ListItem>
+      </List>
+      <Divider />
+          <List>
+            <ListItem>
+              <ListItemText primary="Post" />
+            </ListItem>      
+            <ListItem button component={Link} to="/newPost">
+              <ListItemIcon><AddBoxIcon /></ListItemIcon>
+              <ListItemText primary="Create" />
+            </ListItem>
+            <ListItem button component={Link} to="/editPost">
+              <ListItemIcon><EditIcon /></ListItemIcon>
+              <ListItemText primary="Edit" />
+            </ListItem>
+            <ListItem button component={Link} to="/delete">
+              <ListItemIcon><DeleteIcon /></ListItemIcon>
+              <ListItemText primary="Delete" />
+            </ListItem>
+        <Divider />
+        <List>
+          <ListItem button component={Link} to="/followUser">
+            <ListItemText primary="Follow User" />
+          </ListItem>
+          <ListItem button component={Link} to="/unfollowUser">
+            <ListItemText primary="Unfollow User" />
+          </ListItem>
+          <ListItem button component={Link} to="/followTopic">
+            <ListItemText primary="Follow Post Topic" />
+          </ListItem>
+          <ListItem button component={Link} to="/unfollowTopic">
+            <ListItemText primary="Unfolow Post Topic" />
+          </ListItem>
+        </List>
+      </List>
+      
+      </Drawer>
   );
 
   return (
     <div className={classes.grow}>
       <AppBar position='relative'>
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
+        <IconButton
             color="inherit"
             aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
           >
             <MenuIcon />
           </IconButton>
-          <Button className={classes.menuButton} color="inherit" component={Link} to="/home" variant="text">
+          <Button className={classes.menuButton} color="inherit" component={Link} to={homePath} variant="text">
             Omilía
           </Button>
           <div className={classes.menuButton}>
-            <Button color="inherit" component={Link} to="/home" >Home</Button>
-            <Button color="inherit" component={Link} to="/profile" >Profile</Button>
+            <Button color="inherit" component={Link} to={homePath} >Home</Button>
+            <Button color="inherit" component={Link} to={profilePath} >Profile</Button>
             <Button color="inherit" component={Link} to="/newPost" >New Post</Button>
             <Button color="inherit" component={Link} to="/delete" >Delete Post</Button>
             <Button color="inherit" component={Link} to="/editPost" >Edit Post</Button>
@@ -153,7 +244,7 @@ export default function PrimarySearchAppBar() {
             <Button color="inherit" component={Link} to="/settings" >Settings</Button>
           </div>
           <div className={classes.search}>
-            <form noValidate onSubmit={handleSubmit}>
+            <form className={classes.root} noValidate onSubmit={handleSubmit}>
               <TextField
                 id="search"
                 name="search"
@@ -199,6 +290,7 @@ export default function PrimarySearchAppBar() {
         </Toolbar>
       </AppBar>
       {renderMenu}
+      {drawerMenu}
     </div>
   );
 }
