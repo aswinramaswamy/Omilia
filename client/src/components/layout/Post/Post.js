@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { connect } from 'react-redux';
-import { likePost, unlikePost, dislikePost, undislikePost } from '../../redux/actions/dataActions';
+import { likePost, unlikePost, dislikePost, undislikePost } from '../../../redux/actions/dataActions';
 import PropTypes from 'prop-types';
+import PostDialog from './PostDialog';
 
 //MUI
 import withStyles from '@material-ui/core/styles/withStyles'
@@ -22,10 +23,15 @@ const styles = {
     }
 };
 
-let liked = false;
-let disliked = false;
-
 class Post extends Component {
+  constructor() {
+    super();
+    this.state = {
+        liked: false,
+        disliked: false,
+        dialogOpen: false
+    }
+  } 
 
     likedPost = () => {
         /*if (
@@ -36,7 +42,7 @@ class Post extends Component {
         )
           return true;
         else return false;*/
-        return liked;
+        return this.state.liked;
       };
       dislikedPost = () => {
         /*if (
@@ -47,27 +53,53 @@ class Post extends Component {
         )
           return true;
         else return false;*/
-        return disliked;
+        return this.state.disliked;
       };
       likePost = () => {
         this.props.likePost(this.props.post.postID);
-        liked = true;
+        this.setState({
+          liked: true
+        })
       };
       unlikePost = () => {
         this.props.unlikePost(this.props.post.postID);
-        liked = false;
+        this.setState({
+          liked: false
+        })
       };
       dislikePost = () => {
         this.props.dislikePost(this.props.post.postID);
-        disliked = true;
+        this.setState({
+          disliked: true
+        })
       };
       undislikePost = () => {
         this.props.undislikePost(this.props.post.postID);
-        disliked = false;
+        this.setState({
+          disliked: false
+        })
       };
     render() {
         dayjs.extend(relativeTime)
-        const { classes, post : { createdAt, body, userHandle, likes, dislikes, commentCount } } = this.props
+        const {
+          classes,
+          post : {
+            createdAt,
+            body,
+            userHandle,
+            likes,
+            dislikes,
+            commentCount,
+            postID
+          }
+        } = this.props
+
+        const realCommentCount = !(commentCount > 0) ? (
+            0
+          ) : (
+              commentCount
+          )
+
         const likeButton = this.likedPost() ? (
             <IconButton tip="Undo like" onClick={this.unlikePost}>
               <ArrowUpwardIcon color="primary" />
@@ -79,6 +111,7 @@ class Post extends Component {
               <span><Typography>{likes}</Typography></span>
             </IconButton>
           );
+
           const dislikeButton = this.dislikedPost() ? (
             <IconButton tip="Undo dislike" onClick={this.undislikePost}>
               <ArrowDownwardIcon color="primary" />
@@ -91,7 +124,6 @@ class Post extends Component {
             </IconButton>
           );
         return (
-            <div>
             <Card className={classes.card}>
                 <CardContent>
                     <Typography variant="h6" color="primary">
@@ -100,21 +132,17 @@ class Post extends Component {
                     <Typography variant="body2" color="textSecondary">
                         {dayjs(createdAt).fromNow()}
                     </Typography>
-                    <Typography variant="body1" component="p">
+                    <Typography variant="body1">
                         {body}
                     </Typography>
                 </CardContent>
                 <CardActions>
                     {likeButton}
                     {dislikeButton}
-                    <IconButton>
-                        <CommentOutlinedIcon color="primary"/>
-                        <span><Typography>{commentCount}</Typography></span>
-                    </IconButton>
+                    <PostDialog postID={postID} userHandle={userHandle}/>
+                    <Typography>{realCommentCount}</Typography>
                 </CardActions>
-            </Card> 
-            
-            </div>       
+            </Card>
         )
     }
 }
@@ -127,11 +155,11 @@ Post.propTypes = {
     user: PropTypes.object.isRequired,
     post: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired
-}
+};
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     user: state.user
-})
+});
 
 const mapActionsToProps = {
     likePost,
