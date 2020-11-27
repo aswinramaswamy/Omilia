@@ -14,7 +14,6 @@ import CardContent from '@material-ui/core/CardContent'
 import IconButton from '@material-ui/core/IconButton';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
 import Typography from '@material-ui/core/Typography'
 
 const styles = {

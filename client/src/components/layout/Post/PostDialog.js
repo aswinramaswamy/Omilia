@@ -1,19 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import PropTypes from 'prop-types';
 import Comments from './Comments';
+import CommentForm from './CommentForm';
 
 //MUI
 import withStyles from '@material-ui/core/styles/withStyles'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography'
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
@@ -99,16 +96,9 @@ class PostDialog extends Component{
                     </CardContent>
                 </Card>
                 <hr className={classes.visibleSeperator}/>
+                <CommentForm postID={postID}/>
                 {commentsExist}
                 <Comments comments={comments}/>
-                <CardActions>
-                    <Button size="small" color="primary" onClick={this.handleClose}>
-                        Cancel
-                    </Button>
-                    <Button size="small" color="primary">
-                        Post
-                    </Button>
-                </CardActions>
             </div>
         );
 
@@ -122,7 +112,7 @@ class PostDialog extends Component{
                 open={this.state.open}
                 onBackdropClick={this.handleClose}
                 maxwidth='lg'
-                fullWidth = {true}
+                fullWidth
                 >
                     <DialogContent>
                         {dialogMarkup}
