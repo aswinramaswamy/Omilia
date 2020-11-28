@@ -5,8 +5,7 @@ import Navbar from '../components/layout/Navbar';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles'
 import axios from 'axios';
-
-
+import index from '../index.js'
 
 //MUI Stuff
 import TextField from '@material-ui/core/TextField';
@@ -44,7 +43,7 @@ class editProfile extends React.Component {
         loading: true
     });
     const userData = {
-        username: this.state.username,
+        username: localStorage.getItem('username'),
         picture: this.state.picture,
         description: this.state.description
     }
@@ -76,18 +75,6 @@ class editProfile extends React.Component {
           <div>
               <Navbar />
               <form noValidate onSubmit={this.onChangeEmailPress}>
-              <TextField 
-                      id="username" 
-                      name="username" 
-                      type="username" 
-                      label="Username" 
-                      className={classes.textField}
-                      helperText={errors.username} 
-                      error={errors.username ? true : false} 
-                      value={this.state.username} 
-                      onChange={this.handleChange} 
-                      fullwidth />
-                  <br />
                   <TextField 
                       id="picture" 
                       name="picture" 

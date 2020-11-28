@@ -72,7 +72,7 @@ app.post('/followUser', followUser);
 app.post('/followTopic', followTopic);
 app.post('/unfollowUser', unfollowUser);
 app.post('/unfollowTopic', unfollowTopic);
-app.get('/userdata', getProfile);
 app.post('/changeProfile', editProfile);
+app.post('/userdata', getProfile);
 
 exports.api = functions.https.onRequest(app);

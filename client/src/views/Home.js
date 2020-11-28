@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
 //Components
 import Navbar from '../components/layout/Navbar';
 import HomeTabs from '../components/layout/HomeTabs';
-import Post from '../components/layout/Post';
+import Post from '../components/layout/Post/Post';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { connect } from 'react-redux';
 import { getPosts } from '../redux/actions/dataActions';
@@ -17,21 +18,11 @@ class Home extends Component {
       }
       render() {
         const { posts, loading } = this.props.data;
-        let recentPostsMarkup = !loading ? (
-          posts.map((post) => <Post key={post.postID} post={post} />)
-        ) : (
-            <p>Loading...</p>
-        );
         return (
             <div>
               <Navbar />
-              <br></br>
-              <HomeTabs allPosts={posts}></HomeTabs>
               <h1><Link to="logout"><button>Log Out</button></Link></h1>
-                <h2>TIMELINE</h2>
-                <div className="center">
-                    {recentPostsMarkup}
-                </div>
+              <HomeTabs allPosts={posts}></HomeTabs>
             </div>
         );
     }
@@ -39,11 +30,13 @@ class Home extends Component {
 
 Home.propTypes = {
     getPosts: PropTypes.func.isRequired,
-    data: PropTypes.object.isRequired
+    data: PropTypes.object.isRequired,
+    UI: PropTypes.object.isRequired
   };
   
   const mapStateToProps = (state) => ({
-    data: state.data
+    data: state.data,
+    UI: state.UI
   });
   
   export default connect(

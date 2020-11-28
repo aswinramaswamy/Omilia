@@ -1,4 +1,4 @@
-import { SET_POSTS, LOADING_DATA, LIKE_POST, UNLIKE_POST, DISLIKE_POST, UNDISLIKE_POST} from '../types';
+import { SET_POSTS, LOADING_DATA, LIKE_POST, UNLIKE_POST, DISLIKE_POST, UNDISLIKE_POST, SET_POST, LOADING_UI, STOP_LOADING_UI, CLEAR_ERRORS, CREATE_COMMENT, SET_ERRORS} from '../types';
 import axios from 'axios';
 
 //get all posts
@@ -18,6 +18,21 @@ export const getPosts = () => (dispatch) => {
         payload: []
       });
     });
+};
+
+//get a specific post
+export const getPost = (postID) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  axios
+    .get(`/post/${postID}`)
+    .then((res) => {
+      dispatch({
+        type: SET_POST,
+        payload: res.data
+      });
+      dispatch({ type: STOP_LOADING_UI });
+    })
+    .catch((err) => console.log(err));
 };
 
 //like a post
@@ -59,6 +74,25 @@ export const dislikePost = (postID) => (dispatch) => {
       .catch((err) => console.log(err));
   };
 
+//comment on a post
+export const createComment = (postID, commentData) => (dispatch) => {
+  axios
+    .post(`/post/${postID}/comment`, commentData)
+    .then(res => {
+      dispatch({
+        type: CREATE_COMMENT,
+        payload: res.data
+      });
+      dispatch(clearErrors());
+    })
+    .catch(err => {
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data
+      })
+    })
+}
+
 //undislike a post
 export const undislikePost = (postID) => (dispatch) => {
     axios
@@ -71,3 +105,9 @@ export const undislikePost = (postID) => (dispatch) => {
       })
       .catch((err) => console.log(err));
   };
+
+  //clear errors
+  export const clearErrors = () => (dispatch) => {
+    dispatch({ type: CLEAR_ERRORS });
+  };
+  

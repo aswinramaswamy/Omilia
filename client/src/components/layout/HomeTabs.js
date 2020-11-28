@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
-import User from '../layout/UserDisplay';
-import Post from '../layout/Post';
-import history from "../../data/history";
+import Post from '../layout/Post/Post';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -15,8 +13,21 @@ import Box from '@material-ui/core/Box';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import TextField from '@material-ui/core/TextField';
-import SearchIcon from '@material-ui/icons/Search';
-import InputAdornment from '@material-ui/core/InputAdornment';
+
+function getUser() {
+  let user = {};
+  console.log(localStorage.getItem('username'));
+  axios
+    .post('/userdata', localStorage.getItem('username'))
+    .then(res => {
+      console.log(res.data());
+      user = res.data();
+    })
+    .catch(err => console.log(err));
+  return user;
+}
+
+const user = getUser();
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -76,6 +87,9 @@ export default function HomeTabs(thing) {
   const [userSearchResult, setUserSearchResult] = React.useState(<h1>Select A Topic</h1>);
 
   let topicSort = [];
+  let topics = [];
+  let flag = 0;
+
 
   const handleSubmit = (event) => {
     let newTopicSort = { ...topicSort };
@@ -111,36 +125,16 @@ export default function HomeTabs(thing) {
   ) : (
       <p>Loading...</p>
   );
-  
-  let postSearchResult = (thing.allPosts !== null) ? (
-    thing.allPosts.map((result) => {
-      if (!result["username"]) {
-        return <Post key={result.postID} post={result} />;
-      } else {
-        return;
-      }
-    })
-  ) : (
-      <p>Loading...</p>
-    );
-
-  const top100Films = [
-    { title: 'Monty Python and the Holy Grail', year: 1975 }
-  ];
-
-  let topics = [];
-
-  let flag = 0;
 
   function getTopics() {
     thing.allPosts.forEach(function (item) {
       if (typeof item.topic !== 'undefined') {
         for (let i=0; i < topics.length; i++) {
-          if (topics[i].title == item.topic) {
+          if (topics[i].title === item.topic) {
             flag = 1;
           }
         }
-        if (flag != 1) {
+        if (flag !== 1) {
           topics.push({
             title: item.topic
           })
@@ -150,7 +144,41 @@ export default function HomeTabs(thing) {
     });
     return topics;
   }
-  
+
+  let relevantPosts = (thing.allPosts.length !== 0) ? (
+    thing.allPosts.map(item => {
+      if (typeof item !== 'undefined') {
+        if (typeof item.likes !== 'undefined') {
+          if (typeof item.dislikes !== 'undefined') {
+            if (typeof item.body !== 'undefined') {
+              if (typeof item.topic !== 'undefined') {
+                if (typeof item.commentCount !== 'undefined') {
+                  return <Post key={item.postID} post={item} />;
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+  ) : (
+    <p>Loading...</p>
+  );
+
+  let suggestedPosts = (thing.allPosts.length !== 0) ? (
+    thing.allPosts.map((result) => {
+      console.log(result);
+      if (typeof result.userHandle !== 'undefined') {
+        if (typeof result.commentCount !== 'undefined') {
+          if (result.userHandle !== localStorage.getItem('username')) {
+            return <Post key={result.postID} post={result} />;
+          }
+        }
+      }
+    })
+  ) : (
+    <p>Loading...</p>
+  );
   
   return (
     <div className={classes.root}>
@@ -195,12 +223,12 @@ export default function HomeTabs(thing) {
       </TabPanel>
       <TabPanel value={value} index={2}>
         <div className="center">
-          {postSearchResult}
+          {relevantPosts}
         </div>
       </TabPanel>
       <TabPanel value={value} index={3}>
         <div className="center">
-          {postSearchResult}
+          {suggestedPosts}
         </div>
       </TabPanel>
     </div>

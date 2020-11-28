@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import '../css/app.css';
 //Import Components
 import Navbar from '../components/layout/Navbar';
-import Post from '../components/layout/Post';
+import Post from '../components/layout/Post/Post';
 import axios from 'axios';
 
 
