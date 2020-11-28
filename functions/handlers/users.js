@@ -25,13 +25,15 @@ const { format } = require("mysql");
 
 //get userdata
 exports.getProfile = (req, res) => {
+  const user = {
+    username: req.body.username
+  }
   db
   .collection('users')
-  .doc('aswin2')
+  .doc(user.username)
   .get()
-  .then(data => {
-    let prof = doc.data;
-    return res.json(posts);
+  .then((doc) => {
+    return res.json(doc.data());
   })
   .catch(err => console.error(err));
 }
