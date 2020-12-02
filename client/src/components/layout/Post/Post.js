@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { connect } from 'react-redux';
@@ -28,7 +29,8 @@ class Post extends Component {
     this.state = {
         liked: false,
         disliked: false,
-        dialogOpen: false
+        dialogOpen: false,
+        block: false
     }
   } 
 
@@ -90,8 +92,17 @@ class Post extends Component {
             dislikes,
             commentCount,
             postID
-          }
+          },
+          blockedUsers
         } = this.props
+
+        if(blockedUsers) {
+          if(blockedUsers.includes(userHandle)) {
+            this.setState({
+              block: true
+            })
+          }
+        }
 
         const realCommentCount = !(commentCount > 0) ? (
             0
@@ -122,10 +133,19 @@ class Post extends Component {
               <span><Typography>{dislikes}</Typography></span>
             </IconButton>
           );
-        return (
-            <Card className={classes.card}>
+
+        const postCard = this.state.block ? (
+          <Card className={classes.card}>
                 <CardContent>
-                    <Typography variant="h6" color="primary">
+                    <Typography variant="body2" color="textSecondary">
+                        Post was blocked
+                    </Typography>
+                </CardContent>
+            </Card>
+        ) : (
+          <Card className={classes.card}>
+                <CardContent>
+                    <Typography variant="h6" color="primary" component={Link} to={`/users/${userHandle}`}>
                         {userHandle}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
@@ -142,6 +162,12 @@ class Post extends Component {
                     <Typography>{realCommentCount}</Typography>
                 </CardActions>
             </Card>
+        );
+
+        return (
+            <div>
+              {postCard}
+            </div>
         )
     }
 }
@@ -153,6 +179,7 @@ Post.propTypes = {
     undislikePost: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     post: PropTypes.object.isRequired,
+    blockedUsers: PropTypes.array.isRequired,
     classes: PropTypes.object.isRequired
 };
 
