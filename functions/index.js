@@ -38,8 +38,14 @@ const {
   followTopic,
   unfollowUser,
   unfollowTopic,
+<<<<<<< HEAD
   changeProfile,
   blockUser
+=======
+  blockUser,
+  getFollowers,
+  getFollowings
+>>>>>>> 1f171c60dab7bcfb1194f00511166d923393096a
 } = require('./handlers/users');
 //const { default: EditPost } = require('../client/src/views/EditPost');
 
@@ -56,6 +62,8 @@ app.get('/post/:postID/unlike', unlikePost);
 app.get('/post/:postID/dislike', dislikePost);
 app.get('/post/:postID/undislike', undislikePost);
 app.post('/post/:postID/comment', createComment);
+app.get('/followers/:username', getFollowers);
+app.get('/followings/:username', getFollowings);
 
 
 // users routes

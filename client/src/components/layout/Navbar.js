@@ -33,6 +33,8 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import DeleteIcon from '@material-ui/icons/Delete';
 import HomeIcon from '@material-ui/icons/Home';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -186,7 +188,7 @@ export default function PrimarySearchAppBar() {
       <Divider />
           <List>
             <ListItem>
-              <ListItemText primary="Post" />
+              <ListItemText primary="Post Functions" />
             </ListItem>      
             <ListItem button component={Link} to="/newPost">
               <ListItemIcon><AddBoxIcon /></ListItemIcon>
@@ -202,11 +204,30 @@ export default function PrimarySearchAppBar() {
             </ListItem>
         <Divider />
         <List>
+          <ListItem>
+              <ListItemText primary="User Functions" />
+          </ListItem> 
+          <ListItem button component={Link} to="/followUser">
+            <ListItemIcon><AddCircleOutlineIcon /></ListItemIcon>
+            <ListItemText primary="Follow" />
+          </ListItem>
+          <ListItem button component={Link} to="/unfollowUser">
+            <ListItemIcon><RemoveCircleOutlineIcon /></ListItemIcon>
+            <ListItemText primary="Unfollow" />
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem>
+              <ListItemText primary="Topic Functions" />
+          </ListItem> 
           <ListItem button component={Link} to="/followTopic">
-            <ListItemText primary="Follow Post Topic" />
+            <ListItemIcon><AddCircleOutlineIcon /></ListItemIcon>
+            <ListItemText primary="Follow" />
           </ListItem>
           <ListItem button component={Link} to="/unfollowTopic">
-            <ListItemText primary="Unfollow Post Topic" />
+            <ListItemIcon><RemoveCircleOutlineIcon /></ListItemIcon>
+            <ListItemText primary="Unfollow" />
           </ListItem>
         </List>
       </List>
