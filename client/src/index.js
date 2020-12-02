@@ -39,6 +39,7 @@ import followTopic from "./views/followTopic";
 import unfollowUser from "./views/unfollowUser";
 import unfollowTopic from "./views/unfollowTopic";
 import Banned from "./views/Banned";
+import UserProfile from "./views/UserProfile";
 
 
 import "./css/app.css";
