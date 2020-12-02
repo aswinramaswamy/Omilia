@@ -29,6 +29,9 @@ exports.createPost = (req, res) => {
     if(!format.test(req.body.data.topic)) {
       return res.status(400).send({ error: 'Topic must be only lowercase letters' })
     }
+    if(req.body.data.topic.includes('fuck') || req.body.data.topic.includes('poop') || req.body.data.topic.includes('dick')) {
+      return res.status(400).send({ error: 'This topic is banned, please enter new topic' })
+    }
     //console.log(firebase.auth().currentUser);
     const newPost = {
       headers: {

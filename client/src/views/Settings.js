@@ -149,6 +149,7 @@ export default class Settings extends React.Component {
                 <h2><Link to="ChangePassword" class="button">Change Password</Link></h2>
                 <h2><Link to="ChangeUsername" class="button">Change Username</Link></h2>
                 <h2><Link to="changeProfile" class="button">Edit Profile Picture and/or Description</Link></h2>
+                <h2><Link to="Banned" class="button">Banned topics</Link></h2>
             </div>
         )
     }
