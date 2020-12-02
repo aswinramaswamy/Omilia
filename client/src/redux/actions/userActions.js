@@ -3,8 +3,10 @@ import {
   SET_ERRORS,
   CLEAR_ERRORS,
   LOADING_UI,
+  STOP_LOADING_UI,
   SET_UNAUTHENTICATED,
-  LOADING_USER
+  LOADING_USER,
+  BLOCK_USER
 } from '../types';
 import axios from 'axios';
 
@@ -92,3 +94,18 @@ const setAuthorizationHeader = (token) => {
   localStorage.setItem('FBIdToken', FBIdToken);
   axios.defaults.headers.common['Authorization'] = FBIdToken;
 };
+
+//block a user
+export const blockUser = (user) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  axios
+    .post(`/blockUser`, user)
+    .then(res => {
+      dispatch({
+        type: BLOCK_USER,
+        payload: res.data
+      });
+      dispatch({ type: STOP_LOADING_UI });
+    })
+    .catch((err) => console.log(err));
+}
