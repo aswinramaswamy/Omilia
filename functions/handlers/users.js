@@ -888,4 +888,30 @@ exports.changeProfile = (req, res) => {
         .status(500)
         .json({ general: "Something went wrong, please try again" });
     });
-};
+}
+
+exports.blockUser = (req, res) =>{
+  const user = {
+    yourUserName: req.body.yourUserName,
+    username: req.body.username
+  };
+
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ blockedUsers: admin.firestore.FieldValue.arrayUnion(user.username) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.username} was successfully blocked` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+}

@@ -3,6 +3,7 @@ import {
   SET_AUTHENTICATED,
   SET_UNAUTHENTICATED,
   LOADING_USER,
+  BLOCK_USER
 } from '../types';
 
 const initialState = {
@@ -32,6 +33,10 @@ export default function(state = initialState, action) {
       return {
         ...state,
         loading: true
+      };
+    case BLOCK_USER:
+      return {
+        ...state
       };
     default:
       return state;

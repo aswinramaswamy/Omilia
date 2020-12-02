@@ -15,10 +15,10 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 
 function getUser() {
-  let user = {};
-  console.log(localStorage.getItem('username'));
+  let user = { username: localStorage.getItem('username') };
+  //console.log(user.username);
   axios
-    .post('/userdata', localStorage.getItem('username'))
+    .post('/userdata', user)
     .then(res => {
       console.log(res.data());
       user = res.data();
@@ -28,6 +28,7 @@ function getUser() {
 }
 
 const user = getUser();
+console.log(user);
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -72,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
 function getPostByTopic(topics) {
   let userSearchResult = (topics.length !== 0) ? (
     topics.map((result) => {
-      return <Post key={result.postID} post={result} />;
+      return <Post key={result.postID} post={result} blockedUsers={user.blockedUsers} />;
     })
   ) : (
       <p>Select a Topic</p>
@@ -120,7 +121,7 @@ export default function HomeTabs(thing) {
 
   let allPosts = (thing.allPosts.length !== 0) ? (
     thing.allPosts.map((result) => {
-      return <Post key={result.postID} post={result} />;
+      return <Post key={result.postID} post={result} blockedUsers={user.blockedUsers}/>;
     })
   ) : (
       <p>Loading...</p>
@@ -153,7 +154,7 @@ export default function HomeTabs(thing) {
             if (typeof item.body !== 'undefined') {
               if (typeof item.topic !== 'undefined') {
                 if (typeof item.commentCount !== 'undefined') {
-                  return <Post key={item.postID} post={item} />;
+                  return <Post key={item.postID} post={item} blockedUsers={user.blockedUsers}/>;
                 }
               }
             }
@@ -171,7 +172,7 @@ export default function HomeTabs(thing) {
       if (typeof result.userHandle !== 'undefined') {
         if (typeof result.commentCount !== 'undefined') {
           if (result.userHandle !== localStorage.getItem('username')) {
-            return <Post key={result.postID} post={result} />;
+            return <Post key={result.postID} post={result} blockedUsers={user.blockedUsers}/>;
           }
         }
       }
