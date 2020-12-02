@@ -104,6 +104,7 @@ ReactDOM.render(
                 <Route path="/unfollowUser" component={unfollowUser} /> 
                 <Route path="/unfollowTopic" component={unfollowTopic} />
                 <Route path="/searchResults/:search" component={SearchResults} />
+                <Route path="/users/:username" component={UserProfile} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />
             </Switch>
