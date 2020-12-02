@@ -91,7 +91,8 @@ class Post extends Component {
             likes,
             dislikes,
             commentCount,
-            postID
+            postID,
+            topic
           },
           blockedUsers
         } = this.props
@@ -147,6 +148,9 @@ class Post extends Component {
                 <CardContent>
                     <Typography variant="h6" color="primary" component={Link} to={`/users/${userHandle}`}>
                         {userHandle}
+                    </Typography>
+                    <Typography variant="body1" color="black">
+                        topic: {topic}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
                         {dayjs(createdAt).fromNow()}
