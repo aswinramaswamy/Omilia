@@ -33,6 +33,7 @@ exports.getProfile = (req, res) => {
   .doc(user.username)
   .get()
   .then((doc) => {
+    localStorage.setItem('user', user.username);
     return res.json(doc.data());
   })
   .catch(err => console.error(err));
@@ -314,6 +315,8 @@ exports.signup = (req, res) => {
     phone: req.body.phone,
     picture: req.body.picture,
     description: req.body.description,
+    userFollows: req.body.userFollows,
+    topicFollows: req.body.topicFollows
   };
 
   //Checking if Fields are correct
@@ -408,6 +411,8 @@ exports.signup = (req, res) => {
               isPhoneVerified: false,
               createdAt: new Date().toISOString(),
               userId,
+              userFollows: [""],
+              topicFollows: [""],
             };
             db.doc(`/users/${newUser.username}`).set(userCredentials);
           }
@@ -678,19 +683,18 @@ exports.searchUsers = (req, res) => {
 }
 
 exports.followUser = (req, res) => {
+  let username = req.params.username;
   const user = {
-    yourUserName: req.body.yourUserName,
-    userId: req.body.userId
+    yourUserName: localStorage.getItem('username'),
   };
 
-  let uid = user.userId;
   db.collection('users')
     .doc(user.yourUserName)
     .get()
     .then((doc) => {
       if (doc.exists) {
         var user1 = firebase.auth().currentUser;
-        user1.userFollows.push(userId)
+        user1.userFollows.push(username)
         .then(function(userRecord) {
           // See the UserRecord reference doc for the contents of userRecord.
           console.log('Successfully updated user', userRecord.toJSON());
@@ -770,7 +774,7 @@ exports.unfollowUser = (req, res) => {
     .then((doc) => {
       if (doc.exists) {
         var user1 = firebase.auth().currentUser;
-        user1.userFollows.push(userId)
+        user1.userFollows.delete(uid)
         .then(function(userRecord) {
           // See the UserRecord reference doc for the contents of userRecord.
           console.log('Successfully updated user', userRecord.toJSON());
@@ -839,11 +843,27 @@ exports.unfollowTopic = (req, res) => {
 
 exports.changeProfile = (req, res) => {
   const user = {
-    username: req.body.username,
+    username: localStorage.getItem('username'),
     picture: req.body.picture,
     description: req.body.description,
   };
-
+  let uid;
+  db.doc(`/users/${user.username}`) //Access database by document
+    .get() //Accesses the user requested, returns the user as a doc
+    .then((doc) => {
+      uid = doc.data().userId;
+      admin.auth().updateUser(uid, {
+        picture: user.picture, description: user.description
+      })
+        .then(function(userRecord) {
+          // See the UserRecord reference doc for the contents of userRecord.
+          console.log('Successfully updated user', userRecord.toJSON());
+        })
+        .catch(function(error) {
+          console.log('Error updating user:', error);
+          return res.status(503).send("Error updating email auth");
+        });
+    })
   db.collection('users')
     .doc(user.username)
     .get()
@@ -851,22 +871,17 @@ exports.changeProfile = (req, res) => {
       if (doc && doc.exists) {
           var data = doc.data();
           // saves the data to 'name'
-          db.collection('users').doc(user.picture).set(data).then((doc) => {
-            db.collection('users').doc(user.picture).delete();
-            db.collection('users').doc(user.picture).update({ username: user.picture });
-            return res.status(200).send('picture has been changed'); 
+          db.collection('users').doc(user.username).set(data).then((doc) => {
+          db.collection('users').doc(user.username).update({ picture: user.picture });
+          db.collection('users').doc(user.username).update({ description: user.description });
+          return res.status(200).send('picture and description has been changed'); 
           })
-          db.collection('users').doc(user.description).set(data).then((doc) => {
-            db.collection('users').doc(user.description).delete();
-            db.collection('users').doc(user.description).update({ username: user.description });
-            return res.status(200).send('description has been changed'); 
-            })
-      }
-    })
-    .catch(err => {
-      console.log('Error changing picture or description', err);
-      return response.status(500);
-    })
+        }
+      })
+      .catch(err => {
+        console.log('Error changing picture and description', err);
+        return response.status(500);
+      })
     .catch((err) => {
       console.error(err);
       return res

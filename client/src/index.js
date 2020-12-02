@@ -38,6 +38,7 @@ import followUser from "./views/followUser";
 import followTopic from "./views/followTopic";
 import unfollowUser from "./views/unfollowUser";
 import unfollowTopic from "./views/unfollowTopic";
+import editProfile from "./views/editProfile"
 
 import "./css/app.css";
 import FullPagePost from "./views/FullPagePost";
@@ -100,6 +101,7 @@ ReactDOM.render(
                 <Route path="/followTopic" component={followTopic} /> 
                 <Route path="/unfollowUser" component={unfollowUser} /> 
                 <Route path="/unfollowTopic" component={unfollowTopic} />
+                <Route path="/changeProfile" component={editProfile} />
                 <Route path="/searchResults/:search" component={SearchResults} />
                 {/* Only useful in development mode */}
                 <Route component={NotFound} status={404} />

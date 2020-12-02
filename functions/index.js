@@ -38,7 +38,7 @@ const {
   followTopic,
   unfollowUser,
   unfollowTopic,
-  editProfile
+  changeProfile
 } = require('./handlers/users');
 //const { default: EditPost } = require('../client/src/views/EditPost');
 
@@ -68,11 +68,11 @@ app.post('/changePassword', changePassword);
 app.post('/changeUsername', changeUsername);
 app.get('/confirmEmail/:username', confirmEmail);
 app.post('/searchUsers', searchUsers);
-app.post('/followUser', followUser);
+app.post('/followUser/:username', followUser);
 app.post('/followTopic', followTopic);
-app.post('/unfollowUser', unfollowUser);
+app.post('/unfollowUser/:username', unfollowUser);
 app.post('/unfollowTopic', unfollowTopic);
-app.post('/changeProfile', editProfile);
-app.post('/userdata', getProfile);
+app.post('/editProfile', changeProfile);
+app.post('/userdata/:username', getProfile);
 
 exports.api = functions.https.onRequest(app);

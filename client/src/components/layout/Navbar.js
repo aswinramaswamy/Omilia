@@ -110,8 +110,8 @@ export default function PrimarySearchAppBar() {
   const isMenuOpen = Boolean(anchorEl);
   const [open, setOpen] = React.useState(false);
   const drawerWidth = 240;
-  const homePath = "/home/username=" + localStorage.getItem('username');
-  const profilePath = "/profile/username=" + localStorage.getItem('username');
+  const homePath = `/home/${localStorage.getItem('username')}`;
+  const profilePath = `/profile/${localStorage.getItem('username')}`;
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -128,6 +128,11 @@ export default function PrimarySearchAppBar() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const profileClose = () => {
+    setAnchorEl(null);
+    localStorage.setItem('user', localStorage.getItem('username'));
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -151,7 +156,7 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose} component={Link} to={profilePath} >Profile</MenuItem>
+      <MenuItem onClick={profileClose} component={Link} to={profilePath} >Profile</MenuItem>
       <MenuItem onClick={handleMenuClose} component={Link} to="/settings">Settings</MenuItem>
       <MenuItem onClick={handleMenuClose} component={Link} to="/logout">Log Out</MenuItem>
     </Menu>
@@ -197,12 +202,6 @@ export default function PrimarySearchAppBar() {
             </ListItem>
         <Divider />
         <List>
-          <ListItem button component={Link} to="/followUser">
-            <ListItemText primary="Follow User" />
-          </ListItem>
-          <ListItem button component={Link} to="/unfollowUser">
-            <ListItemText primary="Unfollow User" />
-          </ListItem>
           <ListItem button component={Link} to="/followTopic">
             <ListItemText primary="Follow Post Topic" />
           </ListItem>
@@ -233,13 +232,13 @@ export default function PrimarySearchAppBar() {
           </Button>
           <div className={classes.menuButton}>
             <Button color="inherit" component={Link} to={homePath} >Home</Button>
-            <Button color="inherit" component={Link} to={profilePath} >Profile</Button>
+            <Button onClick={() => {
+                         localStorage.setItem('user', profilePath.substring(9))
+                         }} color="inherit" component={Link} to={profilePath} >Profile</Button>
             <Button color="inherit" component={Link} to="/newPost" >New Post</Button>
             <Button color="inherit" component={Link} to="/delete" >Delete Post</Button>
             <Button color="inherit" component={Link} to="/editPost" >Edit Post</Button>
-            <Button color="inherit" component={Link} to="/followUser" >Follow User</Button>
             <Button color="inherit" component={Link} to="/followTopic" >Follow Topic</Button>
-            <Button color="inherit" component={Link} to="/unfollowUser" >Unfollow User</Button>
             <Button color="inherit" component={Link} to="/unfollowTopic" >Unfollow Topic</Button>
             <Button color="inherit" component={Link} to="/settings" >Settings</Button>
           </div>

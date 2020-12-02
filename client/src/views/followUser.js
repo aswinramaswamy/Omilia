@@ -16,6 +16,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+var profilePath = "/profile/username=" + username;
+var username;
+
 const styles = (theme) => ({
     ...theme.spreadIt
 })
@@ -24,8 +27,8 @@ class FollowUser extends React.Component {
     constructor() {
         super();
         this.state = {
-            yourUserName: "Enter Your Username",
-            userID: "Enter Username to follow",
+            yourUserName: "",
+            username: "Enter Username to follow",
             dialogOpen: false,
             message: "",
             loading: false, 
@@ -42,14 +45,14 @@ class FollowUser extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
         this.setState({
-            yourUserName: "Enter Your Username",
-            userID: "Enter User ID",
+            yourUserName: "",
+            username: "Enter User ID",
             dialogOpen: false,
             loading: true
         });
         const postData = {
-            userID: this.state.userID,
-            yourUserName: this.state.yourUserName
+            username: this.state.username,
+            yourUserName: localStorage.getItem('username')
         }
         console.log(postData)
         axios
@@ -95,30 +98,18 @@ class FollowUser extends React.Component {
                     <Grid item sm>
                         <div className='middle'>
                         <Typography variant='h2' className={classes.pageTitle} >
-                            Follow User
+                            Go to User Page
                         </Typography>
-                        <form noValidate onSubmit={this.handleSubmit}>
+                        <form noValidate onSubmit={this.handleSubmit, username=this.state.userID}>
                             <TextField 
-                                id="yourUserName" 
-                                name="yourUserName" 
-                                type="yourUserName" 
-                                label="Your UserName" 
+                                id="username" 
+                                name="username" 
+                                type="username" 
+                                label="Username" 
                                 className={classes.textField}
-                                helperText={errors.yourUserName}
-                                error={errors.yourUserName ? true : false} 
-                                value={this.state.yourUserName} 
-                                onChange={this.handleChange} 
-                                fullwidth />
-                            <br />
-                            <TextField 
-                                id="userID" 
-                                name="userID" 
-                                type="userID" 
-                                label="User ID" 
-                                className={classes.textField}
-                                helperText={errors.userID}
-                                error={errors.userID ? true : false} 
-                                value={this.state.userID} 
+                                helperText={errors.username}
+                                error={errors.username ? true : false} 
+                                value={this.state.username} 
                                 onChange={this.handleChange} 
                                 fullwidth />
                             <br />
@@ -128,7 +119,7 @@ class FollowUser extends React.Component {
                                 </Typography>
                             )}
                             <Button onClick={this.handleClickOpen} variant="contained" color="primary" className={classes.Button} disable={loading}>
-                                Follow User
+                                Go to User Page
                                 {loading && (
                                     <CircularProgress size={20} className={classes.progress}/>
                                 )}
@@ -143,7 +134,7 @@ class FollowUser extends React.Component {
                                     
                                     <DialogContent>
                                     <DialogContentText id="alert-dialog-description">
-                                        Follow this user?
+                                        Go to this user?
                                     </DialogContentText>
                                     </DialogContent>
                                     <DialogActions>

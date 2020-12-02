@@ -37,7 +37,7 @@ class editProfile extends React.Component {
     })
   }
 
-  onChangeEmailPress = (event) => {
+  onChangeProfilePress = (event) => {
     event.preventDefault();
     this.setState({
         loading: true
@@ -74,7 +74,7 @@ class editProfile extends React.Component {
       return (
           <div>
               <Navbar />
-              <form noValidate onSubmit={this.onChangeEmailPress}>
+              <form noValidate onSubmit={this.onChangeProfilePress}>
                   <TextField 
                       id="picture" 
                       name="picture" 
