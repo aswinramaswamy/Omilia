@@ -683,7 +683,30 @@ exports.searchUsers = (req, res) => {
 }
 
 exports.followUser = (req, res) => {
-  let username = req.params.username;
+  const user = {
+    yourUserName: req.body.yourUserName,
+    username: req.body.username
+  };
+
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ userFollows: admin.firestore.FieldValue.arrayUnion(user.username) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.username} was successfully followed` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+  /*let username = req.params.username;
   const user = {
     yourUserName: localStorage.getItem('username'),
   };
@@ -718,7 +741,7 @@ exports.followUser = (req, res) => {
       return res
         .status(500)
         .json({ general: "Something went wrong, please try again" });
-    });
+    });*/
 }
 
 exports.followTopic = (req, res) => {
@@ -727,7 +750,25 @@ exports.followTopic = (req, res) => {
     topic: req.body.topic
   };
 
-  let uid = user.userId;
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ topicFollows: admin.firestore.FieldValue.arrayUnion(user.topic) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.topic} was successfully followed` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+  /*let uid = user.userId;
   db.collection('users')
     .doc(user.yourUserName)
     .get()
@@ -758,11 +799,34 @@ exports.followTopic = (req, res) => {
       return res
         .status(500)
         .json({ general: "Something went wrong, please try again" });
-    });
+    });*/
 }
 
 exports.unfollowUser = (req, res) => {
   const user = {
+    yourUserName: req.body.yourUserName,
+    username: req.body.username
+  };
+
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ userFollows: admin.firestore.FieldValue.arrayRemove(user.username) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.username} was successfully unfollowed` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+  /*const user = {
     yourUserName: req.body.yourUserName,
     userId: req.body.userId
   };
@@ -798,7 +862,7 @@ exports.unfollowUser = (req, res) => {
       return res
         .status(500)
         .json({ general: "Something went wrong, please try again" });
-    });
+    });*/
 }
 
 exports.unfollowTopic = (req, res) => {
@@ -807,7 +871,27 @@ exports.unfollowTopic = (req, res) => {
     topic: req.body.topic
   };
 
-  let uid = user.userId;
+
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ topicFollows: admin.firestore.FieldValue.arrayRemove(user.topic) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.topic} was successfully unfollowed` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+
+  /*let uid = user.userId;
   db.collection('users')
     .doc(user.yourUserName)
     .get()
@@ -838,7 +922,7 @@ exports.unfollowTopic = (req, res) => {
       return res
         .status(500)
         .json({ general: "Something went wrong, please try again" });
-    });
+    });*/
 }
 
 exports.changeProfile = (req, res) => {
@@ -847,7 +931,27 @@ exports.changeProfile = (req, res) => {
     picture: req.body.picture,
     description: req.body.description,
   };
-  let uid;
+  
+  const userDocument = db.doc(`users/${user.username}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    userDocument.update({ picture: user.picture });
+    return userDocument.update({ description: user.description });
+  })
+  .then(() => {
+    return res.json( { success: `Picture and Description were successfully updated` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+  /*let uid;
   db.doc(`/users/${user.username}`) //Access database by document
     .get() //Accesses the user requested, returns the user as a doc
     .then((doc) => {
@@ -887,7 +991,7 @@ exports.changeProfile = (req, res) => {
       return res
         .status(500)
         .json({ general: "Something went wrong, please try again" });
-    });
+    });*/
 }
 
 exports.blockUser = (req, res) =>{
