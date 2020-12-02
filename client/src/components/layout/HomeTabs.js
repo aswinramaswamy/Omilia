@@ -18,10 +18,10 @@ function getUser() {
   let user = { username: localStorage.getItem('username') };
   //console.log(user.username);
   axios
-    .post('/userdata', user)
+    .post('/getProfile', user)
     .then(res => {
-      console.log(res.data());
-      user = res.data();
+      console.log(res.data);
+      user = res.data;
     })
     .catch(err => console.log(err));
   return user;
