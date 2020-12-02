@@ -15,16 +15,17 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 
 function getUser() {
-  let user = { username: localStorage.getItem('username') };
+  let userNameJSON = { username: localStorage.getItem('username') };
+  let user = {}
   //console.log(user.username);
   axios
-    .post('/getProfile', user)
+    .post('/getProfile', userNameJSON)
     .then(res => {
       console.log(res.data);
       user = res.data;
+      return user;
     })
     .catch(err => console.log(err));
-  return user;
 }
 
 const user = getUser();
@@ -73,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
 function getPostByTopic(topics) {
   let userSearchResult = (topics.length !== 0) ? (
     topics.map((result) => {
-      return <Post key={result.postID} post={result} blockedUsers={user.blockedUsers} />;
+      return <Post key={result.postID} post={result}  />;
     })
   ) : (
       <p>Select a Topic</p>
@@ -121,7 +122,7 @@ export default function HomeTabs(thing) {
 
   let allPosts = (thing.allPosts.length !== 0) ? (
     thing.allPosts.map((result) => {
-      return <Post key={result.postID} post={result} blockedUsers={user.blockedUsers}/>;
+      return <Post key={result.postID} post={result} />;
     })
   ) : (
       <p>Loading...</p>
@@ -154,7 +155,7 @@ export default function HomeTabs(thing) {
             if (typeof item.body !== 'undefined') {
               if (typeof item.topic !== 'undefined') {
                 if (typeof item.commentCount !== 'undefined') {
-                  return <Post key={item.postID} post={item} blockedUsers={user.blockedUsers}/>;
+                  return <Post key={item.postID} post={item} />;
                 }
               }
             }
@@ -172,7 +173,7 @@ export default function HomeTabs(thing) {
       if (typeof result.userHandle !== 'undefined') {
         if (typeof result.commentCount !== 'undefined') {
           if (result.userHandle !== localStorage.getItem('username')) {
-            return <Post key={result.postID} post={result} blockedUsers={user.blockedUsers}/>;
+            return <Post key={result.postID} post={result} />;
           }
         }
       }
