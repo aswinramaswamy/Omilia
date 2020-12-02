@@ -74,7 +74,7 @@ app.post('/followTopic', followTopic);
 app.post('/unfollowUser/:username', unfollowUser);
 app.post('/unfollowTopic', unfollowTopic);
 app.post('/editProfile', changeProfile);
-app.post('/userdata/:username', getProfile);
+app.post('/getProfile', getProfile);
 app.post('/blockUser', blockUser);
 
 exports.api = functions.https.onRequest(app);

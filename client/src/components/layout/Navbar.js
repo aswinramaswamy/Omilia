@@ -206,7 +206,7 @@ export default function PrimarySearchAppBar() {
             <ListItemText primary="Follow Post Topic" />
           </ListItem>
           <ListItem button component={Link} to="/unfollowTopic">
-            <ListItemText primary="Unfolow Post Topic" />
+            <ListItemText primary="Unfollow Post Topic" />
           </ListItem>
         </List>
       </List>
@@ -230,18 +230,6 @@ export default function PrimarySearchAppBar() {
           <Button className={classes.menuButton} color="inherit" component={Link} to={homePath} variant="text">
             Omilía
           </Button>
-          <div className={classes.menuButton}>
-            <Button color="inherit" component={Link} to={homePath} >Home</Button>
-            <Button onClick={() => {
-                         localStorage.setItem('user', profilePath.substring(9))
-                         }} color="inherit" component={Link} to={profilePath} >Profile</Button>
-            <Button color="inherit" component={Link} to="/newPost" >New Post</Button>
-            <Button color="inherit" component={Link} to="/delete" >Delete Post</Button>
-            <Button color="inherit" component={Link} to="/editPost" >Edit Post</Button>
-            <Button color="inherit" component={Link} to="/followTopic" >Follow Topic</Button>
-            <Button color="inherit" component={Link} to="/unfollowTopic" >Unfollow Topic</Button>
-            <Button color="inherit" component={Link} to="/settings" >Settings</Button>
-          </div>
           <div className={classes.search}>
             <form className={classes.root} noValidate onSubmit={handleSubmit}>
               <TextField
@@ -265,13 +253,13 @@ export default function PrimarySearchAppBar() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={5} color="secondary">
+            <IconButton aria-label="show 4 new mails" color="inherit" disabled>
+              <Badge badgeContent={0} color="secondary">
                 <MailIcon />
               </Badge>
             </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
+            <IconButton aria-label="show 17 new notifications" color="inherit" disabled>
+              <Badge badgeContent={0} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>

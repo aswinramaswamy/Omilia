@@ -41,6 +41,7 @@ import unfollowTopic from "./views/unfollowTopic";
 import editProfile from "./views/editProfile"
 import UserProfile from "./views/UserProfile";
 import Banned from "./views/Banned";
+import UserProfile from "./views/UserProfile";
 
 
 import "./css/app.css";
