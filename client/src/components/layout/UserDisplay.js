@@ -21,12 +21,9 @@ class UserDisplay extends Component {
         return (
             <Card className={classes.card}>
                 <CardContent>
-                    <Typography color="primary">
+                <Typography variant="h6" color="primary" component={Link} to={`/users/${username}`}>
                         {username}
-                     </Typography>
-                     <Button onClick={() => {
-                         localStorage.setItem('user', profilePath.substring(9))
-                         }} color="inherit" component={Link} to={profilePath} >User Page</Button>
+                    </Typography>
                 </CardContent>
             </Card>
         )
