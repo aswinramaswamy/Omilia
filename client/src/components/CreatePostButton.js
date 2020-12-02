@@ -91,7 +91,7 @@ export default class CreatePostButton extends React.Component {
                 'authorization': localStorage.FBIdToken
             },
             body: this.state.body,
-            userHandle: this.state.userHandle,
+            userHandle: localStorage.getItem('username'),
             dislikes: this.state.dislikes,
             likes: this.state.likes,
             edited: false,
