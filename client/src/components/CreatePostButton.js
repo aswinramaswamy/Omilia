@@ -137,6 +137,12 @@ export default class CreatePostButton extends React.Component {
                         loading: false
                     })
                 } 
+                else if (this.state.topic.includes('fuck') || this.state.topic.includes('dick') || this.state.topic.includes('poop')) {
+                    this.setState({
+                        message: "This topic is banned, please use another topic",
+                        loading: false
+                    })
+                }
                 else {
                     this.setState({
                         message: "Error sending post",

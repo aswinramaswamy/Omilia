@@ -38,6 +38,8 @@ import followUser from "./views/followUser";
 import followTopic from "./views/followTopic";
 import unfollowUser from "./views/unfollowUser";
 import unfollowTopic from "./views/unfollowTopic";
+import Banned from "./views/Banned";
+
 
 import "./css/app.css";
 import FullPagePost from "./views/FullPagePost";
@@ -94,6 +96,7 @@ ReactDOM.render(
                 <Route path="/ChangeEmail" component={ChangeEmail} />
                 <Route path="/ChangePassword" component={ChangePassword} />
                 <Route path="/ChangeUsername" component={ChangeUsername} />
+                <Route path="/Banned" component={Banned} />
                 <Route path="/NewPost" component={NewPost} />
                 <Route path="/editPost" component={editPost} />
                 <Route path="/followUser" component={followUser} /> 
