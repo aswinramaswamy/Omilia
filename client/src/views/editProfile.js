@@ -47,19 +47,19 @@ class editProfile extends React.Component {
         picture: this.state.picture,
         description: this.state.description
     }
-    
+    console.log(userData)
     axios
         .post('/editProfile', userData)
         .then(res => {
             console.log(res.data)
-            localStorage.setItem('FBIdToken', `Bearer  ${res.data.token}`);
             this.setState({
+                message: "User updated successfully",
                 loading: false
             });
-            this.props.history.push('/home');
         })
         .catch(err => {
             this.setState({
+                message: "User could not be found",
                 errors: err.response.data,
                 loading: false
             })

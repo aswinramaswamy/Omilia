@@ -98,7 +98,7 @@ class FollowUser extends React.Component {
                     <Grid item sm>
                         <div className='middle'>
                         <Typography variant='h2' className={classes.pageTitle} >
-                            Go to User Page
+                            Follow User
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit, username=this.state.userID}>
                             <TextField 
@@ -119,7 +119,7 @@ class FollowUser extends React.Component {
                                 </Typography>
                             )}
                             <Button onClick={this.handleClickOpen} variant="contained" color="primary" className={classes.Button} disable={loading}>
-                                Go to User Page
+                                Follow User
                                 {loading && (
                                     <CircularProgress size={20} className={classes.progress}/>
                                 )}
@@ -134,7 +134,7 @@ class FollowUser extends React.Component {
                                     
                                     <DialogContent>
                                     <DialogContentText id="alert-dialog-description">
-                                        Go to this user?
+                                        Follow this user?
                                     </DialogContentText>
                                     </DialogContent>
                                     <DialogActions>

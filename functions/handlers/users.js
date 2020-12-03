@@ -971,7 +971,7 @@ exports.unfollowTopic = (req, res) => {
 
 exports.changeProfile = (req, res) => {
   const user = {
-    username: localStorage.getItem('username'),
+    username: req.body.username,
     picture: req.body.picture,
     description: req.body.description,
   };

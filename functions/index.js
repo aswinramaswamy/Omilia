@@ -38,14 +38,10 @@ const {
   followTopic,
   unfollowUser,
   unfollowTopic,
-<<<<<<< HEAD
   changeProfile,
-  blockUser
-=======
   blockUser,
   getFollowers,
   getFollowings
->>>>>>> 1f171c60dab7bcfb1194f00511166d923393096a
 } = require('./handlers/users');
 //const { default: EditPost } = require('../client/src/views/EditPost');
 

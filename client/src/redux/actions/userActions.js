@@ -111,3 +111,17 @@ export const blockUser = (user) => (dispatch) => {
     })
     .catch((err) => console.log(err));
 }
+
+export const followUser = (user) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  axios
+    .post(`/followUser`, user)
+    .then(res => {
+      dispatch({
+        type: BLOCK_USER,
+        payload: res.data
+      });
+      dispatch({ type: STOP_LOADING_UI });
+    })
+    .catch((err) => console.log(err));
+}

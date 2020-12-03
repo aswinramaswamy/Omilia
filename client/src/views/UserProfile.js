@@ -4,6 +4,7 @@ import '../css/app.css';
 import Navbar from '../components/layout/Navbar';
 import Post from '../components/layout/Post/Post';
 import BlockUserButton from '../components/layout/BlockUserButton';
+import FollowUserButton from '../components/layout/FollowUserButton';
 import axios from 'axios';
 
 const yourUserName = localStorage.getItem('username');
@@ -38,6 +39,7 @@ export default class Profile extends React.Component {
                 <Navbar />
                 <h2>username: {this.state.username}</h2>
                 <BlockUserButton yourUserName={yourUserName} username={this.state.username}/>
+                <FollowUserButton yourUserName={yourUserName} username={this.state.username}/>
                 <div className="center">
                     {recentPostsMarkup}
                 </div>
