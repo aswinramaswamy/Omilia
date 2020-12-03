@@ -1,4 +1,4 @@
-import { SET_POSTS, LOADING_DATA, LIKE_POST, UNLIKE_POST, DISLIKE_POST, UNDISLIKE_POST, SET_POST, LOADING_UI, STOP_LOADING_UI, CLEAR_ERRORS, CREATE_COMMENT, SET_ERRORS} from '../types';
+import { SET_POSTS, LOADING_DATA, LIKE_POST, UNLIKE_POST, DISLIKE_POST, UNDISLIKE_POST, SET_POST, LOADING_UI, STOP_LOADING_UI, CLEAR_ERRORS, CREATE_COMMENT, SET_ERRORS, SAVE_POST} from '../types';
 import axios from 'axios';
 
 //get all posts
@@ -110,4 +110,19 @@ export const undislikePost = (postID) => (dispatch) => {
   export const clearErrors = () => (dispatch) => {
     dispatch({ type: CLEAR_ERRORS });
   };
+
+//save a post
+export const savePost = (postID, username) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  axios
+    .post(`/post/${postID}/savePost`, username)
+    .then(res => {
+      dispatch({
+        type: SAVE_POST,
+        payload: res.data
+      });
+      dispatch({ type: STOP_LOADING_UI });
+    })
+    .catch((err) => console.log(err));
+}
   
