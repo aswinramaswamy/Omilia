@@ -39,6 +39,22 @@ exports.getProfile = (req, res) => {
   .catch(err => console.error(err));
 }
 
+//get userdata
+exports.getProfileInfo = (req, res) => {
+  const user = {
+    username: req.body.username
+  }
+  db
+  .collection('users')
+  .doc(user.username)
+  .get()
+  .then((doc) => {
+    
+    return res.json(doc.data());
+  })
+  .catch(err => console.error(err));
+}
+
 exports.getFollowers = (req, res) => {
   const user = { 
     username: req.body.username
@@ -363,6 +379,8 @@ exports.signup = (req, res) => {
     topicFollows: req.body.topicFollows
   };
 
+  const noImg = 'no-img.jpg'
+
   //Checking if Fields are correct
   const { valid, errors } = validateSignupData(newUser);
   if (!valid) return res.status(400).json(errors);
@@ -449,7 +467,7 @@ exports.signup = (req, res) => {
               username: newUser.username,
               email: newUser.email,
               phone: newUser.phone,
-              picture: newUser.picture,
+              picture: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImg}?alt=media`,
               description: newUser.description,
               isEmailVerified: false,
               isPhoneVerified: false,
@@ -985,7 +1003,8 @@ exports.changeProfile = (req, res) => {
       return res.status(404).json({ error: 'User does not exist'});
     }
     //increase like count in doc
-    userDocument.update({ picture: user.picture });
+    this.uploadImage(user,res);
+    //userDocument.update({ picture: user.picture });
     return userDocument.update({ description: user.description });
   })
   .then(() => {
@@ -1061,5 +1080,51 @@ exports.blockUser = (req, res) =>{
   .catch(err => {
     console.log(err);
     res.status(500).json({error: 'Something went wrong'});
+  })
+}
+
+exports.uploadImage = (req, res) =>{
+  const BusBoy = require('busboy');
+  const path = require('path');
+  const os = require('os');
+  const fs = require('fs');
+  const user = {
+    username: req.body.username,
+  };
+
+  const busboy = new BusBoy({headers: req.headers});
+
+  let imageFileName;
+  let imageToBeUploaded = {};
+
+  busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+    console.log(fieldname);
+    console.log(filename);
+    console.log(mimetype);
+    const imageExtension = filename.split('.')[filename.split('.').length - 1];
+    imageFileName = `${Math.round(Math.random()*10000000)}.${imageExtension}`;
+    const filepath = path.join(os.tmpdir(), imageFileName);
+    imageToBeUploaded = {filepath, mimetype};
+    file.pipe(fs.createWriteStream(filepath));
+  })
+  busboy.on('finish', () => {
+    admin.storage().bucket().upload(imageToBeUploaded.filepath, {
+      metadata: {
+        metadata: {
+          contentType: imageToBeUploaded.mimetype
+        }
+      }
+    })
+    .then(() => {
+      const imageURL = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
+      db.doc(`users/${user.username}`).update({ picture: imageURL});
+    })
+    .then(() => {
+      return res.json( { success: `Picture was successfully updated` } );
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({error: 'Something went wrong'});
+    })
   })
 }

@@ -41,7 +41,8 @@ const {
   changeProfile,
   blockUser,
   getFollowers,
-  getFollowings
+  getFollowings,
+  getProfileInfo
 } = require('./handlers/users');
 //const { default: EditPost } = require('../client/src/views/EditPost');
 
