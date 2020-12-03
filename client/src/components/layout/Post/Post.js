@@ -22,7 +22,6 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import ShareIcon from '@material-ui/icons/Share';
-import Typography from '@material-ui/core/Typography'
 
 //const logUsername = localStorage.getItem('username');
 
@@ -200,7 +199,7 @@ class Post extends Component {
             </IconButton>
           );
 
-          const shareButton = this.likedPost() ? (
+          /*const shareButton = this.likedPost() ? (
             <IconButton tip="share" onClick={this.unlikePost}>
               <ShareIcon color="secondary" />
             </IconButton>
@@ -208,7 +207,7 @@ class Post extends Component {
             <IconButton tip="dislike" onClick={this.likePost}>
               <ShareIcon color="secondary" />
             </IconButton>
-          );
+          );*/
 
           const dislikeButton = this.dislikedPost() ? (
             <IconButton tip="Undo dislike" onClick={this.undislikePost}>
@@ -261,7 +260,7 @@ class Post extends Component {
                     {likeButton}
                     {dislikeButton}
                     {saveButton}
-                    {shareButton}
+                    {/*shareButton*/}
                     <PostDialog postID={postID} userHandle={userHandle}/>
                     <Typography>{realCommentCount}</Typography>
                 </CardActions>

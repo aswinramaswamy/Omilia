@@ -30,8 +30,8 @@ function getUser() {
 
 const user = getUser();
 
-function TabPanel() {
-  //const { children, value, index, ...other } = props;
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
   return (
     <div
@@ -48,11 +48,11 @@ function TabPanel() {
   );
 }
 
-/*TabPanel.propTypes = {
+TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
-};*/
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,7 +74,7 @@ export default function FollowCards(thing) {
   
   return (
     <div className={classes.root}>
-      <TabPanel value={value} index={0}>
+      <TabPanel index={0}>
         <div className="center">
           {allFollowers}
         </div>
