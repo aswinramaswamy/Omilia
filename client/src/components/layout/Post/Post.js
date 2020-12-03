@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { likePost, unlikePost, dislikePost, undislikePost, savePost } from '../../../redux/actions/dataActions';
 import PropTypes from 'prop-types';
 import PostDialog from './PostDialog';
-import axios from 'axios';
 
 //MUI
 import withStyles from '@material-ui/core/styles/withStyles'
@@ -38,7 +37,6 @@ class Post extends Component {
         liked: false,
         disliked: false,
         dialogOpen: false,
-        block: false,
         saved: false
     }
   } 
@@ -151,8 +149,7 @@ class Post extends Component {
             postID,
             topic,
             file
-          },
-          blockedUsers
+          }
         } = this.props
         
        /* this.setState({
@@ -229,48 +226,34 @@ class Post extends Component {
             </IconButton>
           );
 
-        const postCard = this.state.block ? (
-          <Card className={classes.card}>
-                <CardContent>
-                    <Typography variant="body2" color="textSecondary">
-                        Post was blocked
-                    </Typography>
-                </CardContent>
-            </Card>
-        ) : (
-          <Card className={classes.card}>
-                <CardContent>
-                    <Typography variant="h6" color="primary" component={Link} to={`/users/${userHandle}`}>
-                        {userHandle}
-                    </Typography>
-                    <Typography variant="body1" color="black">
-                        topic: {topic}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                        {dayjs(createdAt).fromNow()}
-                    </Typography>
-                    <Typography variant="body1">
-                        {body}
-                    </Typography>
-                    <div>
-                      <a href={file}><img src={file} object-fit='scale-down'></img></a>
-                    </div>
-                </CardContent>
-                <CardActions>
-                    {likeButton}
-                    {dislikeButton}
-                    {saveButton}
-                    {/*shareButton*/}
-                    <PostDialog postID={postID} userHandle={userHandle}/>
-                    <Typography>{realCommentCount}</Typography>
-                </CardActions>
-            </Card>
-        );
-
         return (
-            <div>
-              {postCard}
-            </div>
+          <Card className={classes.card}>
+          <CardContent>
+              <Typography variant="h6" color="primary" component={Link} to={`/users/${userHandle}`}>
+                  {userHandle}
+              </Typography>
+              <Typography variant="body1" color="black">
+                  topic: {topic}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                  {dayjs(createdAt).fromNow()}
+              </Typography>
+              <Typography variant="body1">
+                  {body}
+              </Typography>
+              <div>
+                <a href={file}><img src={file} object-fit='scale-down'></img></a>
+              </div>
+          </CardContent>
+          <CardActions>
+              {likeButton}
+              {dislikeButton}
+              {saveButton}
+              {/*shareButton*/}
+              <PostDialog postID={postID} userHandle={userHandle}/>
+              <Typography>{realCommentCount}</Typography>
+          </CardActions>
+      </Card>
         )
     }
 }
@@ -283,7 +266,6 @@ Post.propTypes = {
     savePost: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     post: PropTypes.object.isRequired,
-    blockedUsers: PropTypes.array.isRequired,
     classes: PropTypes.object.isRequired
 };
 
