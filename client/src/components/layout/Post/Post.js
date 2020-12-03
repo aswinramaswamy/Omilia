@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { connect } from 'react-redux';
-import { likePost, unlikePost, dislikePost, undislikePost } from '../../../redux/actions/dataActions';
+import { likePost, unlikePost, dislikePost, undislikePost, savePost } from '../../../redux/actions/dataActions';
 import PropTypes from 'prop-types';
 import PostDialog from './PostDialog';
 
@@ -13,9 +13,13 @@ import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent'
 import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography'
+
+//MUI Icons
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import Typography from '@material-ui/core/Typography'
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
 
 const styles = {
     card: {
@@ -30,7 +34,8 @@ class Post extends Component {
         liked: false,
         disliked: false,
         dialogOpen: false,
-        block: false
+        block: false,
+        saved: false
     }
   } 
 
@@ -56,6 +61,10 @@ class Post extends Component {
         else return false;*/
         return this.state.disliked;
       };
+      savedPost = () => {
+        return this.state.saved;
+      };
+
       likePost = () => {
         this.props.likePost(this.props.post.postID);
         this.setState({
@@ -136,6 +145,14 @@ class Post extends Component {
             </IconButton>
           );
 
+          const saveButton = this.savedPost() ? (
+            <BookmarkIcon color="primary" />
+          ) : (
+            <IconButton tip="save" onClick={this.dislikePost}>
+              <BookmarkBorderIcon color="primary" />
+            </IconButton>
+          );
+
         const postCard = this.state.block ? (
           <Card className={classes.card}>
                 <CardContent>
@@ -166,6 +183,7 @@ class Post extends Component {
                 <CardActions>
                     {likeButton}
                     {dislikeButton}
+                    {saveButton}
                     <PostDialog postID={postID} userHandle={userHandle}/>
                     <Typography>{realCommentCount}</Typography>
                 </CardActions>
@@ -185,6 +203,7 @@ Post.propTypes = {
     unlikePost: PropTypes.func.isRequired,
     dislikePost: PropTypes.func.isRequired,
     undislikePost: PropTypes.func.isRequired,
+    savePost: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     post: PropTypes.object.isRequired,
     blockedUsers: PropTypes.array.isRequired,
@@ -199,7 +218,8 @@ const mapActionsToProps = {
     likePost,
     unlikePost,
     dislikePost,
-    undislikePost
+    undislikePost,
+    savePost
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Post));
