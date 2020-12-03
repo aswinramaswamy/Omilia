@@ -6,8 +6,6 @@ import PropTypes from 'prop-types';
 //Components
 import Navbar from '../components/layout/Navbar';
 import HomeTabs from '../components/layout/HomeTabs';
-import Post from '../components/layout/Post/Post';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { connect } from 'react-redux';
 import { getPosts } from '../redux/actions/dataActions';
@@ -17,7 +15,7 @@ class Home extends Component {
         this.props.getPosts();
       }
       render() {
-        const { posts, loading } = this.props.data;
+        const { posts } = this.props.data;
         return (
             <div>
               <Navbar />
@@ -30,13 +28,11 @@ class Home extends Component {
 
 Home.propTypes = {
     getPosts: PropTypes.func.isRequired,
-    data: PropTypes.object.isRequired,
-    UI: PropTypes.object.isRequired
+    data: PropTypes.object.isRequired
   };
   
   const mapStateToProps = (state) => ({
-    data: state.data,
-    UI: state.UI
+    data: state.data
   });
   
   export default connect(
