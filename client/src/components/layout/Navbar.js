@@ -112,8 +112,8 @@ export default function PrimarySearchAppBar() {
   const isMenuOpen = Boolean(anchorEl);
   const [open, setOpen] = React.useState(false);
   const drawerWidth = 240;
-  const homePath = "/home/username=" + localStorage.getItem('username');
-  const profilePath = "/profile/username=" + localStorage.getItem('username');
+  const homePath = `/home/${localStorage.getItem('username')}`;
+  const profilePath = `/profile/${localStorage.getItem('username')}`;
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -130,6 +130,11 @@ export default function PrimarySearchAppBar() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const profileClose = () => {
+    setAnchorEl(null);
+    localStorage.setItem('user', localStorage.getItem('username'));
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -153,7 +158,7 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose} component={Link} to={profilePath} >Profile</MenuItem>
+      <MenuItem onClick={profileClose} component={Link} to={profilePath} >Profile</MenuItem>
       <MenuItem onClick={handleMenuClose} component={Link} to="/settings">Settings</MenuItem>
       <MenuItem onClick={handleMenuClose} component={Link} to="/logout">Log Out</MenuItem>
     </Menu>

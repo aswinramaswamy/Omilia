@@ -16,7 +16,8 @@ export const phoneLogin = (userData, history) => (dispatch) => {
     .then((res) => {
       setAuthorizationHeader(res.data.token);
       localStorage.setItem('email', res.data.email);
-      localStorage.setItem('username', res.data.username)
+      localStorage.setItem('username', res.data.username);
+      localStorage.setItem('user', res.data.username);
       dispatch(getUserData());
       dispatch({ type: CLEAR_ERRORS });
       history.push('/home/username=' + res.data.username);
@@ -36,10 +37,11 @@ export const loginUser = (userData, history) => (dispatch) => {
     .then((res) => {
       setAuthorizationHeader(res.data.token);
       localStorage.setItem('email', res.data.email);
-      localStorage.setItem('username', res.data.username)
+      localStorage.setItem('username', res.data.username);
+      localStorage.setItem('user', res.data.username);
       dispatch(getUserData());
       dispatch({ type: CLEAR_ERRORS });
-      history.push('/home/username=' + res.data.username);
+      history.push(`/home/${res.data.username}`);
     })
     .catch((err) => {
       dispatch({
@@ -98,6 +100,20 @@ export const blockUser = (user) => (dispatch) => {
   dispatch({ type: LOADING_UI });
   axios
     .post('/blockUser', user)
+    .then(res => {
+      dispatch({
+        type: BLOCK_USER,
+        payload: res.data
+      });
+      dispatch({ type: STOP_LOADING_UI });
+    })
+    .catch((err) => console.log(err));
+}
+
+export const followUser = (user) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  axios
+    .post(`/followUser`, user)
     .then(res => {
       dispatch({
         type: BLOCK_USER,

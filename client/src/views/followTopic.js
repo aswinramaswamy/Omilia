@@ -49,7 +49,7 @@ class FollowTopic extends React.Component {
         });
         const postData = {
             topic: this.state.topic,
-            yourUserName: this.state.yourUserName
+            yourUserName: localStorage.getItem('username')
         }
         console.log(postData)
         axios
@@ -98,18 +98,6 @@ class FollowTopic extends React.Component {
                             Follow Topic
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
-                            <TextField 
-                                id="yourUserName" 
-                                name="yourUserName" 
-                                type="yourUserName" 
-                                label="Your UserName" 
-                                className={classes.textField}
-                                helperText={errors.yourUserName}
-                                error={errors.yourUserName ? true : false} 
-                                value={this.state.yourUserName} 
-                                onChange={this.handleChange} 
-                                fullwidth />
-                            <br />
                             <TextField 
                                 id="topic" 
                                 name="topic" 
