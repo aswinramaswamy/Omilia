@@ -18,20 +18,20 @@ import ProfileCard from './ProfileCard';
 function getUser() {
   let user = {};
   console.log(localStorage.getItem('username'));
-  /*axios
-    .post('/getProfile', localStorage.getItem('username'))
+  axios
+    .post('/userdata', localStorage.getItem('username'))
     .then(res => {
       console.log(res.data());
       user = res.data();
     })
-    .catch(err => console.log(err));*/
+    .catch(err => console.log(err));
   return user;
 }
 
 const user = getUser();
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+function TabPanel() {
+  //const { children, value, index, ...other } = props;
 
   return (
     <div
@@ -39,22 +39,20 @@ function TabPanel(props) {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      {...other}
     >
-      {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          <Typography>USERNAME</Typography>
         </Box>
-      )}
+      
     </div>
   );
 }
 
-TabPanel.propTypes = {
+/*TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
-};
+};*/
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,12 +63,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FollowCards(thing) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
-  const [topick, setTopick] = React.useState("hello");
-
-  let topicSort = [];
-  let topics = [];
-  let flag = 0;
 
   let allFollowers = (thing.allFollowers.length !== 0) ? (
     thing.allFollowers.map((result) => {

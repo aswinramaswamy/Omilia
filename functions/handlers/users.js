@@ -67,20 +67,20 @@ exports.getFollowers = (req, res) => {
   }
   db
   .collection('users')
-  .doc(user.username)
-  .collection('followers')
+  .orderBy('interactionCount', 'desc')
   .get()
-  .then((doc) => {
+  .then(data => {
     let followers = [];
-      data.forEach(doc => {
-        followers.push({
-          username: doc.username,
-          ...doc.data()
-        });
+    data.forEach(doc => {
+      followers.push({
+        username: doc.username,
+        ...doc.data()
       });
-      return res.json(followers);
+    });
+    return res.json(followers);
   })
   .catch(err => console.error(err));
+  return res.json(followers);
 }
 
 exports.getFollowings = (req, res) => {
@@ -481,6 +481,7 @@ exports.signup = (req, res) => {
               userId,
               userFollows: [""],
               topicFollows: [""],
+              interactionCount: 0
             };
             db.doc(`/users/${newUser.username}`).set(userCredentials);
           }

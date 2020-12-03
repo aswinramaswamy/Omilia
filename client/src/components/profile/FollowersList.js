@@ -28,6 +28,21 @@ const styles = (theme) => ({
     ...theme.spreadIt
 })
 
+function ShowFollowers() {
+    const username = localStorage.getItem('username');
+    var followers;
+    followers = null;
+    //put get request here when working
+    console.log(username);
+    // replace br with followcards when able
+    let followlist = followers ? (
+        followers.map((follower) => <br />)
+        ) : (
+        <p>You have no followers</p>
+    );
+    return followlist;
+}
+
 export default class FollowersList extends React.Component {
     constructor() {
         super();
@@ -36,13 +51,9 @@ export default class FollowersList extends React.Component {
             body: "",
             loading: false, 
             errors: {},
-            loading: false,
+            loading: false
         }
     }
-
-    /*componentDidMount() {
-        this.props.getFollowers();
-    }*/
 
     handleOpen = (event) => {
         this.setState({
@@ -50,6 +61,8 @@ export default class FollowersList extends React.Component {
             loading: false
         })
     }
+
+
     handleClose = (event) => {
         this.setState({
             dialogOpen: false,
@@ -58,17 +71,11 @@ export default class FollowersList extends React.Component {
     }
 
     render() {
-        const { followers, classes } = this.props;
+        const { classes } = this.props;
         const { errors, loading } = this.state;
 
-        let followlist = followers ? (
-            followers.map((follower) => <FollowCards follower={follower}/>)
-            ) : (
-            <p>Loading...</p>
-        );
-
         return (
-            <div className="createPostButton">
+            <div className="followerslist">
                 <Button variant="contained" onClick={this.handleOpen} color="primary">
                     Followers
                 </Button>
@@ -88,7 +95,7 @@ export default class FollowersList extends React.Component {
                         </DialogActions>
                             <br />
                             <div>
-                                {followlist}
+                                <ShowFollowers />
                             </div>
                             <br />
                             <Typography color="primary" variant='caption' className="MessageBox" value={this.state.message} >
@@ -104,6 +111,5 @@ export default class FollowersList extends React.Component {
 }
 
 FollowersList.propTypes = {
-    getFollowers: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired
 }

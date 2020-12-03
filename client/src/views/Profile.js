@@ -4,6 +4,7 @@ import '../css/app.css';
 //Import Components
 import Navbar from '../components/layout/Navbar';
 import FollowersList from '../components/profile/FollowersList';
+import FollowingList from '../components/profile/FollowingList';
 import Post from '../components/layout/Post/Post';
 import axios from 'axios';
 import Button from "@material-ui/core/Button";
@@ -43,15 +44,6 @@ export default class Profile extends React.Component {
                 });
             })
             .catch(err => console.log(err));
-        axios
-            .get(`/followers/${logUsername}`)
-            .then(res => {
-                console.log(res.data);
-                this.setState({
-                    followers: res.data
-                });
-            })
-            .catch(err => console.log(err));
         }
     render() {
         let recentPostsMarkup = this.state.posts ? (
@@ -68,7 +60,12 @@ export default class Profile extends React.Component {
                 <h2>email: {logEmail}</h2>
                 <h2>user description: {this.state.description}</h2>
                 <h2><Link to="/settings" class="button">Edit info</Link></h2>
-                <FollowersList followers={this.state.followers}/>
+                <div>
+                <FollowingList />
+                </div>
+                <div>
+                <FollowersList />
+                </div>
                 <div className="test">
                 <p>{this.state.followers}</p>
                 </div>
