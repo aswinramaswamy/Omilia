@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { likePost, unlikePost, dislikePost, undislikePost, savePost } from '../../../redux/actions/dataActions';
 import PropTypes from 'prop-types';
 import PostDialog from './PostDialog';
+import axios from 'axios';
 
 //MUI
 import withStyles from '@material-ui/core/styles/withStyles'
@@ -20,6 +21,10 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
+import ShareIcon from '@material-ui/icons/Share';
+import Typography from '@material-ui/core/Typography'
+
+//const logUsername = localStorage.getItem('username');
 
 const styles = {
     card: {
@@ -50,6 +55,44 @@ class Post extends Component {
         else return false;*/
         return this.state.liked;
       };
+  /*  sharePost = (body) => {
+       const newPost = {
+          headers: {
+              'Content-Type': 'application/json',
+             // 'authorization': localStorage.FBIdToken
+          },
+          body: body,
+          userHandle: localStorage.getItem('username'),
+          dislikes: 0,
+          likes: 0,
+          edited: false,
+          editedTime: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          isAnonymous: false,
+          postID: -1,
+          userID: -1,
+          link: -1,
+          topic: ""
+        }
+      console.log(newPost);
+      
+      //createPost({ data: newPost })
+      axios
+          .post('/post', { data: newPost })
+          .then((res) => {
+              this.setState({
+                  message: "Post shared"
+              });
+          })
+          .catch((err) => {
+              this.setState({
+                  message: "Post failed to share"
+              });
+          })
+      this.setState({
+          shared: true  
+      });
+      };*/
       dislikedPost = () => {
         /*if (
           this.props.user.dislikes &&
@@ -106,14 +149,32 @@ class Post extends Component {
           },
           blockedUsers
         } = this.props
+        
+       /* this.setState({
+          body: body,
+          createdAt: createdAt,
+            dislikes: 0,
+            edited: false,
+            editedTime: null,
+            isAnonymous: false,
+            likes: 0,
+            postID: -1 ,
+            userHandle: "",
+            userID: -1,
+            loading: false, 
+            errors: {},
+            message: "",
+            link: "",
+            topic: ""
+        })*/
 
-        if(blockedUsers) {
+      /*  if(blockedUsers) {
           if(blockedUsers.includes(userHandle)) {
             this.setState({
               block: true
             })
           }
-        }
+        }*/
 
         const realCommentCount = !(commentCount > 0) ? (
             0
@@ -130,6 +191,16 @@ class Post extends Component {
             <IconButton tip="Like" onClick={this.likePost}>
               <ArrowUpwardIcon color="secondary" />
               <span><Typography>{likes}</Typography></span>
+            </IconButton>
+          );
+
+          const shareButton = this.likedPost() ? (
+            <IconButton tip="share" onClick={this.unlikePost}>
+              <ShareIcon color="secondary" />
+            </IconButton>
+          ) : (
+            <IconButton tip="dislike" onClick={this.likePost}>
+              <ShareIcon color="secondary" />
             </IconButton>
           );
 
@@ -184,6 +255,7 @@ class Post extends Component {
                     {likeButton}
                     {dislikeButton}
                     {saveButton}
+                    {shareButton}
                     <PostDialog postID={postID} userHandle={userHandle}/>
                     <Typography>{realCommentCount}</Typography>
                 </CardActions>
