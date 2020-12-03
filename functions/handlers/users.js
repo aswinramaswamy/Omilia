@@ -44,13 +44,19 @@ exports.getProfileInfo = (req, res) => {
   const user = {
     username: req.body.username
   }
+  const info = {
+    picture: null,
+    description: null
+  }
+
   db
   .collection('users')
   .doc(user.username)
   .get()
   .then((doc) => {
-    
-    return res.json(doc.data());
+    info.picture = doc.data().picture;
+    info.description = doc.data().description;
+    return res.json(info);
   })
   .catch(err => console.error(err));
 }
@@ -1003,8 +1009,10 @@ exports.changeProfile = (req, res) => {
       return res.status(404).json({ error: 'User does not exist'});
     }
     //increase like count in doc
-    this.uploadImage(user,res);
-    //userDocument.update({ picture: user.picture });
+    //this.uploadImage(user,res);
+    const imageURL = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${user.picture}?alt=media`;
+    //db.doc(`users/${user.username}`).update({ picture: imageURL});
+    userDocument.update({ picture: imageURL });
     return userDocument.update({ description: user.description });
   })
   .then(() => {
@@ -1014,47 +1022,6 @@ exports.changeProfile = (req, res) => {
     console.log(err);
     res.status(500).json({error: 'Something went wrong'});
   })
-  /*let uid;
-  db.doc(`/users/${user.username}`) //Access database by document
-    .get() //Accesses the user requested, returns the user as a doc
-    .then((doc) => {
-      uid = doc.data().userId;
-      admin.auth().updateUser(uid, {
-        picture: user.picture, description: user.description
-      })
-        .then(function(userRecord) {
-          // See the UserRecord reference doc for the contents of userRecord.
-          console.log('Successfully updated user', userRecord.toJSON());
-        })
-        .catch(function(error) {
-          console.log('Error updating user:', error);
-          return res.status(503).send("Error updating email auth");
-        });
-    })
-  db.collection('users')
-    .doc(user.username)
-    .get()
-    .then((doc) => {
-      if (doc && doc.exists) {
-          var data = doc.data();
-          // saves the data to 'name'
-          db.collection('users').doc(user.username).set(data).then((doc) => {
-          db.collection('users').doc(user.username).update({ picture: user.picture });
-          db.collection('users').doc(user.username).update({ description: user.description });
-          return res.status(200).send('picture and description has been changed'); 
-          })
-        }
-      })
-      .catch(err => {
-        console.log('Error changing picture and description', err);
-        return response.status(500);
-      })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ general: "Something went wrong, please try again" });
-    });*/
 }
 
 exports.blockUser = (req, res) =>{

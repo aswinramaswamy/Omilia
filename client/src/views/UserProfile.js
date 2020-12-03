@@ -8,6 +8,7 @@ import FollowUserButton from '../components/layout/FollowUserButton';
 import axios from 'axios';
 
 const yourUserName = localStorage.getItem('username');
+const noImg = 'no-img.jpg';
 
 export default class Profile extends React.Component {  
     state = {
@@ -48,7 +49,7 @@ export default class Profile extends React.Component {
             return (
             <div>
                 <Navbar />
-                <img src={imageUrl} alt="profile" className="profile-image"></img>
+                <img src={this.state.imageUrl} alt="profile" className="profile-image"></img>
                 <h2>username: {this.state.username}</h2>
                 <h2>user description: {this.state.description}</h2>
                 <BlockUserButton yourUserName={yourUserName} username={this.state.username}/>

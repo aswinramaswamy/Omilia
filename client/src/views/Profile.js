@@ -13,23 +13,26 @@ import Button from "@material-ui/core/Button";
 const logEmail = localStorage.getItem('email');
 const logUsername = localStorage.getItem('username');
 const user = localStorage.getItem('user');
-
-
+const noImg = 'no-img.jpg';
 
 export default class Profile extends React.Component {  
     state = {
         posts: null,
-        followers: null
+        followers: null,
+        description: null,
+        imageUrl: null,
+        username: null
     }
 
     componentDidMount() {
         let handle = this.props.match.params.username;
         axios
-            .get(`/userdata/${user}`)
+            .get('/getProfile', this.state.username)
             .then(res => {
-                /*this.setState({
-                    
-                });*/
+                this.setState({
+                    imageUrl: res.picture,
+                    description: res.description
+                });
             })
             .catch(err => console.log(err));
         axios
@@ -60,9 +63,11 @@ export default class Profile extends React.Component {
             return (
             <div>
                 <Navbar />
+                <img src={this.state.imageUrl} alt="profile" className="profile-image"></img>
                 <h2>username: {logUsername}</h2>
                 <h2>email: {logEmail}</h2>
-                <h2><Link to="settings" class="button">Edit info</Link></h2>
+                <h2>user description: {this.state.description}</h2>
+                <h2><Link to="/settings" class="button">Edit info</Link></h2>
                 <FollowersList followers={this.state.followers}/>
                 <div className="test">
                 <p>{this.state.followers}</p>
