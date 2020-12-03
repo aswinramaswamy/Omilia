@@ -30,7 +30,7 @@ export default class Profile extends React.Component {
             })
             .catch(err => console.log(err));
         axios
-            .get('/getProfile', this.state.username)
+            .get('/getProfileInfo', this.state.username)
             .then(res => {
                 this.setState({
                     imageUrl: res.picture,

@@ -27,7 +27,7 @@ export default class Profile extends React.Component {
     componentDidMount() {
         let handle = this.props.match.params.username;
         axios
-            .get('/getProfile', this.state.username)
+            .get('/getProfileInfo', this.state.username)
             .then(res => {
                 this.setState({
                     imageUrl: res.picture,
