@@ -1,4 +1,4 @@
-const { db } = require('../util/admin')
+const { db, admin } = require('../util/admin')
 
 exports.getAllPosts = (req, res) => {
     db
@@ -302,6 +302,32 @@ exports.undislikePost = (req, res) => {
   })
   .then(() => {
     return res.json(postData);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+}
+
+//save a post to the user's saved posts
+exports.savePost = (req, res) =>{
+  const user = {
+    yourUserName: req.body.yourUserName,
+    postID: req.params.postID
+  };
+
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ savedPosts: admin.firestore.FieldValue.arrayUnion(user.postID) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.postID} was saved by ${user.yourUserName}` } );
   })
   .catch(err => {
     console.log(err);
