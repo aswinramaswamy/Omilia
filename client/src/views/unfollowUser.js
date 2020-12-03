@@ -24,7 +24,7 @@ class UnfollowUser extends React.Component {
     constructor() {
         super();
         this.state = {
-            yourUserName: "Enter Your Username",
+            yourUserName: "",
             userID: "Enter Username to unfollow",
             dialogOpen: false,
             message: "",
@@ -42,14 +42,14 @@ class UnfollowUser extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
         this.setState({
-            yourUserName: "Enter Your Username",
+            yourUserName: "",
             userID: "Enter User ID",
             dialogOpen: false,
             loading: true
         });
         const postData = {
             userID: this.state.userID,
-            yourUserName: this.state.yourUserName
+            yourUserName: localStorage.getItem('username')
         }
         console.log(postData)
         axios
@@ -98,18 +98,6 @@ class UnfollowUser extends React.Component {
                             Unfollow User
                         </Typography>
                         <form noValidate onSubmit={this.handleSubmit}>
-                            <TextField 
-                                id="yourUserName" 
-                                name="yourUserName" 
-                                type="yourUserName" 
-                                label="Your UserName" 
-                                className={classes.textField}
-                                helperText={errors.yourUserName}
-                                error={errors.yourUserName ? true : false} 
-                                value={this.state.yourUserName} 
-                                onChange={this.handleChange} 
-                                fullwidth />
-                            <br />
                             <TextField 
                                 id="userID" 
                                 name="userID" 

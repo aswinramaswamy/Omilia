@@ -33,7 +33,30 @@ exports.getProfile = (req, res) => {
   .doc(user.username)
   .get()
   .then((doc) => {
+    localStorage.setItem('user', user.username);
     return res.json(doc.data());
+  })
+  .catch(err => console.error(err));
+}
+
+//get userdata
+exports.getProfileInfo = (req, res) => {
+  const user = {
+    username: req.body.username
+  }
+  const info = {
+    picture: null,
+    description: null
+  }
+
+  db
+  .collection('users')
+  .doc(user.username)
+  .get()
+  .then((doc) => {
+    info.picture = doc.data().picture;
+    info.description = doc.data().description;
+    return res.json(info);
   })
   .catch(err => console.error(err));
 }
@@ -44,20 +67,20 @@ exports.getFollowers = (req, res) => {
   }
   db
   .collection('users')
-  .doc(user.username)
-  .collection('followers')
+  .orderBy('interactionCount', 'desc')
   .get()
-  .then((doc) => {
+  .then(data => {
     let followers = [];
-      data.forEach(doc => {
-        followers.push({
-          username: doc.username,
-          ...doc.data()
-        });
+    data.forEach(doc => {
+      followers.push({
+        username: doc.username,
+        ...doc.data()
       });
-      return res.json(followers);
+    });
+    return res.json(followers);
   })
   .catch(err => console.error(err));
+  return res.json(followers);
 }
 
 exports.getFollowings = (req, res) => {
@@ -356,7 +379,13 @@ exports.signup = (req, res) => {
     confirmPassword: req.body.confirmPassword,
     username: req.body.username,
     phone: req.body.phone,
+    picture: req.body.picture,
+    description: req.body.description,
+    userFollows: req.body.userFollows,
+    topicFollows: req.body.topicFollows
   };
+
+  const noImg = 'no-img.jpg'
 
   //Checking if Fields are correct
   const { valid, errors } = validateSignupData(newUser);
@@ -444,10 +473,15 @@ exports.signup = (req, res) => {
               username: newUser.username,
               email: newUser.email,
               phone: newUser.phone,
+              picture: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImg}?alt=media`,
+              description: newUser.description,
               isEmailVerified: false,
               isPhoneVerified: false,
               createdAt: new Date().toISOString(),
               userId,
+              userFollows: [""],
+              topicFollows: [""],
+              interactionCount: 0
             };
             db.doc(`/users/${newUser.username}`).set(userCredentials);
           }
@@ -720,41 +754,27 @@ exports.searchUsers = (req, res) => {
 exports.followUser = (req, res) => {
   const user = {
     yourUserName: req.body.yourUserName,
-    userId: req.body.userId
+    username: req.body.username
   };
 
-  let uid = user.userId;
-  db.collection('users')
-    .doc(user.yourUserName)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var user1 = firebase.auth().currentUser;
-        user1.userFollows.push(userId)
-        .then(function(userRecord) {
-          // See the UserRecord reference doc for the contents of userRecord.
-          console.log('Successfully updated user', userRecord.toJSON());
-        })
-        .catch(function(error) {
-          console.log('Error updating user:', error);
-        });
-      } else {
-        return res.status(1).json({ general: "oops" });
-      }
-    })
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
-    })
-    .then(() => {
-      return res.status(201).json({ token });
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ general: "Something went wrong, please try again" });
-    });
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ userFollows: admin.firestore.FieldValue.arrayUnion(user.username) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.username} was successfully followed` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
 }
 
 exports.followTopic = (req, res) => {
@@ -763,78 +783,50 @@ exports.followTopic = (req, res) => {
     topic: req.body.topic
   };
 
-  let uid = user.userId;
-  db.collection('users')
-    .doc(user.yourUserName)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var user1 = firebase.auth().currentUser;
-        user1.topicFollows.push(topic)
-        .then(function(userRecord) {
-          // See the UserRecord reference doc for the contents of userRecord.
-          console.log('Successfully updated user', userRecord.toJSON());
-        })
-        .catch(function(error) {
-          console.log('Error updating user:', error);
-        });
-      } else {
-        return res.status(1).json({ general: "oops" });
-      }
-    })
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
-    })
-    .then(() => {
-      return res.status(201).json({ token });
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ general: "Something went wrong, please try again" });
-    });
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ topicFollows: admin.firestore.FieldValue.arrayUnion(user.topic) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.topic} was successfully followed` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
 }
 
 exports.unfollowUser = (req, res) => {
   const user = {
     yourUserName: req.body.yourUserName,
-    userId: req.body.userId
+    username: req.body.username
   };
 
-  let uid = user.userId;
-  db.collection('users')
-    .doc(user.yourUserName)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var user1 = firebase.auth().currentUser;
-        user1.userFollows.push(userId)
-        .then(function(userRecord) {
-          // See the UserRecord reference doc for the contents of userRecord.
-          console.log('Successfully updated user', userRecord.toJSON());
-        })
-        .catch(function(error) {
-          console.log('Error updating user:', error);
-        });
-      } else {
-        return res.status(1).json({ general: "oops" });
-      }
-    })
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
-    })
-    .then(() => {
-      return res.status(201).json({ token });
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ general: "Something went wrong, please try again" });
-    });
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ userFollows: admin.firestore.FieldValue.arrayRemove(user.username) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.username} was successfully unfollowed` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
 }
 
 exports.unfollowTopic = (req, res) => {
@@ -843,38 +835,56 @@ exports.unfollowTopic = (req, res) => {
     topic: req.body.topic
   };
 
-  let uid = user.userId;
-  db.collection('users')
-    .doc(user.yourUserName)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        var user1 = firebase.auth().currentUser;
-        user1.topicFollows.push(topic)
-        .then(function(userRecord) {
-          // See the UserRecord reference doc for the contents of userRecord.
-          console.log('Successfully updated user', userRecord.toJSON());
-        })
-        .catch(function(error) {
-          console.log('Error updating user:', error);
-        });
-      } else {
-        return res.status(1).json({ general: "oops" });
-      }
-    })
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
-    })
-    .then(() => {
-      return res.status(201).json({ token });
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ general: "Something went wrong, please try again" });
-    });
+
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ topicFollows: admin.firestore.FieldValue.arrayRemove(user.topic) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.topic} was successfully unfollowed` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+}
+
+exports.changeProfile = (req, res) => {
+  const user = {
+    username: req.body.username,
+    picture: req.body.picture,
+    description: req.body.description,
+  };
+  
+  const userDocument = db.doc(`users/${user.username}`);
+  
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    //this.uploadImage(user,res);
+    const imageURL = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${user.picture}?alt=media`;
+    //db.doc(`users/${user.username}`).update({ picture: imageURL});
+    userDocument.update({ picture: imageURL });
+    return userDocument.update({ description: user.description });
+  })
+  .then(() => {
+    return res.json( { success: `Picture and Description were successfully updated` } );
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
 }
 
 exports.blockUser = (req, res) =>{
@@ -900,5 +910,51 @@ exports.blockUser = (req, res) =>{
   .catch(err => {
     console.log(err);
     res.status(500).json({error: 'Something went wrong'});
+  })
+}
+
+exports.uploadImage = (req, res) =>{
+  const BusBoy = require('busboy');
+  const path = require('path');
+  const os = require('os');
+  const fs = require('fs');
+  const user = {
+    username: req.body.username,
+  };
+
+  const busboy = new BusBoy({headers: req.headers});
+
+  let imageFileName;
+  let imageToBeUploaded = {};
+
+  busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+    console.log(fieldname);
+    console.log(filename);
+    console.log(mimetype);
+    const imageExtension = filename.split('.')[filename.split('.').length - 1];
+    imageFileName = `${Math.round(Math.random()*10000000)}.${imageExtension}`;
+    const filepath = path.join(os.tmpdir(), imageFileName);
+    imageToBeUploaded = {filepath, mimetype};
+    file.pipe(fs.createWriteStream(filepath));
+  })
+  busboy.on('finish', () => {
+    admin.storage().bucket().upload(imageToBeUploaded.filepath, {
+      metadata: {
+        metadata: {
+          contentType: imageToBeUploaded.mimetype
+        }
+      }
+    })
+    .then(() => {
+      const imageURL = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
+      db.doc(`users/${user.username}`).update({ picture: imageURL});
+    })
+    .then(() => {
+      return res.json( { success: `Picture was successfully updated` } );
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({error: 'Something went wrong'});
+    })
   })
 }

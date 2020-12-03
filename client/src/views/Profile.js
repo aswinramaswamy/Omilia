@@ -4,39 +4,43 @@ import '../css/app.css';
 //Import Components
 import Navbar from '../components/layout/Navbar';
 import FollowersList from '../components/profile/FollowersList';
+import FollowingList from '../components/profile/FollowingList';
 import Post from '../components/layout/Post/Post';
 import axios from 'axios';
+import Button from "@material-ui/core/Button";
 
 
 
 const logEmail = localStorage.getItem('email');
 const logUsername = localStorage.getItem('username');
-
-
-
+const user = localStorage.getItem('user');
+const noImg = 'no-img.jpg';
 
 export default class Profile extends React.Component {  
     state = {
         posts: null,
-        followers: null
+        followers: null,
+        description: null,
+        imageUrl: null,
+        username: null
     }
 
     componentDidMount() {
         let handle = this.props.match.params.username;
         axios
-            .get(`/userpost/${logUsername}`)
+            .get('/getProfileInfo', this.state.username)
             .then(res => {
                 this.setState({
-                    posts: res.data
+                    imageUrl: res.picture,
+                    description: res.description
                 });
             })
             .catch(err => console.log(err));
         axios
-            .get(`/followers/${logUsername}`)
+            .get(`/userpost/${user}`)
             .then(res => {
-                console.log(res.data);
                 this.setState({
-                    followers: res.data
+                    posts: res.data
                 });
             })
             .catch(err => console.log(err));
@@ -51,17 +55,24 @@ export default class Profile extends React.Component {
             return (
             <div>
                 <Navbar />
+                <img src={this.state.imageUrl} alt="profile" className="profile-image"></img>
                 <h2>username: {logUsername}</h2>
                 <h2>email: {logEmail}</h2>
-                <h2><Link to="settings" class="button">Edit info</Link></h2>
-                <FollowersList followers={this.state.followers}/>
+                <h2>user description: {this.state.description}</h2>
+                <h2><Link to="/settings" class="button">Edit info</Link></h2>
+                <div>
+                <FollowingList />
+                </div>
+                <div>
+                <FollowersList />
+                </div>
                 <div className="test">
                 <p>{this.state.followers}</p>
                 </div>
                 <div className="center">
                     {recentPostsMarkup}
                 </div>
-            </div>
-        )
+                )
+            </div>)
     }
 }

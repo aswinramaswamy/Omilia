@@ -4,14 +4,18 @@ import '../css/app.css';
 import Navbar from '../components/layout/Navbar';
 import Post from '../components/layout/Post/Post';
 import BlockUserButton from '../components/layout/BlockUserButton';
+import FollowUserButton from '../components/layout/FollowUserButton';
 import axios from 'axios';
 
 const yourUserName = localStorage.getItem('username');
+const noImg = 'no-img.jpg';
 
 export default class Profile extends React.Component {  
     state = {
         posts: null,
-        username: null
+        username: null,
+        description: null,
+        imageUrl: null
     }
 
     componentDidMount() {
@@ -22,6 +26,15 @@ export default class Profile extends React.Component {
                 this.setState({
                     posts: res.data,
                     username: handle
+                });
+            })
+            .catch(err => console.log(err));
+        axios
+            .get('/getProfileInfo', this.state.username)
+            .then(res => {
+                this.setState({
+                    imageUrl: res.picture,
+                    description: res.description
                 });
             })
             .catch(err => console.log(err));
@@ -36,8 +49,11 @@ export default class Profile extends React.Component {
             return (
             <div>
                 <Navbar />
+                <img src={this.state.imageUrl} alt="profile" className="profile-image"></img>
                 <h2>username: {this.state.username}</h2>
+                <h2>user description: {this.state.description}</h2>
                 <BlockUserButton yourUserName={yourUserName} username={this.state.username}/>
+                <FollowUserButton yourUserName={yourUserName} username={this.state.username}/>
                 <div className="center">
                     {recentPostsMarkup}
                 </div>

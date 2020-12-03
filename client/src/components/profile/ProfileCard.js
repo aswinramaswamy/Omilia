@@ -37,12 +37,6 @@ class ProfileCard extends Component {
           }
         } = this.props
 
-        const realInteractionCount = !(interactionCount > 0) ? (
-            0
-          ) : (
-              interactionCount
-          )
-
         return (
             <Card className={classes.card}>
                 <CardContent>
@@ -50,7 +44,7 @@ class ProfileCard extends Component {
                         {userHandle}
                     </Typography>
                     <Typography variant="body1">
-                        {realInteractionCount}
+                        {interactionCount}
                     </Typography>
                 </CardContent>
                 <CardActions>
@@ -69,8 +63,4 @@ const mapStateToProps = (state) => ({
     user: state.user
 });
 
-const mapActionsToProps = {
-    
-}
-
-export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(ProfileCard));
+export default connect(mapStateToProps)(withStyles(styles)(ProfileCard));
