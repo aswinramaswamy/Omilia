@@ -132,6 +132,12 @@ class Post extends Component {
           disliked: false
         })
       };
+      savePost = () => {
+        this.props.undislikePost(this.props.post.postID, localStorage.getItem('username'));
+        this.setState({
+          saved: true
+        })
+      }
     render() {
         dayjs.extend(relativeTime)
         const {
@@ -217,9 +223,9 @@ class Post extends Component {
           );
 
           const saveButton = this.savedPost() ? (
-            <BookmarkIcon color="primary" />
+            <span><BookmarkIcon color="primary" /></span>
           ) : (
-            <IconButton tip="save" onClick={this.dislikePost}>
+            <IconButton tip="save" onClick={this.savePost}>
               <BookmarkBorderIcon color="primary" />
             </IconButton>
           );
