@@ -14,19 +14,19 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import TextField from '@material-ui/core/TextField';
 
-// function getUser() {
-//   let userNameJSON = { username: localStorage.getItem('username') };
-//   let user = {}
-//   //console.log(user.username);
-//   axios
-//     .post('/getProfile', userNameJSON)
-//     .then(res => {
-//       console.log(res.data);
-//       user = res.data;
-//       return user;
-//     })
-//     .catch(err => console.error(err));;
-// }
+ function getUser() {
+   let userNameJSON = { username: localStorage.getItem('username') };
+   let user = {}
+   //console.log(user.username);
+   axios
+     .post('/getProfile', userNameJSON)
+     .then(res => {
+       console.log(res.data);
+       user = res.data;
+       return user;
+     })
+     .catch(err => console.error(err));;
+}
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -69,17 +69,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getPostByTopic(topics) {
-  let userNameJSON = { username: localStorage.getItem('username') };
+  //let userNameJSON = { username: localStorage.getItem('username') };
   let blockedUsers = [];
   //console.log(user.username);
-  axios
+  /*axios
     .post('/getProfile', userNameJSON)
     .then(res => {
       blockedUsers = res.data.blockedUsers;
       console.log(blockedUsers);
-    });
+    });*/
     //.catch(err => console.error(err));
-    console.log(blockedUsers);
+    //console.log(blockedUsers);
 
   let userSearchResult = (topics.length !== 0) ? (
     topics.map((result) => {
@@ -97,22 +97,23 @@ export default function HomeTabs(thing) {
   const [topick, setTopick] = React.useState("hello");
   const [userSearchResult, setUserSearchResult] = React.useState(<h1>Select A Topic</h1>);
   
-  let userNameJSON = { username: localStorage.getItem('username') };
+  //let userNameJSON = { username: localStorage.getItem('username') };
   let blockedUsers = [];
   //console.log(user.username);
-  axios
+  /*axios
     .post('/getProfile', userNameJSON)
     .then(res => {
       blockedUsers = res.data.blockedUsers;
       console.log(blockedUsers);
-    });
-    //.catch(err => console.error(err));
-  console.log(blockedUsers);
+    })
+    .catch(err => console.error(err));*/
+  //console.log(blockedUsers);
 
   let topicSort = [];
   let topics = [];
   let flag = 0;
 
+  console.log(thing);
 
   const handleSubmit = (event) => {
     let newTopicSort = { ...topicSort };

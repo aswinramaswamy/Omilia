@@ -76,7 +76,7 @@ export const logoutUser = () => (dispatch) => {
 };*/
 
 export const getUserData = (username) => (dispatch) => {
-  axios
+  /*axios
     .post('/getProfile', { username })
     .then((res) => {
       dispatch({
@@ -84,7 +84,7 @@ export const getUserData = (username) => (dispatch) => {
         payload: res.data
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err));*/
 };
 
 const setAuthorizationHeader = (token) => {
