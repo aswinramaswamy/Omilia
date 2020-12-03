@@ -132,7 +132,7 @@ class Post extends Component {
         })
       };
       savePost = () => {
-        this.props.undislikePost(this.props.post.postID, localStorage.getItem('username'));
+        this.props.savePost(this.props.post.postID, localStorage.getItem('username'));
         this.setState({
           saved: true
         })
