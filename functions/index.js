@@ -21,6 +21,7 @@ const {
   unlikePost,
   dislikePost,
   undislikePost,
+  savePost,
   initFile
 } = require('./handlers/posts');
 const {
@@ -62,6 +63,7 @@ app.get('/post/:postID/undislike', undislikePost);
 app.post('/post/:postID/comment', createComment);
 app.get('/followers/:username', getFollowers);
 app.get('/followings/:username', getFollowings);
+app.post('/post/:postID/savePost', savePost);
 app.get('/initfile', initFile);
 
 // users routes

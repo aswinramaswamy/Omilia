@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { connect } from 'react-redux';
-import { likePost, unlikePost, dislikePost, undislikePost } from '../../../redux/actions/dataActions';
+import { likePost, unlikePost, dislikePost, undislikePost, savePost } from '../../../redux/actions/dataActions';
 import PropTypes from 'prop-types';
 import PostDialog from './PostDialog';
+import axios from 'axios';
 
 //MUI
 import withStyles from '@material-ui/core/styles/withStyles'
@@ -13,9 +14,17 @@ import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent'
 import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography'
+
+//MUI Icons
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
+import ShareIcon from '@material-ui/icons/Share';
 import Typography from '@material-ui/core/Typography'
+
+//const logUsername = localStorage.getItem('username');
 
 const styles = {
     card: {
@@ -30,7 +39,8 @@ class Post extends Component {
         liked: false,
         disliked: false,
         dialogOpen: false,
-        block: false
+        block: false,
+        saved: false
     }
   } 
 
@@ -45,6 +55,44 @@ class Post extends Component {
         else return false;*/
         return this.state.liked;
       };
+  /*  sharePost = (body) => {
+       const newPost = {
+          headers: {
+              'Content-Type': 'application/json',
+             // 'authorization': localStorage.FBIdToken
+          },
+          body: body,
+          userHandle: localStorage.getItem('username'),
+          dislikes: 0,
+          likes: 0,
+          edited: false,
+          editedTime: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          isAnonymous: false,
+          postID: -1,
+          userID: -1,
+          link: -1,
+          topic: ""
+        }
+      console.log(newPost);
+      
+      //createPost({ data: newPost })
+      axios
+          .post('/post', { data: newPost })
+          .then((res) => {
+              this.setState({
+                  message: "Post shared"
+              });
+          })
+          .catch((err) => {
+              this.setState({
+                  message: "Post failed to share"
+              });
+          })
+      this.setState({
+          shared: true  
+      });
+      };*/
       dislikedPost = () => {
         /*if (
           this.props.user.dislikes &&
@@ -56,6 +104,10 @@ class Post extends Component {
         else return false;*/
         return this.state.disliked;
       };
+      savedPost = () => {
+        return this.state.saved;
+      };
+
       likePost = () => {
         this.props.likePost(this.props.post.postID);
         this.setState({
@@ -97,14 +149,32 @@ class Post extends Component {
           },
           blockedUsers
         } = this.props
+        
+       /* this.setState({
+          body: body,
+          createdAt: createdAt,
+            dislikes: 0,
+            edited: false,
+            editedTime: null,
+            isAnonymous: false,
+            likes: 0,
+            postID: -1 ,
+            userHandle: "",
+            userID: -1,
+            loading: false, 
+            errors: {},
+            message: "",
+            link: "",
+            topic: ""
+        })*/
 
-        if(blockedUsers) {
+      /*  if(blockedUsers) {
           if(blockedUsers.includes(userHandle)) {
             this.setState({
               block: true
             })
           }
-        }
+        }*/
 
         const realCommentCount = !(commentCount > 0) ? (
             0
@@ -124,6 +194,16 @@ class Post extends Component {
             </IconButton>
           );
 
+          const shareButton = this.likedPost() ? (
+            <IconButton tip="share" onClick={this.unlikePost}>
+              <ShareIcon color="secondary" />
+            </IconButton>
+          ) : (
+            <IconButton tip="dislike" onClick={this.likePost}>
+              <ShareIcon color="secondary" />
+            </IconButton>
+          );
+
           const dislikeButton = this.dislikedPost() ? (
             <IconButton tip="Undo dislike" onClick={this.undislikePost}>
               <ArrowDownwardIcon color="primary" />
@@ -133,6 +213,14 @@ class Post extends Component {
             <IconButton tip="dislike" onClick={this.dislikePost}>
               <ArrowDownwardIcon color="secondary" />
               <span><Typography>{dislikes}</Typography></span>
+            </IconButton>
+          );
+
+          const saveButton = this.savedPost() ? (
+            <BookmarkIcon color="primary" />
+          ) : (
+            <IconButton tip="save" onClick={this.dislikePost}>
+              <BookmarkBorderIcon color="primary" />
             </IconButton>
           );
 
@@ -166,6 +254,8 @@ class Post extends Component {
                 <CardActions>
                     {likeButton}
                     {dislikeButton}
+                    {saveButton}
+                    {shareButton}
                     <PostDialog postID={postID} userHandle={userHandle}/>
                     <Typography>{realCommentCount}</Typography>
                 </CardActions>
@@ -185,6 +275,7 @@ Post.propTypes = {
     unlikePost: PropTypes.func.isRequired,
     dislikePost: PropTypes.func.isRequired,
     undislikePost: PropTypes.func.isRequired,
+    savePost: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     post: PropTypes.object.isRequired,
     blockedUsers: PropTypes.array.isRequired,
@@ -199,7 +290,8 @@ const mapActionsToProps = {
     likePost,
     unlikePost,
     dislikePost,
-    undislikePost
+    undislikePost,
+    savePost
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Post));

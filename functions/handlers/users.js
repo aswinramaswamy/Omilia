@@ -904,7 +904,7 @@ exports.blockUser = (req, res) =>{
     return userDocument.update({ blockedUsers: admin.firestore.FieldValue.arrayUnion(user.username) });
   })
   .then(() => {
-    return res.json( { success: `${user.username} was successfully blocked` } );
+    return res.json( { success: `${user.username} was blocked by ${user.yourUserName}` } );
   })
   .catch(err => {
     console.log(err);

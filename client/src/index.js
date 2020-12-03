@@ -102,8 +102,8 @@ ReactDOM.render(
                 <Route path="/NewPost" component={NewPost} />
                 <Route path="/editPost" component={editPost} />
                 <Route path="/followUser" component={followUser} /> 
-                <Route path="/followTopic" component={followTopic} /> 
-                <Route path="/unfollowUser" component={unfollowUser} /> 
+                <Route path="/followTopic" component={followTopic} />
+                <Route path="/unfollowUser" component={unfollowUser} />
                 <Route path="/unfollowTopic" component={unfollowTopic} />
                 <Route path="/changeProfile" component={editProfile} />
                 <Route path="/searchResults/:search" component={SearchResults} />

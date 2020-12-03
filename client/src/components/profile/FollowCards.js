@@ -18,13 +18,13 @@ import ProfileCard from './ProfileCard';
 function getUser() {
   let user = {};
   console.log(localStorage.getItem('username'));
-  axios
-    .post('/userdata', localStorage.getItem('username'))
+  /*axios
+    .post('/getProfile', localStorage.getItem('username'))
     .then(res => {
       console.log(res.data());
       user = res.data();
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err));*/
   return user;
 }
 
