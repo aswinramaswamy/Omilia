@@ -20,7 +20,9 @@ const {
   likePost,
   unlikePost,
   dislikePost,
-  undislikePost
+  undislikePost,
+  savePost,
+  initFile
 } = require('./handlers/posts');
 const {
   signup,
@@ -38,7 +40,9 @@ const {
   followTopic,
   unfollowUser,
   unfollowTopic,
-  blockUser
+  blockUser,
+  getFollowers,
+  getFollowings
 } = require('./handlers/users');
 //const { default: EditPost } = require('../client/src/views/EditPost');
 
@@ -55,7 +59,10 @@ app.get('/post/:postID/unlike', unlikePost);
 app.get('/post/:postID/dislike', dislikePost);
 app.get('/post/:postID/undislike', undislikePost);
 app.post('/post/:postID/comment', createComment);
-
+app.get('/followers/:username', getFollowers);
+app.get('/followings/:username', getFollowings);
+app.post('/post/:postID/savePost', savePost);
+app.get('/initfile', initFile);
 
 // users routes
 app.post('/signup', signup);

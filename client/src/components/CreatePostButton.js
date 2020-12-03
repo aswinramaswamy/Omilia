@@ -47,7 +47,8 @@ export default class CreatePostButton extends React.Component {
             link: "",
             topic: "",
             loading: false,
-            createSubmit: false
+            createSubmit: false,
+            file: ""
         }
     }
 
@@ -85,13 +86,14 @@ export default class CreatePostButton extends React.Component {
         })
         event.preventDefault();
         const format = /^[a-z]{2}[a-z]+$/;
+        //const fileData = document.getElementById('input').files[0];
         const newPost = {
             headers: {
                 'Content-Type': 'application/json',
                 'authorization': localStorage.FBIdToken
             },
             body: this.state.body,
-            userHandle: this.state.userHandle,
+            userHandle: localStorage.getItem('username'),
             dislikes: this.state.dislikes,
             likes: this.state.likes,
             edited: false,
@@ -101,10 +103,20 @@ export default class CreatePostButton extends React.Component {
             postID: this.state.postID,
             userID: this.state.userID,
             link: this.state.link,
-            topic: this.state.topic
+            topic: this.state.topic,
+            file: this.state.file
           }
         console.log(newPost)
-        //createPost({ data: newPost })
+        /*axios
+            .get('/initFile', { fileData })
+            .then((res) => {
+                this.setState({
+                    file: res.data.file
+                });
+            })
+            .catch(err => {
+
+            })*/
         axios
             .post('/post', { data: newPost })
             .then((res) => {
@@ -203,6 +215,7 @@ export default class CreatePostButton extends React.Component {
                                     value={this.state.body} 
                                     onChange={this.handleChange} 
                                 fullwidth />
+                                
                                 <br />
                                 <TextField 
                                     id="link" 
@@ -213,6 +226,18 @@ export default class CreatePostButton extends React.Component {
                                     helperText={errors.link} 
                                     error={errors.link ? true : false} 
                                     value={this.state.link} 
+                                    onChange={this.handleChange} 
+                                    fullwidth />
+                                <br />
+                                <TextField 
+                                    id="file" 
+                                    name="file" 
+                                    type="imag" 
+                                    label="ImageLink" 
+                                    className="TextField4"
+                                    helperText={errors.image} 
+                                    error={errors.image ? true : false} 
+                                    value={this.state.file} 
                                     onChange={this.handleChange} 
                                     fullwidth />
                                 <br />

@@ -4,7 +4,7 @@ import axios from 'axios';
 //get all posts
 export const getPosts = () => (dispatch) => {
   dispatch({ type: LOADING_DATA });
-  axios
+  /*axios
     .get('/posts')
     .then((res) => {
       dispatch({
@@ -17,7 +17,7 @@ export const getPosts = () => (dispatch) => {
         type: SET_POSTS,
         payload: []
       });
-    });
+    });*/
 };
 
 //get a specific post

@@ -14,21 +14,19 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import TextField from '@material-ui/core/TextField';
 
-function getUser() {
-  let user = { username: localStorage.getItem('username') };
-  //console.log(user.username);
-  axios
-    .post('/getProfile', user)
-    .then(res => {
-      console.log(res.data);
-      user = res.data;
-    })
-    .catch(err => console.log(err));
-  return user;
+ function getUser() {
+   let userNameJSON = { username: localStorage.getItem('username') };
+   let user = {}
+   //console.log(user.username);
+   axios
+     .post('/getProfile', userNameJSON)
+     .then(res => {
+       console.log(res.data);
+       user = res.data;
+       return user;
+     })
+     .catch(err => console.error(err));;
 }
-
-const user = getUser();
-console.log(user);
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -71,9 +69,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getPostByTopic(topics) {
+  //let userNameJSON = { username: localStorage.getItem('username') };
+  let blockedUsers = [];
+  //console.log(user.username);
+  /*axios
+    .post('/getProfile', userNameJSON)
+    .then(res => {
+      blockedUsers = res.data.blockedUsers;
+      console.log(blockedUsers);
+    });*/
+    //.catch(err => console.error(err));
+    //console.log(blockedUsers);
+
   let userSearchResult = (topics.length !== 0) ? (
     topics.map((result) => {
-      return <Post key={result.postID} post={result} blockedUsers={user.blockedUsers} />;
+      return <Post key={result.postID} post={result} blockedUsers={blockedUsers}/>;
     })
   ) : (
       <p>Select a Topic</p>
@@ -86,11 +96,24 @@ export default function HomeTabs(thing) {
   const [value, setValue] = React.useState(0);
   const [topick, setTopick] = React.useState("hello");
   const [userSearchResult, setUserSearchResult] = React.useState(<h1>Select A Topic</h1>);
+  
+  //let userNameJSON = { username: localStorage.getItem('username') };
+  let blockedUsers = [];
+  //console.log(user.username);
+  /*axios
+    .post('/getProfile', userNameJSON)
+    .then(res => {
+      blockedUsers = res.data.blockedUsers;
+      console.log(blockedUsers);
+    })
+    .catch(err => console.error(err));*/
+  //console.log(blockedUsers);
 
   let topicSort = [];
   let topics = [];
   let flag = 0;
 
+  console.log(thing);
 
   const handleSubmit = (event) => {
     let newTopicSort = { ...topicSort };
@@ -121,7 +144,7 @@ export default function HomeTabs(thing) {
 
   let allPosts = (thing.allPosts.length !== 0) ? (
     thing.allPosts.map((result) => {
-      return <Post key={result.postID} post={result} blockedUsers={user.blockedUsers}/>;
+      return <Post key={result.postID} post={result} blockedUsers={blockedUsers}/>;
     })
   ) : (
       <p>Loading...</p>
@@ -154,7 +177,7 @@ export default function HomeTabs(thing) {
             if (typeof item.body !== 'undefined') {
               if (typeof item.topic !== 'undefined') {
                 if (typeof item.commentCount !== 'undefined') {
-                  return <Post key={item.postID} post={item} blockedUsers={user.blockedUsers}/>;
+                  return <Post key={item.postID} post={item} blockedUsers={blockedUsers}/>;
                 }
               }
             }
@@ -172,7 +195,7 @@ export default function HomeTabs(thing) {
       if (typeof result.userHandle !== 'undefined') {
         if (typeof result.commentCount !== 'undefined') {
           if (result.userHandle !== localStorage.getItem('username')) {
-            return <Post key={result.postID} post={result} blockedUsers={user.blockedUsers}/>;
+            return <Post key={result.postID} post={result} blockedUsers={blockedUsers}/>;
           }
         }
       }

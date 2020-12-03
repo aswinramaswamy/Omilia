@@ -38,6 +38,50 @@ exports.getProfile = (req, res) => {
   .catch(err => console.error(err));
 }
 
+exports.getFollowers = (req, res) => {
+  const user = { 
+    username: req.body.username
+  }
+  db
+  .collection('users')
+  .doc(user.username)
+  .collection('followers')
+  .get()
+  .then((doc) => {
+    let followers = [];
+      data.forEach(doc => {
+        followers.push({
+          username: doc.username,
+          ...doc.data()
+        });
+      });
+      return res.json(followers);
+  })
+  .catch(err => console.error(err));
+}
+
+exports.getFollowings = (req, res) => {
+  const user = { 
+    username: req.body.username
+  }
+  db
+  .collection('users')
+  .doc(user.username)
+  .collection('following')
+  .get()
+  .then((doc) => {
+    let followings = [];
+      data.forEach(doc => {
+        followings.push({
+          username: doc.username,
+          ...doc.data()
+        });
+      });
+      return res.json(followings);
+  })
+  .catch(err => console.error(err));
+}
+
 //Change Username
 exports.changeUsername = (req, res) => {
   const user = {
@@ -851,7 +895,7 @@ exports.blockUser = (req, res) =>{
     return userDocument.update({ blockedUsers: admin.firestore.FieldValue.arrayUnion(user.username) });
   })
   .then(() => {
-    return res.json( { success: `${user.username} was successfully blocked` } );
+    return res.json( { success: `${user.username} was blocked by ${user.yourUserName}` } );
   })
   .catch(err => {
     console.log(err);

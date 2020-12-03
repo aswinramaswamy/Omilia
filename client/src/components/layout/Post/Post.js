@@ -151,7 +151,8 @@ class Post extends Component {
             dislikes,
             commentCount,
             postID,
-            topic
+            topic,
+            file
           },
           blockedUsers
         } = this.props
@@ -245,6 +246,9 @@ class Post extends Component {
                     <Typography variant="body1">
                         {body}
                     </Typography>
+                    <div>
+                      <a href={file}><img src={file} object-fit='scale-down'></img></a>
+                    </div>
                 </CardContent>
                 <CardActions>
                     {likeButton}

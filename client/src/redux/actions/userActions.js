@@ -5,7 +5,6 @@ import {
   LOADING_UI,
   STOP_LOADING_UI,
   SET_UNAUTHENTICATED,
-  LOADING_USER,
   BLOCK_USER
 } from '../types';
 import axios from 'axios';
@@ -76,17 +75,16 @@ export const logoutUser = () => (dispatch) => {
     });
 };*/
 
-export const getUserData = () => (dispatch) => {
-  dispatch({ type: LOADING_USER });
-  axios
-    .get('/user')
+export const getUserData = (username) => (dispatch) => {
+  /*axios
+    .post('/getProfile', { username })
     .then((res) => {
       dispatch({
         type: SET_USER,
         payload: res.data
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err));*/
 };
 
 const setAuthorizationHeader = (token) => {
@@ -99,7 +97,7 @@ const setAuthorizationHeader = (token) => {
 export const blockUser = (user) => (dispatch) => {
   dispatch({ type: LOADING_UI });
   axios
-    .post(`/blockUser`, user)
+    .post('/blockUser', user)
     .then(res => {
       dispatch({
         type: BLOCK_USER,

@@ -1,4 +1,4 @@
-const { db } = require('../util/admin')
+const { admin, db } = require('../util/admin')
 
 exports.getAllPosts = (req, res) => {
     db
@@ -16,6 +16,42 @@ exports.getAllPosts = (req, res) => {
       return res.json(posts);
     })
     .catch(err => console.error(err));
+}
+
+exports.initFile = (req, res) => {
+  const data = {
+    file: ""
+  };
+  const metadata = {
+    contentType: 'image/jpeg'
+  };
+  var storage = admin.storage();
+  var storageRef = storage.ref();
+  var uploadTask = storageRef.child('images/' + fileData.name).put(fileData, metadata);
+  uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+  function(snapshot) {
+    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  }, function(error) {
+    switch (error.code) {
+      case 'storage/unauthorized':
+        return res.status(400).send({error: 'There was an error uploading the file.'});
+        break;
+      case 'storage/canceled':
+        return res.status(400).send({error: 'You candcelled the file upload.'});
+        break;
+      case 'storage/unknown':
+        return res.status(400).send({error: 'There was an error uploading the file.'});
+        break;
+    }
+  }, function() {
+    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+      console.log('File available at', downloadURL);
+      data.setState({
+        file: downloadURL
+      });
+      return res.json(data);
+    });
+  });
 }
 
 exports.createPost = (req, res) => {
@@ -49,7 +85,8 @@ exports.createPost = (req, res) => {
       editedTime: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       link: req.body.data.link,
-      topic: req.body.data.topic
+      topic: req.body.data.topic,
+      file: req.body.data.file
     }
     var newID = "unitialized"
     db
@@ -302,6 +339,32 @@ exports.undislikePost = (req, res) => {
   })
   .then(() => {
     return res.json(postData);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: 'Something went wrong'});
+  })
+}
+
+//save a post to the user's saved posts
+exports.savePost = (req, res) =>{
+  const user = {
+    yourUserName: req.body.yourUserName,
+    postID: req.params.postID
+  };
+
+  const userDocument = db.doc(`users/${user.yourUserName}`);
+
+  userDocument.get()
+  .then(doc => {
+    if(!doc.exists) {
+      return res.status(404).json({ error: 'User does not exist'});
+    }
+    //increase like count in doc
+    return userDocument.update({ savedPosts: admin.firestore.FieldValue.arrayUnion(user.postID) });
+  })
+  .then(() => {
+    return res.json( { success: `${user.postID} was saved by ${user.yourUserName}` } );
   })
   .catch(err => {
     console.log(err);
